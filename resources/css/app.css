@@ -1,0 +1,210 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+:root {
+    height: 100%;
+}
+
+/* Firefox */
+* {
+scrollbar-width: auto;
+scrollbar-color: #0F2B3C;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+width: 8px;
+height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+background: #ffffff;
+}
+
+*::-webkit-scrollbar-thumb {
+background-color: #205375;
+border: 0px none transparent;
+}
+
+.odc-bg {
+    background: url('../../public/storage/img/bg-1.png') left center/cover no-repeat;
+}
+
+.odc-bg-logo {
+    background: url('../../public/storage/img/logo-1-sub.svg') left center/contain no-repeat content-box;
+    position: absolute;
+    height: 80%;
+    width: 50%;
+    z-index: 9;
+    inset: 0;
+    top: 12%;
+}
+
+.odc-bg-overlay,
+.odc-nav-bg-overlay,
+.odc-header-overlay {
+    isolation: isolate;
+}
+
+.odc-bg-overlay::after{
+    content: '';
+    position: absolute;
+    z-index: -1;
+    width: 50%;
+    height: 100%;
+    background: url('../../public/storage/img/bg-2.png') center center/cover no-repeat content-box;
+    pointer-events: none;
+}
+
+.odc-nav-bg-overlay::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    width: 7rem;
+    height: 100%;
+    top: 0;
+    mix-blend-mode: color-burn;
+    background: url('../../public/storage/img/bg-2.png') center center/cover no-repeat content-box;
+    pointer-events: none;
+    transition: 300ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.odc-nav-bg-overlay:hover::after {
+    width: 18rem;
+}
+
+.odc-header-overlay::after{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    mix-blend-mode: color-burn;
+    background: url('../../public/storage/img/bg-2.png') center center/cover no-repeat content-box;
+    pointer-events: none;
+    transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+}
+
+
+.middle {
+    grid-area: 2 / 1 / 3 / 2;
+}
+
+.footer {
+    grid-area: 3 / 1 / 4 / 2;
+}
+
+.odc-glass-active {
+    background: rgb(255,255,255);
+background: -moz-linear-gradient(118deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0.6474964985994398) 100%);
+background: -webkit-linear-gradient(118deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0.6474964985994398) 100%);
+background: linear-gradient(118deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0.6474964985994398) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#ffffff",GradientType=1);
+}
+
+.odc-glass:hover {
+    background: rgb(255,255,255);
+background: -moz-linear-gradient(118deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0.6474964985994398) 100%);
+background: -webkit-linear-gradient(118deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0.6474964985994398) 100%);
+background: linear-gradient(118deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0.6474964985994398) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#ffffff",GradientType=1);
+}
+
+
+.odc-logo-clip {
+    transform: translateX(5.6rem);
+    clip-path: polygon(0% 0%, 26% 0%, 22% 100%, 0% 100%);
+    transition: all 300ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.odc-nav:hover .odc-logo-clip {
+    transform: translateX(0rem);
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+/** FOR CALC STYLES **/
+.odc-main-con-height {
+    height: calc(100vh - 5rem);
+}
+
+
+/* **** ODC COLORS **** */
+
+/* * ODC BG */
+.odc-bg-clr-red {
+    background: #ED1C24 !important;
+}
+
+.odc-bg-clr-yellow {
+    background: #fde047 !important;
+}
+
+.odc-bg-clr-lightblue {
+    background: #3b82f6 !important;
+}
+
+.odc-bg-clr-green {
+    background: #22c55e !important;
+}
+
+/* * ODC BORDERS */
+.odc-brdr-clr-red:focus,
+.odc-brdr-clr-red {
+    outline-color: #ED1C24 !important;
+    border-color: #ED1C24 !important;
+}
+
+.odc-brdr-clr-yellow:focus,
+.odc-brdr-clr-yellow {
+    outline-color: #fde047 !important;
+    border-color: #fde047 !important;
+}
+
+.odc-brdr-clr-lightblue:focus,
+.odc-brdr-clr-lightblue {
+    outline-color: #3b82f6 !important;
+    border-color: #3b82f6 !important;
+}
+
+.odc-brdr-clr-green:focus,
+.odc-brdr-clr-green {
+    outline-color: #22c55e !important;
+    border-color: #22c55e !important;
+}
+
+.without-ring:focus:not(:focus-visible) {
+    @apply focus:ring-0 focus:ring-offset-0;
+}
+
+.without-ring:focus-visible {
+    @apply ring-2 ring-offset-2;
+}
+
+[type="checkbox"]:focus:not(:focus-visible) {
+    @apply focus:ring-0 focus:ring-offset-0;
+}
+
+[type="checkbox"]:focus-visible {
+    @apply ring-2 ring-offset-2;
+}
+
+/* *** For Drag & Drop File Input */
+#file {
+    width: 60%;
+    height: 100%;
+    background: rgba(150,225,150,0.5);
+    vertical-align: middle;
+    text-align: center;
+    padding: 0 20%;
+    margin-top: -334px;
+    color: #FFF;
+    font-weight: bold;
+    font-size: 400px;
+    opacity: 0;
+}
