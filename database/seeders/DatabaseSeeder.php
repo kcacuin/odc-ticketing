@@ -3,6 +3,12 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\Comment;
+use App\Models\Status;
+use App\Models\Ticket;
+use App\Models\User;
+use GuzzleHttp\Promise\Create;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -12,11 +18,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // $this->call(StatusSeeder::class);
         // \App\Models\User::factory(10)->create();
+        $user = User::factory()->create([
+            'first_name' => 'KC',
+            'last_name' => 'Acuin',
+            'username' => 'kcacuin',
+            'email' => 'kc.acuin@odecci.com',
+        ]);
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        // Status::factory(5)->create();
+        Ticket::factory(20)->for($user)->create();
     }
 }

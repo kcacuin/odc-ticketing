@@ -6,6 +6,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use Illuminate\Contracts\Validation\Rule;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
@@ -18,6 +19,7 @@ new #[Layout('layouts.guest')] class extends Component
     public string $first_name = '';
     public string $last_name = '';
     public $image;
+    public string $username = '';
     public string $email = '';
     public string $password = '';
     public string $password_confirmation = '';
@@ -39,8 +41,9 @@ new #[Layout('layouts.guest')] class extends Component
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'image' => ['required', 'image', 'max:5120'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
+            'username' => ['required', 'string', 'min:3', 'max:255', 'unique:users,username'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:7', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
@@ -50,7 +53,8 @@ new #[Layout('layouts.guest')] class extends Component
 
         Auth::login($user);
 
-        $this->redirect(RouteServiceProvider::HOME, navigate: true);
+        $this->redirect(Route('verification.notice'), navigate: true);
+        // $this->redirect(RouteServiceProvider::HOME, navigate: true);
     }
 
     public function generatePassword(): void
@@ -93,7 +97,7 @@ new #[Layout('layouts.guest')] class extends Component
         <h4 class="mt-10 text-lg font-semibold uppercase tracking-widest text-white">Register</h4>
     </div>
 
-    <form wire:submit="register">
+    <form wire:submit="register" enctype="multipart/form-data">
 
         <div
             x-data="{ isUploading: false, progress: 5 }"
@@ -149,6 +153,9 @@ new #[Layout('layouts.guest')] class extends Component
                 <x-form.input name="last_name" labelname="Last Name" type="text" wire:model='last_name'/>
             </div>
         </div>
+
+        {{-- * Username --}}
+        <x-form.input name="username" labelname="Username" type="text" wire:model='username'/>
 
         {{-- * Email --}}
         <x-form.input name="email" labelname="Email" type="email" wire:model='email'/>

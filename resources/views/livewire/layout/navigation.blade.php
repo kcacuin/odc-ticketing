@@ -24,36 +24,34 @@ new class extends Component
             <div class="flex items-center justify-center pt-6 round">
                 <div class="odc-logo-clip shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
-                        <x-application-logo-full class="block h-9 w-auto text-gray-800 group-hover:bg-orange-500    dark:text-gray-200" />
+                        <x-application-logo-full class="block h-9 w-auto" />
                     </a>
                 </div>
             </div>
             <nav class="h-full mt-6 flex flex-col justify-between">
-                <div>
+                <div class="flex flex-col">
                     <x-nav-link
                         :href="route('dashboard')"
-                        :active="request()->routeIs('dashboard')">
+                        :active="request()->routeIs('dashboard')" wire:navigate>
                         <x-svg-icon
                             name="dashboard"
                             :active="request()->routeIs('dashboard')" />
                         <x-nav-link-icon
-                            :active="request()->routeIs('dashboard')" src="{{ asset('storage/icons/dashboard.svg') }}">
+                            :active="request()->routeIs('dashboard')">
                                 Dashboard
                         </x-nav-link-icon>
                     </x-nav-link>
-                    {{-- <x-nav-link
-                        :href="route('posts')"
-                        :active="request()->routeIs('posts')">
+                    <x-nav-link
+                        :href="route('tickets.index')"
+                        :active="request()->routeIs('tickets.index')" wire:navigate>
                         <x-svg-icon
-                            name="posts"
-                            :active="request()->routeIs('posts')" />
-                        <x-nav-link-icon
-                            :active="request()->routeIs('posts')"
-                            src="{{ asset('storage/icons/posts.svg') }}"
-                            alt="posts">
-                            Ticket List
+                            name="ticket"
+                            :active="request()->routeIs('tickets.index')" />
+                        <x-nav-link-icon class="flex text-nowrap"
+                            :active="request()->routeIs('tickets.index')">
+                            Ticket<span class="text-transparent">_</span>List
                         </x-nav-link-icon>
-                    </x-nav-link> --}}
+                    </x-nav-link>
                 </div>
                 {{-- <div>
                     <x-nav-link
@@ -93,8 +91,8 @@ new class extends Component
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('posts.index')" :active="request()->routeIs('posts.index')" wire:navigate>
-                {{ __('Posts') }}
+            <x-responsive-nav-link :href="route('tickets.index')" :active="request()->routeIs('tickets.index')" wire:navigate>
+                {{ __('Tickets') }}
             </x-responsive-nav-link>
         </div>
 

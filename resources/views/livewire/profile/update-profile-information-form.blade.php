@@ -9,7 +9,9 @@ use Livewire\Volt\Component;
 
 new class extends Component
 {
-    public string $name = '';
+    public string $first_name = '';
+    public string $last_name = '';
+    public string $username = '';
     public string $email = '';
 
     /**
@@ -17,7 +19,9 @@ new class extends Component
      */
     public function mount(): void
     {
-        $this->name = Auth::user()->name;
+        $this->first_name = Auth::user()->first_name;
+        $this->last_name = Auth::user()->last_name;
+        $this->username = Auth::user()->username;
         $this->email = Auth::user()->email;
     }
 
@@ -29,7 +33,9 @@ new class extends Component
         $user = Auth::user();
 
         $validated = $this->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'min:3', 'max:255', Rule::unique(User::class)->ignore($user->id)],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
         ]);
 
@@ -41,7 +47,7 @@ new class extends Component
 
         $user->save();
 
-        $this->dispatch('profile-updated', name: $user->name);
+        $this->dispatch('profile-updated', name: $user->username);
     }
 
     /**
@@ -75,16 +81,16 @@ new class extends Component
     </header>
 
     <form wire:submit="updateProfileInformation" class="mt-6 space-y-6">
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input wire:model="name" id="name" name="name" type="text" class="mt-1 block w-full" required autofocus autocomplete="name" />
-            <x-input-error class="mt-2" :messages="$errors->get('name')" />
-        </div>
+        {{-- * First Name --}}
+        <x-form.input name="first_name" labelname="First Name" type="text" wire:model='first_name'/>
+        {{-- * Last Name --}}
+        <x-form.input name="last_name" labelname="Last Name" type="text" wire:model='last_name'/>
+        {{-- * Username --}}
+        <x-form.input name="username" labelname="Username" type="text" wire:model='username'/>
 
         <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input wire:model="email" id="email" name="email" type="email" class="mt-1 block w-full" required autocomplete="username" />
-            <x-input-error class="mt-2" :messages="$errors->get('email')" />
+            {{-- * Email --}}
+            <x-form.input name="email" labelname="Email" type="email" wire:model='email'/>
 
             @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! auth()->user()->hasVerifiedEmail())
                 <div>
@@ -106,7 +112,7 @@ new class extends Component
         </div>
 
         <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+            <x-secondary-button >{{ __('Save') }}</x-secondary-button>
 
             <x-action-message class="me-3" on="profile-updated">
                 {{ __('Saved.') }}

@@ -45,6 +45,6 @@
     {{-- <svg {{ $attributes->merge(['class' => 'icon']) }}>
         <use xlink:href="#{{ $name }}" />
     </svg> --}}
-<span class="max-w-0 translate-x-8 opacity-50 text-sm font-bold transition-opacity duration-300 group-hover:visible group-hover:opacity-100">
+<span class="max-w-0 translate-x-8 text-sm transition-opacity duration-300 group-hover:visible group-hover:opacity-100">
     {{ $slot }}
 </span>

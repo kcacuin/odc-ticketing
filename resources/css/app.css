@@ -29,6 +29,22 @@ background-color: #205375;
 border: 0px none transparent;
 }
 
+table {
+    border-collapse: collapse;
+}
+
+/* Set header to stick to the top of the container. */
+thead {
+    position: sticky;
+    top: 0;
+    z-index: 99;
+}
+
+thead {
+    overflow: hidden;
+    width: calc( 100% - 1em )/* scrollbar is average 1em/16px width, remove it from thead width */
+}
+
 .odc-bg {
     background: url('../../public/storage/img/bg-1.png') left center/cover no-repeat;
 }
@@ -109,10 +125,10 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endCo
 }
 
 .odc-glass:hover {
-    background: rgb(255,255,255);
-background: -moz-linear-gradient(118deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0.6474964985994398) 100%);
-background: -webkit-linear-gradient(118deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0.6474964985994398) 100%);
-background: linear-gradient(118deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0.6474964985994398) 100%);
+    background: rgba(255, 255, 255, 0.4);
+background: -moz-linear-gradient(118deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.6474964985994398) 100%);
+background: -webkit-linear-gradient(118deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.6474964985994398) 100%);
+background: linear-gradient(118deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.6474964985994398) 100%);
 filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endColorstr="#ffffff",GradientType=1);
 }
 
@@ -207,4 +223,42 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endCo
     font-weight: bold;
     font-size: 400px;
     opacity: 0;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+visibility: hidden;
+width: 140px;
+background-color: #555;
+color: #fff;
+text-align: center;
+border-radius: 6px;
+padding: 5px;
+position: absolute;
+z-index: 1;
+bottom: 150%;
+left: 50%;
+margin-left: -75px;
+opacity: 0;
+transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+content: "";
+position: absolute;
+top: 100%;
+left: 50%;
+margin-left: -5px;
+border-width: 5px;
+border-style: solid;
+border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+visibility: visible;
+opacity: 1;
 }
