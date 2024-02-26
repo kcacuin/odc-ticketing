@@ -54,7 +54,7 @@ new #[Layout('layouts.guest')] class extends Component
 
         <div class="flex items-center justify-between mt-4">
             <x-primary-button-tr class="flex justify-center pointer-events-none" >
-                <a class="underline font-light pointer-events-auto" href="{{ route('login') }}" wire:navigate>
+                <a class="underline font-light pointer-events-auto text-white dark:text-white hover:text-slate-300 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-odc-blue-500 dark:focus:ring-offset-white" href="{{ route('login')}}" wire:navigate>
                     {{ __('Back to login') }}
                 </a>
             </x-primary-button-tr>

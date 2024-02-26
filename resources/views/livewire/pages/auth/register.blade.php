@@ -94,7 +94,7 @@ new #[Layout('layouts.guest')] class extends Component
 
 <div>
     <div class="flex flex-col items-center mb-6">
-        <h4 class="mt-10 text-lg font-semibold uppercase tracking-widest text-white">Register</h4>
+        <h4 class="mt-8 text-lg font-semibold uppercase tracking-widest text-white">Register</h4>
     </div>
 
     <form wire:submit="register" enctype="multipart/form-data">
@@ -112,9 +112,9 @@ new #[Layout('layouts.guest')] class extends Component
                     class="relative overflow-clip min-h-44 p-6 text-white font-light border-2 border-white border-dashed rounded-md cursor-pointer">
                     <input accept=".jpg, .jpeg, .png, .webp" wire:model='image' type="file" name="image" x-ref="file" @change="fileName = $refs.file.files[0].name"
                         class="absolute inset-0 z-50 w-full h-full p-0 m-0 outline-none opacity-0 cursor-pointer"
-                        @dragover="$refs.dnd.classList.add('bg-blue-700')"
-                        @dragleave="$refs.dnd.classList.remove('bg-blue-700')"
-                        @drop="$refs.dnd.classList.remove('bg-blue-700')"
+                        @dragover="$refs.dnd.classList.add('bg-odc-blue-700')"
+                        @dragleave="$refs.dnd.classList.remove('bg-odc-blue-700')"
+                        @drop="$refs.dnd.classList.remove('bg-odc-blue-700')"
                     />
                     <div class="flex flex-col items-center justify-center text-xs text-center">
                         @if ($image)
@@ -176,14 +176,14 @@ new #[Layout('layouts.guest')] class extends Component
         {{-- * Confirm Password --}}
         <x-form.input name="password_confirmation" labelname="Confirm Password" type="password" wire:model='password_confirmation'/>
 
-        <div class="mt-10 flex flex-col justify-center">
+        <div class="mt-6 flex flex-col justify-center">
             <x-primary-button class="flex justify-center">
                 <span class=" text-blue-primary">
                     {{ __('Register') }}
                 </span>
             </x-primary-button>
             <x-primary-button-tr class="flex justify-center pointer-events-none" >
-                <a class="underline font-light pointer-events-auto" href="{{ route('login') }}" wire:navigate>
+                <a class="underline font-light pointer-events-auto text-white dark:text-white hover:text-slate-300 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-odc-blue-500 dark:focus:ring-offset-white" href="{{ route('login')}}" wire:navigate>
                     {{ __('Already registered?') }}
                 </a>
             </x-primary-button-tr>

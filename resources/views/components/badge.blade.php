@@ -1,7 +1,7 @@
 {{-- @props(['status', ]) --}}
 
 @php
-    $classes = 'text-xs font-medium me-2 px-2.5 py-0.5 rounded whitespace-nowrap'
+    $classes = 'text-[0.625rem] font-medium px-2.5 py-0.5 text-center rounded whitespace-nowrap'
 @endphp
 
 <span {!! $attributes->merge(['class' => $classes]) !!}>

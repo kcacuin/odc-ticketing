@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
-use App\Models\Post;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 
@@ -68,7 +67,7 @@ class CommentController extends Controller
      */
     public function destroy(Ticket $ticket, Comment $comment)
     {
-        $this->authorize('delete', $comment);
+        // $this->authorize('delete', $comment);
 
         $comment->delete();
 

@@ -22,12 +22,12 @@ class TicketFactory extends Factory
         return [
             'user_id' => User::factory(),
             'status_id' => $this->faker->numberBetween(1, 5),
-            'ticket_number' => $this->faker->randomNumber(6),
+            'number' => $this->faker->randomNumber(6),
             'date_received' => $this->faker->date(),
             'requested_by' => $this->faker->name(),
             'client' => $this->faker->company(),
             'product' => $this->faker->word(),
-            'issue' => '<p>' . implode('</p><p>', fake()->paragraphs(6)) . '</p>',
+            'issue' => '<p>' . implode('</p><p>', fake()->paragraphs(3)) . '</p>',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];

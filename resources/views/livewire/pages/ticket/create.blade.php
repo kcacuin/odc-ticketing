@@ -1,15 +1,18 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="mr-10 text-left font-semibold text-xl text-white dark:text-gray-200 leading-tight">
-            {{ __('Add Ticket') }}
+            {{ __('Add Incident') }}
         </h2>
     </x-slot>
-    <div class="py-12 max-w-5xl mx-auto">
+    <div class="py-12 max-w-5xl mx-auto relative">
         @auth
             <form method="POST" action="/tickets" enctype="multipart/form-data" class="mt-2">
                 @csrf
 
-                <x-form.input name="ticket_number" :value="$nextTicketNumber" labelname="Ticket Number" type="number"/>
+                {{-- * Ticket Number (Copy to Clipboard) --}}
+                <div x-data="{ input: '{{ $nextTicketNumber }}', showMsg: false }">
+                    <x-form.input-clipboard  name="ticket_number" labelname="Ticket Number" type="number" readonly="true" :value="$nextTicketNumber"/>
+                </div>
                 <div class="grid grid-cols-2 grid-rows-1 gap-4">
                     {{-- <x-form.field>
                         <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -22,14 +25,13 @@
                         <x-form.label name="date_received" labelname="Date Received"/>
                     </x-form.field> --}}
                     <x-form.input  name="date_received" labelname="Date Received" type="date"/>
-                    <x-form.input  name="requested_by" labelname="Requested By" type="text"/>
+                    <x-form.input-tooltip  name="requested_by" labelname="Requested By" type="text" tooltip="Person who requested assistance."/>
                 </div>
                 <div class="grid grid-cols-2 grid-rows-1 gap-4">
-                    <x-form.input name="client" labelname="Client" type="text"/>
-                    <x-form.input name="product" labelname="Product" type="text"/>
+                    <x-form.input-tooltip name="client" labelname="Client" type="text" tooltip="Client or customer associated."/>
+                    <x-form.input-tooltip name="product" labelname="Product" type="text" tooltip="Relevant product or service."/>
                 </div>
-                {{-- <x-form.field>
-
+                <x-form.field>
                         <select name="status_id" id="status_id" required>
                             @php
                                 $statuses = \App\Models\Status::all();
@@ -42,10 +44,10 @@
                                 >{{ ucwords($status->name) }}</option>
                             @endforeach
                         </select>
-                        <x-form.error name="status_id"/>
                         <x-form.label name="status" labelname="Status"/>
-                </x-form.field> --}}
-                <x-form.input name="issue" labelname="Issue" type="text"/>
+                        <x-form.error name="status_id"/>
+                </x-form.field>
+                <x-form.textarea name="issue" labelname="Issue" type="text"/>
                 <div
                     x-data="{ isUploading: false, progress: 5 }"
                     x-on:livewire-upload-start="isUploading = true"

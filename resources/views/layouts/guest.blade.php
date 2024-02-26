@@ -30,7 +30,7 @@
                     </div>
                 </div>
 
-                <div class="odc-bg-overlay w-3/6 h-[100vh] sm:max-w-full flex sm:justify-center items-center px-6 sm:px-28 py-4 bg-gradient-to-br from-blue-primary to-blue-secondary dark:bg-gray-800 shadow-md overflow-hidden">
+                <div class="odc-bg-overlay w-3/6 h-[100vh] sm:max-w-full flex sm:justify-center items-center px-6 sm:px-20 py-4 bg-gradient-to-br from-blue-primary to-blue-secondary dark:bg-gray-800 shadow-md overflow-hidden overflow-y-auto">
                     {{ $slot }}
                 </div>
             </div>

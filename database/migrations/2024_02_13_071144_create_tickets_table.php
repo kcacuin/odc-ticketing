@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::class)->constrained()->restrictOnDelete();
             $table->foreignId('status_id');
-            $table->bigInteger('ticket_number')->unique()->unsigned();
+            $table->bigInteger('number')->unique()->unsigned();
             $table->date('date_received');
             $table->string('requested_by');
             $table->string('client');

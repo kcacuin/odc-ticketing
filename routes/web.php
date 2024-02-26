@@ -27,11 +27,6 @@ Route::view('profile', 'profile')
 
 require __DIR__.'/auth.php';
 
+Route::patch('/tickets/{ticket}', [TicketController::class, 'update'])->name('tickets.update');
 Route::resource('tickets', TicketController::class);
 Route::middleware('auth')->resource('tickets.comments', CommentController::class);
-
-// Route::middleware(['auth', 'verified'])->group(function () {
-//     Route::get('tickets', [TicketController::class, 'index'])->name('tickets');
-//     Route::post('tickets', [TicketController::class, 'store']);
-//     Route::get('tickets/add', [TicketController::class, 'create']);
-// });

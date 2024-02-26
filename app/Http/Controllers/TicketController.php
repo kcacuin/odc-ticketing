@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Status;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\Rules\File;
 use Livewire\WithPagination;
 
@@ -21,7 +19,6 @@ class TicketController extends Controller
     public function index()
     {
         return view('livewire.pages.ticket.index', [
-            // 'tickets' => Ticket::latest()->paginate(8),
             'tickets' => Ticket::latest()->with('user')->paginate(15),
         ]);
     }
@@ -31,7 +28,7 @@ class TicketController extends Controller
      */
     public function create(Ticket $ticket)
     {
-        $lastTicketNumber = Ticket::max('ticket_number');
+        $lastTicketNumber = Ticket::max('number');
         $nextTicketNumber = sprintf('%03d', ($lastTicketNumber + 1));
 
         return view('livewire.pages.ticket.create', [
@@ -56,9 +53,9 @@ class TicketController extends Controller
             'files' => request()->file('files')->store('attached_files'),
         ]));
 
-        session()->flash('message', 'Ticket created successfully.');
+        // session()->flash('message', 'Ticket created successfully.');
 
-        return redirect('/tickets');
+        return redirect('/tickets')->with('success', 'Added new incident! Ticket created successfully.');
     }
 
     /**
@@ -77,7 +74,9 @@ class TicketController extends Controller
      */
     public function edit(Ticket $ticket)
     {
-        //
+        return view('livewire.pages.ticket.edit', [
+            'ticket' => $ticket,
+        ]);
     }
 
     /**
@@ -85,7 +84,21 @@ class TicketController extends Controller
      */
     public function update(Request $request, Ticket $ticket)
     {
-        //
+        // dd('Update method called', $request->all(), $ticket);
+        $validatedData = $this->validateTicket($ticket);
+
+        // * Update the status_id only if it's present in the request
+        if ($request->has('status_id')) {
+            $validatedData['status_id'] = $request->input('status_id');
+        }
+
+        if ($validatedData['files'] ?? false) {
+            $validatedData['files'] = request()->file('files')->store('attached_files');
+        }
+
+        $ticket->update($validatedData);
+
+        return back()->with('success', 'Incident Updated!');
     }
 
     /**
@@ -93,7 +106,9 @@ class TicketController extends Controller
      */
     public function destroy(Ticket $ticket)
     {
-        //
+        $ticket->delete();
+
+        return back()->with('success', 'Post Deleted!');
     }
 
     // *sets the 'user_id' in the $validatedData array to the ID of the currently authenticated user
@@ -110,12 +125,13 @@ class TicketController extends Controller
         }
     }
 
+
     protected function validateTicket(?Ticket $ticket = null): array
     {
         $ticket ??= new Ticket();
 
         return request()->validate(array_merge([
-            'ticket_number' => 'required',
+            'number' => 'required',
             'date_received' => 'required',
             'requested_by' => 'required',
             'client' => 'required',
