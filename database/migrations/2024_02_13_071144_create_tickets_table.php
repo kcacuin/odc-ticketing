@@ -19,12 +19,14 @@ return new class extends Migration
             $table->foreignId('status_id');
             $table->bigInteger('number')->unique()->unsigned();
             $table->date('date_received');
+            $table->string('title');
+            $table->longText('issue');
             $table->string('requested_by');
             $table->string('client');
             $table->string('product');
-            $table->longText('issue');
             $table->string('files')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -7,14 +7,14 @@
 
         <title>{{ config('app.name', 'Odecci Ticketing') }}</title>
 
+        <!-- Import Pikaday styles -->
+        <link href="{{ asset('css/pikaday.css') }}" rel="stylesheet">
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
         <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
-
         <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/datepicker.min.js"></script>
+        @vite(['resources/css/app.css', 'resources/css/pikaday.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
         <div class="flex min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -76,8 +76,9 @@
                 <main class="odc-main-con-height overflow-y-auto">
                     {{ $slot }}
                 </main>
+
             </div>
         </div>
-
+        @stack('scripts')
     </body>
 </html>

@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
+import importCss from 'vite-plugin-import-css';
 
 export default defineConfig({
     plugins: [
@@ -10,5 +11,6 @@ export default defineConfig({
             ],
             refresh: true,
         }),
+        importCss(),
     ],
 });

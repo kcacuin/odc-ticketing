@@ -34,6 +34,7 @@ new class extends Component
                         :href="route('dashboard')"
                         :active="request()->routeIs('dashboard')" wire:navigate>
                         <x-svg-icon
+                            class="scale-90"
                             name="dashboard"
                             :active="request()->routeIs('dashboard')" />
                         <x-nav-link-icon
@@ -45,6 +46,7 @@ new class extends Component
                         :href="route('tickets.index')"
                         :active="request()->routeIs('tickets.index')" wire:navigate>
                         <x-svg-icon
+                            class="scale-90"
                             name="ticket"
                             :active="request()->routeIs('tickets.index')" />
                         <x-nav-link-icon class="flex text-nowrap"

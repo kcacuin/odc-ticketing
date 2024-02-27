@@ -5,11 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\File;
-use Livewire\WithPagination;
 
 class TicketController extends Controller
 {
-    use WithPagination;
 
     public $image;
 
@@ -18,8 +16,9 @@ class TicketController extends Controller
      */
     public function index()
     {
+        $tickets = Ticket::whereNull('deleted_at')->get();
         return view('livewire.pages.ticket.index', [
-            'tickets' => Ticket::latest()->with('user')->paginate(15),
+            'tickets' => $tickets,
         ]);
     }
 
@@ -33,7 +32,7 @@ class TicketController extends Controller
 
         return view('livewire.pages.ticket.create', [
             'nextTicketNumber' => $nextTicketNumber,
-            // 'statuses' => $statuses,
+            'ticket' => $ticket,
         ]);
     }
 
@@ -108,7 +107,7 @@ class TicketController extends Controller
     {
         $ticket->delete();
 
-        return back()->with('success', 'Post Deleted!');
+        return back()->with('success', 'Ticket has been moved to archive.');
     }
 
     // *sets the 'user_id' in the $validatedData array to the ID of the currently authenticated user
@@ -133,10 +132,11 @@ class TicketController extends Controller
         return request()->validate(array_merge([
             'number' => 'required',
             'date_received' => 'required',
+            'title' => 'required',
+            'issue' => 'required',
             'requested_by' => 'required',
             'client' => 'required',
             'product' => 'required',
-            'issue' => 'required',
             'files' => 'required', File::types(['*'])->min(1024)->max(12 * 1024),
         ]));
     }

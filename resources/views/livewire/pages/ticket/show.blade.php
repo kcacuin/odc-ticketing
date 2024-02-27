@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="mr-10 text-left text-xl text-white dark:text-gray-200 leading-3">
-            <p class="text-sm font-bold uppercase">Incident</p>
+            <p class="text-xs font-bold uppercase">Incident</p>
             <p class="font-thin">ODC{{ $ticket->number }}</p>
         </h2>
     </x-slot>
@@ -9,10 +9,10 @@
         <div class="flex justify-between">
             <div class="">
                 <div>
-                    <h1 class="text-3xl text-blue-primary font-semibold">
+                    <h1 class="text-2xl text-blue-primary font-semibold">
                         {!! Illuminate\Support\Str::words($ticket->issue, 5, '...') !!}
                     </h1>
-                    <span class="text-sm text-gray-600">
+                    <span class="text-xs text-gray-600">
                         {{ $ticket->created_at->diffForHumans() }} by {{ $ticket->user->first_name }} {{ $ticket->user->last_name }}
                     </span>
                 </div>
@@ -20,21 +20,22 @@
                     {!! $ticket->issue !!}
                 </div>
                 <div class="mt-12">
-                    <h2 id="comments" class="2xl font-semibold">Comments</h2>
+                    {{-- <h2 id="comments" class="text-sm font-semibold">Comments</h2> --}}
 
                     @auth
                         <form action="{{ route('tickets.comments.store', $ticket) }}" method="POST" class="mt-2">
                             @csrf
 
-                            <textarea name="body" id="body" cols="30" rows="5" class="w-full"></textarea>
-                            <x-primary-button type="submit">Add Comment</x-primary-button>
+                            {{-- * Issue --}}
+                            <x-form.textarea name="body" labelname="Comments" type="text"/>
+                            <x-primary-button type="submit" class="mt-4">Add Comment</x-primary-button>
                         </form>
 
                         <ul class="divide-y mt-4">
                             @foreach ($comments as $comment)
                             <li class="py-4 p-2">
                                 <p>{{ $comment->body }}</p>
-                                <span class="text-sm text-gray-600">
+                                <span class="text-xs text-gray-600">
                                     {{ $comment->created_at->diffForHumans() }} by {{ $comment->user->first_name }} {{ $comment->user->last_name }}
                                 </span>
 
@@ -56,7 +57,7 @@
                     </div>
                 </div>
             </div>
-            <div class="flex flex-col gap-4 text-blue-primary">
+            <div class="flex flex-col gap-4 text-blue-primary text-xs">
                 <div class="flex flex-col border border-slate-300">
                     <div class="p-3 bg-slate-200">
                         <h3>Your request has been submitted</h3>

@@ -21,13 +21,14 @@ class TicketFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'status_id' => $this->faker->numberBetween(1, 5),
             'number' => $this->faker->randomNumber(6),
             'date_received' => $this->faker->date(),
+            'title' => $this->faker->sentence(),
+            'issue' => '<p>' . implode('</p><p>', fake()->paragraphs(3)) . '</p>',
             'requested_by' => $this->faker->name(),
             'client' => $this->faker->company(),
             'product' => $this->faker->word(),
-            'issue' => '<p>' . implode('</p><p>', fake()->paragraphs(3)) . '</p>',
+            'status_id' => $this->faker->numberBetween(1, 5),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];
