@@ -43,8 +43,7 @@ new #[Layout('layouts.guest')] class extends Component
             <x-form.input name="email" labelname="Email" type="email" wire:model='form.email' />
 
             {{-- * Password --}}
-            <x-form.input name="password" labelname="Password" type="password" wire:model='form.password' />
-
+            <x-form.input name="form.password" labelname="Password" type="password" wire:model='form.password'/>
         </div>
 
         <div class="mt-5 flex gap-8 justify-between">

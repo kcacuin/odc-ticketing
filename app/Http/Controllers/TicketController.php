@@ -2,30 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Status;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\File;
 
 class TicketController extends Controller
 {
-
-    public $image;
-
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $tickets = Ticket::whereNull('deleted_at')->get();
-        return view('livewire.pages.ticket.index', [
-            'tickets' => $tickets,
-        ]);
+        // $tickets = Ticket::whereNull('deleted_at')->get();
+        // return view('livewire.pages.ticket.index', [
+        //     'tickets' => $tickets,
+        // ]);
+        return view('livewire.pages.ticket.index');
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Ticket $ticket)
+    public function create(Ticket $ticket, Request $request)
     {
         $lastTicketNumber = Ticket::max('number');
         $nextTicketNumber = sprintf('%03d', ($lastTicketNumber + 1));
@@ -42,7 +42,6 @@ class TicketController extends Controller
     public function store(Request $request)
     {
         $validatedData = $this->validateTicket();
-
         $this->setUserId($validatedData);
 
         // * Set default value of 1 for 'status_id'
@@ -52,7 +51,7 @@ class TicketController extends Controller
             'files' => request()->file('files')->store('attached_files'),
         ]));
 
-        // session()->flash('message', 'Ticket created successfully.');
+        session()->flash('message', 'Ticket created successfully.');
 
         return redirect('/tickets')->with('success', 'Added new incident! Ticket created successfully.');
     }
@@ -97,7 +96,7 @@ class TicketController extends Controller
 
         $ticket->update($validatedData);
 
-        return back()->with('success', 'Incident Updated!');
+        return redirect('/tickets')->with('success', 'Incident Updated!');
     }
 
     /**
@@ -137,7 +136,7 @@ class TicketController extends Controller
             'requested_by' => 'required',
             'client' => 'required',
             'product' => 'required',
-            'files' => 'required', File::types(['*'])->min(1024)->max(12 * 1024),
+            'files' => 'file|max:5120',
         ]));
     }
 }

@@ -22,3 +22,7 @@
     </x-slot>
     @livewire('ticket-list')
 </x-app-layout>
+
+@push('styles')
+<link href="{{ asset('css/pikaday.css') }}" rel="stylesheet">
+@endpush

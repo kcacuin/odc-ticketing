@@ -1,17 +1,19 @@
-{{--
--- Important note:
---
--- This template is based on an example from Tailwind UI, and is used here with permission from Tailwind Labs
--- for educational purposes only. Please do not use this template in your own projects without purchasing a
--- Tailwind UI license, or they’ll have to tighten up the licensing and you’ll ruin the fun for everyone.
---
--- Purchase here: https://tailwindui.com/
---}}
+{{-- @props([
+    'initialValue' => '',
+    'value',
+    'name',
+])
+
+@php
+    $classes = "form-textarea block w-full min-h-60 rounded-md border-slate-400 focus:shadow-sm focus:shadow-odc-blue-400 focus:border-odc-blue-800 transition duration-150 ease-in-out sm:text-sm sm:leading-5";
+    $errorClasses = "form-textarea block w-full min-h-60 rounded-md border-slate-400 focus:shadow-sm focus:shadow-odc-blue-400 focus:border-odc-blue-800 transition duration-150 ease-in-out sm:text-sm sm:leading-5 border-2 border-red-primary focus:border-red-primary"
+@endphp
 
 <div
     class="rounded-md shadow-sm"
     x-data="{
-        value: @entangle($attributes->wire('model')),
+        {{-- value: @entangle($attributes->wire('model')), --}}
+        {{-- value: '{{ $value }}', --}}
         isFocused() { return document.activeElement !== this.$refs.trix },
         setValue() { this.$refs.trix.editor.loadHTML(this.value) },
     }"
@@ -20,6 +22,13 @@
     {{ $attributes->whereDoesntStartWith('wire:model') }}
     wire:ignore
 >
-    <input id="x" type="hidden">
-    <trix-editor x-ref="trix" input="x" class="form-textarea block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5"></trix-editor>
-</div>
+    <input id="x" value="{{ $initialValue }}" name="{{ $name }}" type="hidden">
+    <trix-editor
+        x-ref="trix"
+        value="{{ $initialValue }}"
+        name="{{ $name }}"
+        input="x"
+        @trix-attachment-add="uploadTrixImage($event.attachment)"
+        {!! $attributes->merge(['class' => $classes . ($errors->has($name) ? $errorClasses : ''), 'value' => old($name)]) !!}
+        >{{ nl2br($slot ?? old($name)) }}</trix-editor>
+</div> --}}

@@ -1,6 +1,13 @@
 <div
     x-data="{ value: @entangle($attributes->wire('model')), picker: undefined }"
-    x-init="new Pikaday({ field: $refs.input, format: 'MM/DD/YYYY', onOpen() { this.setDate($refs.input.value) } })"
+    x-init="
+        picker = new Pikaday({
+            field: $refs.input,
+            format: 'MM/DD/YYYY',
+            defaultDate: new Date('{{ now()->format('Y-m-d') }}'),
+            onOpen() { this.setDate($refs.input.value) }
+        })
+    "
     x-on:change="value = $event.target.value"
     class="flex rounded-md shadow-sm"
 >
@@ -14,6 +21,7 @@
         {{ $attributes->whereDoesntStartWith('wire:model') }}
         x-ref="input"
         x-bind:value="value"
+        placeholder="MM/DD/YYYY"
         class="rounded-none rounded-r-md border-slate-300 flex-1 form-input block w-full transition duration-150 ease-in-out sm:text-xs sm:leading-5"
         autocomplete="off"
     />

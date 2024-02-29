@@ -2,24 +2,22 @@
 
 namespace App\Livewire;
 
+use App\Livewire\DataTable\WithPerPagePagination;
+use App\Livewire\DataTable\WithBulkActions;
+use App\Livewire\DataTable\WithCachedRows;
+use App\Livewire\DataTable\WithSorting;
 use App\Models\Status;
 use App\Models\Ticket;
 use Carbon\Carbon;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 class TicketList extends Component
 {
-    use WithPagination;
+    use WithPerPagePagination, WithBulkActions, WithCachedRows, WithSorting;
 
-    // public $search = '';
-    // public $client = '';
-
-    public $sortField;
-    public $sortDirection = 'asc';
-    public $queryString = ['sortField', 'sortDirection'];
+    public $id;
+    public $showDeleteModal = false;
     public $showFilters = false;
-
     public $filters = [
         'search' => '',
         'status' => '',
@@ -27,43 +25,56 @@ class TicketList extends Component
         'date-max' => null,
     ];
 
-    public function sortBy($field)
+    public $queryString = ['sorts'];
+
+
+    public function updatedFilters()
     {
-        if ($this->sortField === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            // If sorting by a different field, default to ascending order
-            $this->sortDirection = 'asc';
-        }
-        $this->sortField = $field;
+        $this->resetPage();
+    }
+    public function deleteSelected()
+    {
+        $deleteCount = $this->selectedRowsQuery->count();
+
+        $this->selectedRowsQuery->delete();
+
+        $this->showDeleteModal = false;
+
+        $this->notify('You\'ve deleted '.$deleteCount.' tickets');
+    }
+
+    public function toggleShowFilters()
+    {
+        $this->useCachedRows();
+
+        $this->showFilters = ! $this->showFilters;
     }
 
     public function resetFilters()
     {
         $this->reset('filters');
     }
-
-    public function updatedFilters()
-    {
-        $this->resetPage();
-    }
-
     // public function render()
     // {
     //     $sortField = $this->sortField ?: 'date_received';
 
     //     $query = Ticket::query();
 
+    //     $query->when($this->filters['status'], fn($query, $status) => $query->where('status_id', $status));
+
+    //     $query->when($this->filters['date-min'], function ($query, $date) {
+    //         $query->where('date_received', '>=', Carbon::parse($date));
+    //     });
+
+    //     $query->when($this->filters['date-max'], function ($query, $date) {
+    //         $query->where('date_received', '<=', Carbon::parse($date));
+    //     });
+
     //     $query->filter([
     //         'search' => $this->filters['search'] ?? '',
-    //         // 'statuses' => $this->filters['status'] ?? '',
+    //         // 'status' => $this->filters['status'] ?? '',
     //         // 'client' => $this->filters['client'] ?? '',
     //     ]);
-
-    //     $query->when($this->filters['status'], fn($query, $status) => $query->where('status_id', $status));
-    //     $query->when($this->filters['date-min'], fn($query, $date) => $query->where('data_received', '>=', Carbon::parse($date)));
-    //     $query->when($this->filters['date-max'], fn($query, $date) => $query->where('data_received', '<=', Carbon::parse($date)));
-
 
     //     $tickets = $query->orderBy($sortField, $this->sortDirection)->paginate(15);
 
@@ -72,44 +83,34 @@ class TicketList extends Component
     //         'tickets' => $tickets,
     //     ]);
     // }
-    public function render()
+
+    public function getRowsQueryProperty()
     {
-        $sortField = $this->sortField ?: 'date_received';
-
-        $query = Ticket::query();
-
-        $query->when($this->filters['status'], fn($query, $status) => $query->where('status_id', $status));
-
-        $query->when($this->filters['date-min'], function ($query, $date) {
-            $query->where('date_received', '>=', Carbon::parse($date));
-        });
-
-        $query->when($this->filters['date-max'], function ($query, $date) {
-            $query->where('date_received', '<=', Carbon::parse($date));
-        });
-
+        $query = Ticket::query()
+            ->when($this->filters['status'], fn($query, $status) => $query->where('status_id', $status))
+            ->when($this->filters['date-min'], fn($query, $date) => $query->where('date_received', '>=', Carbon::parse($date)))
+            ->when($this->filters['date-max'], fn($query, $date) => $query->where('date_received', '<=', Carbon::parse($date)));
         $query->filter([
             'search' => $this->filters['search'] ?? '',
             // 'status' => $this->filters['status'] ?? '',
             // 'client' => $this->filters['client'] ?? '',
         ]);
 
-        $tickets = $query->orderBy($sortField, $this->sortDirection)->paginate(15);
-
-        return view('livewire.ticket-list', [
-            'statuses' => Status::all(),
-            'tickets' => $tickets,
-        ]);
+        return $this->applySorting($query);
     }
 
-    // public function getRowsQueryProperty()
-    // {
-    //     $query = Ticket::query()
-    //         ->when($this->filters['status'], fn($query, $status) => $query->where('status', $status))
-    //         ->when($this->filters['date-min'], fn($query, $date) => $query->where('date', '>=', Carbon::parse($date)))
-    //         ->when($this->filters['date-max'], fn($query, $date) => $query->where('date', '<=', Carbon::parse($date)))
-    //         ->when($this->filters['search'], fn($query, $search) => $query->where('title', 'like', '%'.$search.'%'));
+    public function getRowsProperty()
+    {
+        return $this->cache(function () {
+            return $this->applyPagination($this->rowsQuery);
+        });
+    }
 
-    //     return $this->applySorting($query);
-    // }
+    public function render()
+    {
+        return view('livewire.ticket-list', [
+            'statuses' => Status::all(),
+            'tickets' => $this->rows,
+        ]);
+    }
 }

@@ -7,12 +7,13 @@
 
         <title>{{ config('app.name', 'Odecci Ticketing') }}</title>
 
-        <!-- Import Pikaday styles -->
-        <link href="{{ asset('css/pikaday.css') }}" rel="stylesheet">
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
         <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@1.2.3/dist/trix.css">
+
+        @stack('styles')
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/css/pikaday.css', 'resources/js/app.js'])
     </head>
@@ -23,7 +24,7 @@
             <!-- Page Heading -->
             <div class="flex flex-col w-full">
                 @if (isset($header))
-                    <header class="relative z-[900] bg-gradient-to-br from-blue-primary to-blue-secondary dark:bg-gray-800 shadow">
+                    <header class="relative z-[1] bg-gradient-to-br from-blue-primary to-blue-secondary dark:bg-gray-800 shadow">
                         <div class="relative odc-header-overlay flex items-center justify-between h-20 w-full mx-auto py-6 px-4 sm:px-6 lg:px-8">
                             {{ $header }}
                             <div>
@@ -79,6 +80,8 @@
 
             </div>
         </div>
-        @stack('scripts')
+        <livewire:scripts />
+        <script src="https://unpkg.com/trix@1.2.3/dist/trix.js"></script>
+        {{-- @stack('scripts') --}}
     </body>
 </html>

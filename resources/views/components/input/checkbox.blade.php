@@ -1,16 +1,6 @@
-{{--
--- Important note:
---
--- This template is based on an example from Tailwind UI, and is used here with permission from Tailwind Labs
--- for educational purposes only. Please do not use this template in your own projects without purchasing a
--- Tailwind UI license, or they’ll have to tighten up the licensing and you’ll ruin the fun for everyone.
---
--- Purchase here: https://tailwindui.com/
---}}
-
 <div class="flex rounded-md shadow-sm">
     <input {{ $attributes }}
         type="checkbox"
-        class="form-checkbox border-cool-gray-300 block transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+        class="w-4 h-4 text-odc-blue-400 bg-gray-100 border-gray-300 rounded focus:ring-odc-blue-400 dark:focus:ring-odc-blue-400 dark:ring-offset-odc-blue-400 dark:focus:ring-offset-odc-blue-400 focus:ring-2 dark:bg-odc-blue-400 dark:border-odc-blue-400"
     />
 </div>

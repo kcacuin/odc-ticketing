@@ -42,7 +42,7 @@ table {
 thead {
     position: sticky;
     top: 0;
-    z-index: 99;
+    z-index: 1;
 }
 
 thead {
@@ -74,7 +74,7 @@ thead {
     content: '';
     position: absolute;
     z-index: -1;
-    width: 50%;
+    width: calc(50% - 0.5em);
     height: 100%;
     background: url('../../public/storage/img/bg-2.png') center center/cover no-repeat content-box;
     pointer-events: none;
@@ -280,4 +280,26 @@ opacity: 1;
     border-color: transparent transparent #94a3b8 transparent;
     left: 50%;
     transform: translate(-50%, 100%) rotate(180deg);
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    position: absolute;
+    opacity: 0;
+    display: block;
+    width: 100%;
+    left: 0;
+    height: 100%;
+    border-width: thin;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
 }

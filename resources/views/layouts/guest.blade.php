@@ -18,7 +18,7 @@
         <main class="relative">
             <div class="odc-bg overflow-hidden min-h-screen flex flex-row sm:justify-center items-center sm:pt-0 bg-gray-100 dark:bg-gray-900">
                 <div
-                    class="w-3/6 h-[100vh] sm:max-w-full relative grid grid-rows-3 gap-0 justify-center z-20 pointer-events-none">
+                    class="w-1/2 h-[100vh] sm:max-w-full relative grid grid-rows-3 gap-0 justify-center z-20 pointer-events-none">
                     <img
                         class="middle scale-[.7]"
                         src="{{ asset('storage/img/logo-full.svg')}}" alt="odc-logo-full">
@@ -30,7 +30,7 @@
                     </div>
                 </div>
 
-                <div class="odc-bg-overlay w-3/6 h-[100vh] sm:max-w-full flex sm:justify-center items-center px-6 sm:px-20 py-4 bg-gradient-to-br from-blue-primary to-blue-secondary dark:bg-gray-800 shadow-md overflow-hidden overflow-y-auto">
+                <div class="odc-bg-overlay w-1/2 h-[100vh] sm:w-1/2 flex mx-auto justify-center items-center px-6 sm:px-6 py-4 bg-gradient-to-br from-blue-primary to-blue-secondary dark:bg-gray-800 shadow-md overflow-hidden overflow-y-auto">
                     {{ $slot }}
                 </div>
             </div>

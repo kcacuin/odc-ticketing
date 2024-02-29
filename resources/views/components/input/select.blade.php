@@ -14,7 +14,7 @@
 ])
 
 <div class="flex">
-  <select {{ $attributes->merge(['class' => 'form-select block w-full pl-3 pr-10 py-2 text-xs leading-6 border-slate-300 rounded-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-xs sm:leading-5' . ($trailingAddOn ? ' rounded-r-none' : '')]) }}>
+  <select {{ $attributes->merge(['class' => 'form-select block w-full pl-3 pr-10 py-2 text-xs leading-6 border-slate-300 rounded-md focus:outline-none focus:border-odc-blue-600 sm:text-xs sm:leading-5' . ($trailingAddOn ? ' rounded-r-none' : '')]) }}>
     @if ($placeholder)
         <option disabled value="">{{ $placeholder }}</option>
     @endif

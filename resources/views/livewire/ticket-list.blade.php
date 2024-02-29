@@ -4,32 +4,61 @@
             {{-- @if (request('status'))
                 <input type="hidden" name="status" value="{{ request('status') }}">
             @endif --}}
-            <div class="max-w-2xl mb-4">
-                <div class="flex">
-                    <input
-                        type="text"
-                        wire:model.live.debounce.250ms="filters.search"
-                        class="block py-2.5 w-full z-20 text-xs text-gray-900 rounded-s shadow border-white border-e border-e-gray-light focus:ring-odc-blue-400 dark:bg-gray-700 dark:border-s-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-odc-blue-400"
-                        placeholder="Find incident..."
-                        {{-- value="{{ request('search') }}" --}}
-                    />
-                    <button wire:click.prevent="$toggle('showFilters')" class="flex items-center gap-2 bg-white py-2.5 px-5 text-xs whitespace-nowrap text-blue-secondary rounded-e-md rounded-l-none shadow hover:bg-gray-100">
-                        @if ($showFilters)
-                            Hide
-                        @endif
-                        Advance Search...
-                    </button>
-                </div>
+            {{-- </form> --}}
+        <div class="max-w-4xl mb-4 flex space-x-4">
+            <div class="flex w-3/4">
+                <input
+                    type="text"
+                    wire:model.live.debounce.250ms="filters.search"
+                    class="block py-2.5 w-full z-20 text-xs text-gray-900 rounded-s shadow border-slate-300 border-e border-e-gray-light focus:ring-odc-blue-400 dark:bg-gray-700 dark:border-s-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-odc-blue-400"
+                    placeholder="Find incident..."
+                    {{-- value="{{ request('search') }}" --}}
+                />
+                <button wire:click.prevent="toggleShowFilters" class="flex items-center gap-2 bg-white  py-2.5 px-5 text-xs whitespace-nowrap text-blue-secondary rounded-e-md border border-slate-300 rounded-l-none shadow hover:bg-gray-100">
+                    @if ($showFilters)
+                        Hide
+                    @endif
+                    Advance Search...
+                </button>
             </div>
-        {{-- </form> --}}
+            <div class="space-x-2 flex items-center">
+                <x-input.group borderless paddingless for="perPage" label="Per Page">
+                    <x-input.select wire:model.lazy="perPage" id="perPage">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    </x-input.select>
+                </x-input.group>
+
+                <x-dropdown.dropdown label="Bulk Actions">
+                    <x-dropdown.item type="button" wire:click="exportSelected" class="group flex items-center px-4 py-2 space-x-2 text-xs text-blue-secondary hover:text-white
+                    hover:bg-gradient-to-br hover:from-blue-primary hover:to-blue-secondary
+                    dark:hover:bg-gray-600 dark:hover:text-white">
+                        <x-svg-icon class="scale-90" name="download"/>
+                        <span>Export</span>
+                    </x-dropdown.item>
+
+                    <x-dropdown.item type="button" wire:click="$toggle('showDeleteModal')" class="group flex items-center px-4 py-2 space-x-2 text-xs text-blue-secondary hover:text-white
+                    hover:bg-gradient-to-br hover:from-blue-primary hover:to-blue-secondary
+                    dark:hover:bg-gray-600 dark:hover:text-white">
+                        <x-svg-icon class="scale-90" name="trash"/>
+                        <span>Delete</span>
+                    </x-dropdown.item>
+                </x-dropdown.dropdown>
+
+                {{-- <livewire:import-transactions /> --}}
+            </div>
+        </div>
+
+        {{-- * Filters --}}
         <div>
             @if ($showFilters)
                 <div class="bg-white p-4 rounded shadow flex relative mb-4">
                     <div class="w-1/2 pr-2 space-y-4">
-                        <x-input.group inline for="filter-date-min" label="Minimum Date">
+                        <x-input.group inline for="filter-date-min" label="Start Date">
                             <x-input.date wire:model.live.blur='filters.date-min' id="filter-date-min" placeholder="MM/DD/YYYY"/>
                         </x-input.group>
-                        <x-input.group inline for="filter-date-max" label="Maximum Date">
+                        <x-input.group inline for="filter-date-max" label="End Date">
                             <x-input.date wire:model.live.blur='filters.date-max' id="filter-date-max" placeholder="MM/DD/YYYY"/>
                         </x-input.group>
                     </div>
@@ -53,36 +82,34 @@
                 <x-slot name="head">
                     <x-table.heading class="px-4 py-1.5 text-center">
                         <div class="flex items-center">
-                            <input id="checkbox-all-search" type="checkbox" class="w-4 h-4 text-odc-blue-400 bg-gray-100 border-gray-300 rounded focus:ring-odc-blue-400 dark:focus:ring-odc-blue-400 dark:ring-offset-odc-blue-400 dark:focus:ring-offset-odc-blue-400 focus:ring-2 dark:bg-odc-blue-400 dark:border-odc-blue-400">
-                            {{-- <input wire:model='selectPage' id="checkbox-all-search" type="checkbox" class="w-4 h-4 text-odc-blue-400 bg-gray-100 border-gray-300 rounded focus:ring-odc-blue-400 dark:focus:ring-odc-blue-400 dark:ring-offset-odc-blue-400 dark:focus:ring-offset-odc-blue-400 focus:ring-2 dark:bg-odc-blue-400 dark:border-odc-blue-400"> --}}
-                            <label for="checkbox-all-search" class="sr-only">checkbox</label>
+                            <x-input.checkbox wire:model="selectPage" />
                         </div>
                     </x-table.heading>
-                    <x-table.heading class="px-2 py-1.5" sortable wire:click="sortBy('date_received')" :direction="$sortField === 'date_received' ? $sortDirection : null">
+                    <x-table.heading class="px-2 py-1.5" sortable multi-column wire:click="sortBy('date_received')" :direction="$sorts['date_received'] ?? null">
                         <div class="flex flex-col">
                             <span>Ticket No. /</span>
                             <span class="whitespace-nowrap">Date Received</span>
                         </div>
                     </x-table.heading>
-                    <x-table.heading class="py-1.5" sortable wire:click.prevent.live="sortBy('title')" :direction="$sortField === 'title' ? $sortDirection : null">
+                    <x-table.heading class="py-1.5" sortable multi-column wire:click.prevent.live="sortBy('title')" :direction="$sorts['title'] ?? null">
                         <div class="flex flex-col">
                             <span>Issue Title /</span>
                             <span>Concern</span>
                         </div>
                     </x-table.heading>
-                    <x-table.heading class="py-1.5" sortable wire:click.prevent.live="sortBy('requested_by')" :direction="$sortField === 'requested_by' ? $sortDirection : null">
+                    <x-table.heading class="py-1.5" sortable multi-column wire:click.prevent.live="sortBy('requested_by')" :direction="$sorts['requested_by'] ?? null">
                         <div class="flex flex-col">
                             <span>Requested By /</span>
                             <span>Client</span>
                         </div>
                     </x-table.heading>
-                    <x-table.heading class="px-2 py-1.5" sortable wire:click.prevent.live="sortBy('product')" :direction="$sortField === 'product' ? $sortDirection : null">
+                    <x-table.heading class="px-2 py-1.5" sortable multi-column wire:click.prevent.live="sortBy('product')" :direction="$sorts['product'] ?? null">
                         Product
                     </x-table.heading>
-                    <x-table.heading class="px-2 py-1.5 text-center" sortable wire:click.prevent.live="sortBy('status_id')" :direction="$sortField === 'status_id' ? $sortDirection : null">
+                    <x-table.heading class="px-2 py-1.5 text-center" sortable multi-column wire:click.prevent.live="sortBy('status_id')" :direction="$sorts['status_id'] ?? null">
                         Status
                     </x-table.heading>
-                    <x-table.heading class="px-2 py-1.5" sortable wire:click.prevent.live="sortBy('user_id')" :direction="$sortField === 'user_id' ? $sortDirection : null">
+                    <x-table.heading class="px-2 py-1.5" sortable multi-column wire:click.prevent.live="sortBy('user_id')" :direction="$sorts['user_id'] ?? null">
                         Supported By
                     </x-table.heading>
                     <x-table.heading class="px-4 py-1.5 text-center">
@@ -90,13 +117,25 @@
                     </x-table.heading>
                 </x-slot>
                 <x-slot name="body">
+                    @if ($selectPage)
+                    <x-table.row class="bg-white" wire:key="row-message">
+                        <x-table.cell colspan="8">
+                            @unless ($selectAll)
+                            <div>
+                                <span>You have selected <strong>{{ $tickets->count() }}</strong> transactions, do you want to select all <strong>{{ $tickets->total() }}</strong>?</span>
+                                <x-button.link wire:click="selectAll" class="ml-1 text-blue-600">Select All</x-button.link>
+                            </div>
+                            @else
+                            <span>You are currently selecting all <strong>{{ $tickets->total() }}</strong> transactions.</span>
+                            @endif
+                        </x-table.cell>
+                    </x-table.row>
+                    @endif
                     @forelse ($tickets as $ticket)
                     <x-table.row wire:key="{{ $ticket->id }}" wire:loading.class.delay='opacity-35 animate-pulse'>
                         <x-table.cell class="w-4 px-4 py-1">
                             <div class="flex items-center">
-                                <input id="{{ $ticket->id }}" value="{{ $ticket->id }}" type="checkbox" class="w-4 h-4 text-odc-blue-400 bg-gray-100 border-gray-300 rounded focus:ring-odc-blue-400 dark:focus:ring-odc-blue-400 dark:ring-offset-odc-blue-400 dark:focus:ring-offset-odc-blue-400 focus:ring-2 dark:bg-odc-blue-400 dark:border-odc-blue-400">
-                                {{-- <input wire:model='selectedTicket' id="{{ $ticket->id }}" value="{{ $ticket->id }}" type="checkbox" class="w-4 h-4 text-odc-blue-400 bg-gray-100 border-gray-300 rounded focus:ring-odc-blue-400 dark:focus:ring-odc-blue-400 dark:ring-offset-odc-blue-400 dark:focus:ring-offset-odc-blue-400 focus:ring-2 dark:bg-odc-blue-400 dark:border-odc-blue-400"> --}}
-                                <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
+                                <x-input.checkbox wire:model="selected" value="{{ $ticket->id }}" />
                             </div>
                         </x-table.cell>
                         <x-table.cell class="px-4 py-1 text-gray-500 whitespace-nowrap dark:text-white">
@@ -112,7 +151,7 @@
                         <x-table.cell>
                             <div class="flex flex-col">
                                 <span class="font-bold text-odc-blue-800">{{ $ticket->title }}</span>
-                                <span>{!! Illuminate\Support\Str::words($ticket->issue, 8, '...') !!}</span>
+                                <div>{!! clean(Illuminate\Support\Str::words($ticket->issue, 8, '...')) !!}</div>
                             </div>
                         </x-table.cell>
                         <x-table.cell>
@@ -209,8 +248,6 @@
                         </x-table.cell>
                     </x-table.row>
                     @empty
-                </x-slot>
-                <x-slot name="body">
                     <x-table.row wire:loading.class.delay='opacity-35 animate-pulse'>
                         <x-table.cell class="w-4 px-4 py-4 opacity-75 animate-pulse" colspan="8">
                             <div class="flex items-center justify-center gap-1">
@@ -232,7 +269,25 @@
             <div class="mr-5 flex flex-col items-center my-2">
                 {{ $tickets->links('livewire::tailwind') }}
         </div>
+
     </div>
+
+    <!-- Delete Tickets Modal -->
+    <form wire:submit.prevent="deleteSelected">
+        <x-modal.confirmation wire:model.defer="showDeleteModal">
+            <x-slot name="title">Delete Ticket</x-slot>
+
+            <x-slot name="content">
+                <div class="py-8 text-cool-gray-700">Are you sure you? This action is irreversible.</div>
+            </x-slot>
+
+            <x-slot name="footer">
+                <x-button.secondary wire:click="$set('showDeleteModal', false)">Cancel</x-button.secondary>
+
+                <x-button.primary type="submit">Delete</x-button.primary>
+            </x-slot>
+        </x-modal.confirmation>
+    </form>
 </div>
 
 

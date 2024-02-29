@@ -105,11 +105,11 @@ new #[Layout('layouts.guest')] class extends Component
             x-on:livewire-upload-finish="isUploading = false; progress: 5"
             x-on:livewire-upload-error="isUploading = false"
             x-on:livewire-upload-progress="progress = $event.detail.progress"
-            class="flex items-center gap-4"
+            class="flex items-center gap-4 w-96"
             >
-            <div x-data="{ fileName: '' }" class="bg-transparent mt-1 w-full relative rounded-md">
+            <div x-data="{ fileName: '' }" class="bg-transparent h-screen max-h-48 w-full max-w-48 relative rounded-md">
                 <div x-ref="dnd"
-                    class="relative overflow-clip min-h-44 p-6 text-white font-light border-2 border-white border-dashed rounded-md cursor-pointer">
+                    class="relative overflow-clip h-full p-6 text-white font-light border-2 border-white border-dashed rounded-md cursor-pointer">
                     <input accept=".jpg, .jpeg, .png, .webp" wire:model='image' type="file" name="image" x-ref="file" @change="fileName = $refs.file.files[0].name"
                         class="absolute inset-0 z-50 w-full h-full p-0 m-0 outline-none opacity-0 cursor-pointer"
                         @dragover="$refs.dnd.classList.add('bg-odc-blue-700')"
@@ -148,9 +148,9 @@ new #[Layout('layouts.guest')] class extends Component
             </div>
             <div class="relative">
                 {{-- * First Name --}}
-                <x-form.input name="first_name" labelname="First Name" type="text" wire:model='first_name'/>
+                <x-form.input name="first_name" labelname="First Name" type="text" wire:model='first_name' class="w-full"/>
                 {{-- * Last Name --}}
-                <x-form.input name="last_name" labelname="Last Name" type="text" wire:model='last_name'/>
+                <x-form.input name="last_name" labelname="Last Name" type="text" wire:model='last_name' class="w-full"/>
             </div>
         </div>
 
