@@ -89,13 +89,15 @@
                                         style="display: none;"
                                         class="absolute z-10 left-12 -bottom-6 rounded-md"
                                     >
+                                        {{-- * Add edit button here --}}
+
                                         <form action="{{ route('tickets.notes.destroy', ['ticket' => $ticket, 'note' => $note])}}"
                                             method="POST" class="mt-2">
                                             @csrf
                                             @method('DELETE')
 
                                             <x-danger-button type="submit">
-                                                <x-svg-icon class="scale-50" name="trash"/>
+                                                <x-svg-icon class="scale-75 mr-2" name="trash"/>
                                                 Delete
                                             </x-danger-button>
                                         </form>
