@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
+use App\Rules\AllowedEmailDomain;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -21,6 +22,7 @@ new #[Layout('layouts.guest')] class extends Component
     public $image;
     public string $username = '';
     public string $email = '';
+    public $text;
     public string $password = '';
     public string $password_confirmation = '';
     public int $strengthScore = 1;
@@ -40,21 +42,24 @@ new #[Layout('layouts.guest')] class extends Component
         $validated = $this->validate([
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
-            'image' => ['required', 'image', 'max:5120'],
+            'image' => ['nullable', 'image', 'max:5120'],
             'username' => ['required', 'string', 'min:3', 'max:255', 'unique:users,username'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email', new AllowedEmailDomain('odecci.com')],
             'password' => ['required', 'string', 'min:7', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
-        $validated['image'] = $validated['image']->store('images');
+        if ($this->image) {
+            $validated['image'] = $this->image->store('images');
+        }
 
         event(new Registered($user = User::create($validated)));
 
         Auth::login($user);
 
-        $this->redirect(Route('verification.notice'), navigate: true);
-        // $this->redirect(RouteServiceProvider::HOME, navigate: true);
+        Session::flash('success', 'Registration successful!');
+
+        $this->redirect(Route('verification.notice'));
     }
 
     public function generatePassword(): void

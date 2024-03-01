@@ -34,7 +34,9 @@
                     {{ $slot }}
                 </div>
             </div>
+
             <div class="odc-bg-logo"></div>
+
         </main>
     @livewireScripts
     </body>
