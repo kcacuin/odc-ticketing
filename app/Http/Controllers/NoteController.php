@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Comment;
+use App\Models\Note;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 
-class CommentController extends Controller
+class NoteController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -33,15 +33,15 @@ class CommentController extends Controller
             'body' => ['required', 'string', 'max:255']
         ]);
 
-        $ticket->comments()->create([...$data, 'user_id' => $request->user()->id]);
+        $ticket->notes()->create([...$data, 'user_id' => $request->user()->id]);
 
-        return to_route('tickets.show', $ticket)->withFragment('comments');
+        return to_route('tickets.show', $ticket)->withFragment('notes');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Comment $comment)
+    public function show(Note $note)
     {
         //
     }
@@ -49,15 +49,15 @@ class CommentController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Comment $comment)
+    public function edit(Note $note)
     {
-        //
+
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Comment $comment)
+    public function update(Request $request, Note $note)
     {
         //
     }
@@ -65,12 +65,12 @@ class CommentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Ticket $ticket, Comment $comment)
+    public function destroy(Ticket $ticket, Note $note)
     {
-        // $this->authorize('delete', $comment);
+        // $this->authorize('delete', $note);
 
-        $comment->delete();
+        $note->delete();
 
-        return to_route('tickets.show', $ticket)->withFragment('comments');
+        return to_route('tickets.show', $ticket)->withFragment('notes');
     }
 }

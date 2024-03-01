@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\CommentController;
+use App\Http\Controllers\NoteController;
 use App\Http\Controllers\TicketController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -30,7 +30,7 @@ require __DIR__.'/auth.php';
 
 Route::patch('/tickets/{ticket}', [TicketController::class, 'update'])->name('tickets.update');
 Route::resource('tickets', TicketController::class);
-Route::middleware('auth')->resource('tickets.comments', CommentController::class);
+Route::middleware('auth')->resource('tickets.notes', NoteController::class);
 
 
 Route::post('/attachments', function () {

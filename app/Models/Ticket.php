@@ -77,9 +77,9 @@ class Ticket extends Model
         return $this->belongsTo(Status::class);
     }
 
-    public function comments(): HasMany
+    public function notes(): HasMany
     {
-        return $this->hasMany(Comment::class);
+        return $this->hasMany(Note::class);
     }
 
 }

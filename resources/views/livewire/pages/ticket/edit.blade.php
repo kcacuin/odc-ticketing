@@ -25,14 +25,6 @@
                                     @php
                                         $statuses = \App\Models\Status::all();
                                     @endphp
-
-                                    {{-- @foreach ($statuses as $status)
-                                        <option
-                                            value="{{ old('status_id') == $status->id ? 'selected' : '' }}"
-                                            class="py-4"
-                                        >{{ ucwords($status->name) }}</option>
-                                    @endforeach --}}
-
                                     @foreach ($statuses as $status)
                                         <option
                                             value="{{ $status->id }}"

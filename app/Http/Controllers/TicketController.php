@@ -63,7 +63,7 @@ class TicketController extends Controller
     {
         return view('livewire.pages.ticket.show', [
             'ticket' => $ticket,
-            'comments' => $ticket->comments()->latest()->with('user')->paginate(10),
+            'notes' => $ticket->notes()->latest()->with('user')->paginate(10),
         ]);
     }
 

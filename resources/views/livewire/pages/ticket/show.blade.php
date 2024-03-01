@@ -34,15 +34,15 @@
                         <h3 class="text-lg font-bold">Notes</h3>
                     </div>
                     <ul class="divide-y mt-2 divide-slate-200">
-                        @foreach ($comments as $comment)
+                        @foreach ($notes as $note)
                         <li class="py-4 p-2">
                             <div class="px-3 py-2 rounded-md bg-slate-100">
-                                <p class="text-base font-bold">{{ $comment->user->first_name }} {{ $comment->user->last_name }}</p>
-                                <p>{!! clean($comment->body) !!}</p>
+                                <p class="text-base font-bold">{{ $note->user->first_name }} {{ $note->user->last_name }}</p>
+                                <p>{!! clean($note->body) !!}</p>
                             </div>
                             <div class="px-3 flex items-center justify-between">
                                 <span class="text-xs text-gray-600">
-                                    {{ $comment->created_at->diffForHumans() }}
+                                    {{ $note->created_at->diffForHumans() }}
                                 </span>
                                 <div
                                     x-data="{
@@ -89,12 +89,12 @@
                                         style="display: none;"
                                         class="absolute z-10 left-12 -bottom-6 rounded-md"
                                     >
-                                        <form action="{{ route('tickets.comments.destroy', ['ticket' => $ticket, 'comment' => $comment])}}"
+                                        <form action="{{ route('tickets.notes.destroy', ['ticket' => $ticket, 'note' => $note])}}"
                                             method="POST" class="mt-2">
                                             @csrf
                                             @method('DELETE')
 
-                                            <x-danger-button wire:click='refresh' type="submit">
+                                            <x-danger-button type="submit">
                                                 <x-svg-icon class="scale-50" name="trash"/>
                                                 Delete
                                             </x-danger-button>
@@ -103,12 +103,12 @@
                                 </div>
                             </div>
 
-                            {{-- @can('delete', $comment)
+                            {{-- @can('delete', $note)
                             @endcan --}}
                         </li>
                         @endforeach
                     </ul>
-                    <form action="{{ route('tickets.comments.store', $ticket) }}" method="POST" class="mt-2">
+                    <form action="{{ route('tickets.notes.store', $ticket) }}" method="POST" class="mt-2">
                         @csrf
                         {{-- * Add Notes --}}
                         <div class="relative">
@@ -154,7 +154,7 @@
                     @endauth
 
                     <div class="mt-2">
-                        {{ $comments->fragment('comments')->links() }}
+                        {{ $notes->fragment('notes')->links() }}
                     </div>
                 </div>
             </div>
