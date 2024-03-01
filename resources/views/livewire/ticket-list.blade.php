@@ -30,7 +30,12 @@
                     </x-input.select>
                 </x-input.group>
 
-                <x-dropdown.dropdown label="Bulk Actions">
+                {{--
+                    TODO:
+                        Phase 2 - Bulk Actions: Export to CSV and Bulk Delete
+                    TODO
+                --}}
+                {{-- <x-dropdown.dropdown label="Bulk Actions">
                     <x-dropdown.item type="button" wire:click="exportSelected" class="group flex items-center px-4 py-2 space-x-2 text-xs text-blue-secondary hover:text-white
                     hover:bg-gradient-to-br hover:from-blue-primary hover:to-blue-secondary
                     dark:hover:bg-gray-600 dark:hover:text-white">
@@ -44,22 +49,23 @@
                         <x-svg-icon class="scale-90" name="trash"/>
                         <span>Delete</span>
                     </x-dropdown.item>
-                </x-dropdown.dropdown>
+                </x-dropdown.dropdown> --}}
 
                 {{-- <livewire:import-transactions /> --}}
             </div>
         </div>
 
         {{-- * Filters --}}
-        <div>
+
+        <div class="h-auto bg transition-[height] duration-1000 ease-in-out">
             @if ($showFilters)
                 <div class="bg-white p-4 rounded shadow flex relative mb-4">
                     <div class="w-1/2 pr-2 space-y-4">
                         <x-input.group inline for="filter-date-min" label="Start Date">
-                            <x-input.date wire:model.live.blur='filters.date-min' id="filter-date-min" placeholder="MM/DD/YYYY"/>
+                            <x-input.date name='filters.date-min' id="filter-date-min" placeholder="MM/DD/YYYY"/>
                         </x-input.group>
                         <x-input.group inline for="filter-date-max" label="End Date">
-                            <x-input.date wire:model.live.blur='filters.date-max' id="filter-date-max" placeholder="MM/DD/YYYY"/>
+                            <x-input.date name='filters.date-max' id="filter-date-max" placeholder="MM/DD/YYYY"/>
                         </x-input.group>
                     </div>
                     <div class="w-1/2 pr-2 space-y-4">
