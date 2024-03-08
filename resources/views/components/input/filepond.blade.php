@@ -1,3 +1,7 @@
+@props([
+    'name',
+])
+
 <div
     wire:ignore
     x-data
@@ -6,16 +10,22 @@
         FilePond.setOptions({
             allowMultiple: {{ isset($attributes['multiple']) ? 'true' : 'false' }},
             server: {
-                process: (fieldName, file, metadata, load, error, progress, abort, transfer, options) => {
-                    @this.upload('{{ $attributes['wire:model'] }}', file, load, error, progress)
+                process: '/tmp-upload',
+                revert: '/tmp-delete',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
-                revert: (filename, load) => {
-                    @this.removeUpload('{{ $attributes['wire:model'] }}', filename, load)
-                },
+                {{-- * START HERE --}}
+                {{-- load: '{{ route("tmp-load", ["folder", "file_name"]) }}', --}}
             },
         });
         FilePond.create($refs.input);
+        const elementToRemove = document.querySelector('.filepond--credits');
+        if (elementToRemove) {
+            elementToRemove.remove();
+        }
     "
 >
-    <input type="file" x-ref="input">
+    <input type="file" id="{{ $name }}" name="{{ $name }}" x-ref="input">
 </div>
+

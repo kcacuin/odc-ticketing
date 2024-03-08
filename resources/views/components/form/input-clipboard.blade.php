@@ -6,6 +6,7 @@
     'wireModel' => '',
     'type' => '',
     'labelname',
+    'xModel'
 ])
 
 @php
@@ -23,6 +24,7 @@
                 name="{{ $name }}"
                 id="{{ $name }}"
                 placeholder="placeholder"
+                x-model="{{ $xModel }}"
                 {{ $attributes(['value' => $value ?? old($name)]) }}
             >
             <x-form.error name="{{ $name }}" />

@@ -37,8 +37,14 @@ new #[Layout('layouts.guest')] class extends Component
 }; ?>
 
 <div class="mx-28">
-    <div class="mb-4 text-sm text-white dark:text-gray-400">
-        {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
+    <div class="text-sm mb-5 text-white dark:text-gray-400">
+        <div class="flex flex-col items-center">
+            <x-odc-support-app-logo />
+            <h4 class="my-6 text-lg font-semibold uppercase tracking-widest text-white">Verification</h4>
+            <span class="text-center">
+                {{ __('Please wait, for the admin is verifying your registration credentials. Thank you.') }}
+            </span>
+        </div>
     </div>
 
     <div class="mt-4 flex items-center justify-between">
@@ -53,6 +59,7 @@ new #[Layout('layouts.guest')] class extends Component
 
     </div>
 
+    <x-flash-message key="status" icon="info-circle">Your account is currently being verified by the administrator.</x-flash-message>
     <x-flash-message key="success" icon="info-circle">Your account is currently being verified by the administrator.</x-flash-message>
 </div>
 

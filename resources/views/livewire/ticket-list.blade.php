@@ -5,82 +5,85 @@
                 <input type="hidden" name="status" value="{{ request('status') }}">
             @endif --}}
             {{-- </form> --}}
-        <div class="max-w-4xl mb-4 flex space-x-4">
-            <div class="flex w-3/4">
-                <input
-                    type="text"
-                    wire:model.live.debounce.250ms="filters.search"
-                    class="block py-2.5 w-full z-20 text-xs text-gray-900 rounded-s shadow border-slate-300 border-e border-e-gray-light focus:ring-odc-blue-400 dark:bg-gray-700 dark:border-s-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-odc-blue-400"
-                    placeholder="Find incident..."
-                    {{-- value="{{ request('search') }}" --}}
-                />
-                <button wire:click.prevent="toggleShowFilters" class="flex items-center gap-2 bg-white  py-2.5 px-5 text-xs whitespace-nowrap text-blue-secondary rounded-e-md border border-slate-300 rounded-l-none shadow hover:bg-gray-100">
-                    @if ($showFilters)
-                        Hide
-                    @endif
-                    Advance Search...
-                </button>
-            </div>
-            <div class="space-x-2 flex items-center">
-                <x-input.group borderless paddingless for="perPage" label="Per Page">
-                    <x-input.select wire:model.lazy="perPage" id="perPage">
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                    </x-input.select>
-                </x-input.group>
-
-                {{--
-                    TODO:
-                        Phase 2 - Bulk Actions: Export to CSV and Bulk Delete
-                    TODO
-                --}}
-                {{-- <x-dropdown.dropdown label="Bulk Actions">
-                    <x-dropdown.item type="button" wire:click="exportSelected" class="group flex items-center px-4 py-2 space-x-2 text-xs text-blue-secondary hover:text-white
-                    hover:bg-gradient-to-br hover:from-blue-primary hover:to-blue-secondary
-                    dark:hover:bg-gray-600 dark:hover:text-white">
-                        <x-svg-icon class="scale-90" name="download"/>
-                        <span>Export</span>
-                    </x-dropdown.item>
-
-                    <x-dropdown.item type="button" wire:click="$toggle('showDeleteModal')" class="group flex items-center px-4 py-2 space-x-2 text-xs text-blue-secondary hover:text-white
-                    hover:bg-gradient-to-br hover:from-blue-primary hover:to-blue-secondary
-                    dark:hover:bg-gray-600 dark:hover:text-white">
-                        <x-svg-icon class="scale-90" name="trash"/>
-                        <span>Delete</span>
-                    </x-dropdown.item>
-                </x-dropdown.dropdown> --}}
-
-                {{-- <livewire:import-transactions /> --}}
-            </div>
-        </div>
-
-        {{-- * Filters --}}
-
-        <div class="h-auto bg transition-[height] duration-1000 ease-in-out">
-            @if ($showFilters)
-                <div class="bg-white p-4 rounded shadow flex relative mb-4">
-                    <div class="w-1/2 pr-2 space-y-4">
-                        <x-input.group inline for="filter-date-min" label="Start Date">
-                            <x-input.date name='filters.date-min' id="filter-date-min" placeholder="MM/DD/YYYY"/>
-                        </x-input.group>
-                        <x-input.group inline for="filter-date-max" label="End Date">
-                            <x-input.date name='filters.date-max' id="filter-date-max" placeholder="MM/DD/YYYY"/>
-                        </x-input.group>
-                    </div>
-                    <div class="w-1/2 pr-2 space-y-4">
-                        <x-input.group inline for="filter-status" label="Status">
-                            <x-input.select wire:model.live.blur='filters.status' id="filter-status">
-                                <option value="" disabled>Select Status...</option>
-                                @foreach ($statuses as $status)
-                                    <option value="{{ $status->id }}">{{ $status->name }}</option>
-                                @endforeach
-                            </x-input.select>
-                        </x-input.group>
-                        <x-button.link wire:click='resetFilters' class="absolute right-0 bottom-0 p-4">Reset Filters</x-button.link>
-                    </div>
+        <div x-data="{ expanded: false }">
+            <div class="max-w-4xl mb-4 flex space-x-4">
+                <div class="flex w-3/4">
+                    <input
+                        type="text"
+                        wire:model.live.debounce.150ms="filters.search"
+                        class="block py-2.5 w-full z-20 text-xs text-gray-900 rounded-s shadow border-s-slate-300 border-slate-300 border-e border-e-gray-light focus:ring-odc-blue-400 dark:bg-gray-700 dark:border-s-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-odc-blue-400"
+                        placeholder="Find incident..."
+                        {{-- value="{{ request('search') }}" --}}
+                    />
+                    <button x-on:click.prevent="expanded = ! expanded" class="flex items-center gap-2 bg-white  py-2.5 px-5 text-xs whitespace-nowrap text-blue-secondary rounded-e-md border border-slate-300 rounded-l-none shadow hover:bg-gray-100">
+                        <p x-text="expanded ? 'Hide' : 'Advance Search...'" x-transition></p>
+                        {{-- @if ($showFilters)
+                            Hide
+                        @endif
+                        Advance Search... --}}
+                    </button>
                 </div>
-            @endif
+                <div class="space-x-2 flex items-center">
+                    <x-input.group borderless paddingless for="perPage" label="Per Page">
+                        <x-input.select wire:model.lazy="perPage" id="perPage">
+                            <option value="15">15</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </x-input.select>
+                    </x-input.group>
+
+                    {{--
+                        TODO:
+                            Phase 2 - Bulk Actions: Export to CSV and Bulk Delete
+                        TODO
+                    --}}
+                    {{-- <x-dropdown.dropdown label="Bulk Actions">
+                        <x-dropdown.item type="button" wire:click="exportSelected" class="group flex items-center px-4 py-2 space-x-2 text-xs text-blue-secondary hover:text-white
+                        hover:bg-gradient-to-br hover:from-blue-primary hover:to-blue-secondary
+                        dark:hover:bg-gray-600 dark:hover:text-white">
+                            <x-svg-icon class="scale-90" name="download"/>
+                            <span>Export</span>
+                        </x-dropdown.item>
+
+                        <x-dropdown.item type="button" wire:click="$toggle('showDeleteModal')" class="group flex items-center px-4 py-2 space-x-2 text-xs text-blue-secondary hover:text-white
+                        hover:bg-gradient-to-br hover:from-blue-primary hover:to-blue-secondary
+                        dark:hover:bg-gray-600 dark:hover:text-white">
+                            <x-svg-icon class="scale-90" name="trash"/>
+                            <span>Delete</span>
+                        </x-dropdown.item>
+                    </x-dropdown.dropdown> --}}
+
+                    {{-- <livewire:import-transactions /> --}}
+                </div>
+            </div>
+
+            {{-- * Filters --}}
+
+            <div x-show="expanded" x-collapse>
+                {{-- @if ($showFilters) --}}
+                    <div class="bg-white p-4 rounded shadow flex relative mb-4">
+                        <div class="w-1/2 pr-2 space-y-4">
+                            <x-input.group inline for="filter-date-min" label="Start Date">
+                                <x-input.date name='filters.date-min' id="filter-date-min" placeholder="MM/DD/YYYY"/>
+                            </x-input.group>
+                            <x-input.group inline for="filter-date-max" label="End Date">
+                                <x-input.date name='filters.date-max' id="filter-date-max" placeholder="MM/DD/YYYY"/>
+                            </x-input.group>
+                        </div>
+                        <div class="w-1/2 pr-2 space-y-4">
+                            <x-input.group inline for="filter-status" label="Status">
+                                <x-input.select wire:model.live='filters.status' id="filter-status">
+                                    <option value="" disabled>Select Status...</option>
+                                    @foreach ($statuses as $status)
+                                        <option value="{{ $status->id }}">{{ $status->name }}</option>
+                                    @endforeach
+                                </x-input.select>
+                            </x-input.group>
+                            <x-button.link wire:click='resetFilters' class="absolute right-0 bottom-0 p-4">Reset Filters</x-button.link>
+                        </div>
+                    </div>
+                {{-- @endif --}}
+            </div>
         </div>
 
         <div class="relative overflow-auto h-full bg-white rounded">
@@ -157,7 +160,7 @@
                         <x-table.cell>
                             <div class="flex flex-col">
                                 <span class="font-bold text-odc-blue-800">{{ $ticket->title }}</span>
-                                <div>{!! clean(Illuminate\Support\Str::words($ticket->issue, 8, '...')) !!}</div>
+                                <div>{!! clean(Illuminate\Support\Str::words($ticket->issue->toPlainText(), 8, '...')) !!}</div>
                             </div>
                         </x-table.cell>
                         <x-table.cell>
@@ -295,8 +298,3 @@
         </x-modal.confirmation>
     </form>
 </div>
-
-
-@push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/pikaday/pikaday.js"></script>
-@endpush

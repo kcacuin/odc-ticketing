@@ -6,7 +6,7 @@
     'wireModel' => '',
     'type' => '',
     'labelname',
-    'tooltip'
+    'tooltip',
 ])
 
 @php

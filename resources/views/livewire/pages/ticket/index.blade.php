@@ -21,8 +21,6 @@
         </div>
     </x-slot>
     @livewire('ticket-list')
+    <x-flash-message key="create-ticket-success" icon="check-circle"/>
+    <x-flash-message key="update-ticket-success" icon="check-circle"/>
 </x-app-layout>
-
-@push('styles')
-<link href="{{ asset('css/pikaday.css') }}" rel="stylesheet">
-@endpush

@@ -19,14 +19,22 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // \App\Models\User::factory(10)->create();
-        $user = User::factory()->create([
+        $admin = User::factory()->create([
             'first_name' => 'KC',
             'last_name' => 'Acuin',
             'username' => 'kcacuin',
             'email' => 'kc.acuin@odecci.com',
         ]);
 
+        $user = User::factory()->create([
+            'first_name' => 'Regular',
+            'last_name' => 'User',
+            'username' => 'user',
+            'email' => 'user@odecci.com',
+        ]);
+
         // Status::factory(5)->create();
+        Ticket::factory(20)->for($admin)->create();
         Ticket::factory(20)->for($user)->create();
     }
 }

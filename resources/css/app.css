@@ -303,3 +303,8 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+
+.pointer-events-all {
+    pointer-events: all;
+    z-index: 99999;
+}

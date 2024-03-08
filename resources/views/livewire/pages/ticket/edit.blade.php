@@ -1,25 +1,49 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="mr-10 text-left text-xl text-white dark:text-gray-200 leading-3">
-            <p class="text-sm font-bold uppercase">Incident</p>
-            <p class="font-thin">ODC{{ $ticket->number }}</p>
+            <p class="text-xs font-bold uppercase">Incident</p>
+            <a href="{{ route('tickets.show', $ticket) }}">
+                <div x-data="{ showArrow: false }">
+                    <p
+                        class="relative font-thin"
+                        @mouseover="showArrow = true"
+                        @mouseout="showArrow = false"
+                    >
+                        ODC{{ $ticket->number }}
+                        <span
+                            x-show="showArrow"
+                            class="absolute -translate-y-4"
+                            x-transition:enter="transition ease-out duration-300"
+                            x-transition:enter-start="opacity-0 scale-90"
+                            x-transition:enter-end="opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-300"
+                            x-transition:leave-start="opacity-100 scale-100"
+                            x-transition:leave-end="opacity-0 scale-90"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+                            </svg>
+                        </span>
+                    </p>
+                </div>
+            </a>
         </h2>
     </x-slot>
     <div class="max-w-8xl mx-auto relative my-8">
         @auth
-            <form method="POST" action="{{ route('tickets.update', $ticket) }}" enctype="multipart/form-data" class="py-2 pb-6 px-8 bg-white mx-8">
+            <form method="POST" action="{{ route('tickets.update', ['ticket' => $ticket->id]) }}" enctype="multipart/form-data" class="py-2 pb-6 px-8 bg-white mx-8">
                 @csrf
                 @method('PATCH')
 
                 <div class="flex flex-row-reverse w-full gap-10">
                     {{-- * Right Column --}}
                     <div class="flex flex-col w-[25%]">
-                        <div class="h-1/2">
+                        <div class="mb-4">
                             {{-- * Ticket Number (Copy to Clipboard) --}}
-                            <x-form.input-clipboard :value="old('number', $ticket->number)" name="number" labelname="Ticket Number" type="number"/>
+                            <x-form.input-clipboard xModel="ticketNumber" :value="old('number', $ticket->number)" name="number" labelname="Ticket Number" type="number"/>
                             {{-- * Status --}}
                             <x-form.field>
-                                <select name="status_id" id="status_id"
+                                <select xModel="ticketStatus" name="status_id" id="status_id"
                                 class="appearance-none block mt-1 w-full peer h-[3rem] px-6 text-sm text-white bg-gray-dark rounded-lg border-opacity-75 border-2 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 placeholder-transparent placeholder:pointer-events-none
                                 ring-0 placeholder:select-none focus:shadow-md focus:shadow-odc-blue-700 focus:border-blue-secondary focus:ring-0">
                                     @php
@@ -36,72 +60,85 @@
                                 <x-form.error name="status_id"/>
                             </x-form.field>
                             {{-- * Date --}}
-                            <x-form.date :value="old('date_received', $ticket->date_received)" name="date_received" labelname="Date Received" type="date" class="appearance-none"/>
+                            <x-form.date xModel="ticketDate" :value="old('date_received', $ticket->date_received)" name="date_received" labelname="Date Received" type="date" class="appearance-none"/>
                         </div>
                         {{-- * Dropzone --}}
-                        <div class="h-1/2 flex flex-col">
-                            <div
-                                x-data="{ isUploading: false, progress: 5, fileName: '' }"
-                                x-on:livewire-upload-start="isUploading = true"
-                                x-on:livewire-upload-finish="isUploading = false; progress = 5"
-                                x-on:livewire-upload-error="isUploading = false"
-                                x-on:livewire-upload-progress="progress = $event.detail.progress"
-                                class="flex items-center gap-4"
-                            >
-                                <div class="h-screen max-h-[11.4rem] w-full max-w-2xl relative rounded-md">
-                                    <div x-ref="dnd"
-                                        class="relative overflow-clip h-full p-6 text-blue-secondary font-light border-2 border-blue-secondary border-dashed rounded-md cursor-pointer">
-                                        <input :value="old('files', $ticket->files)" multiple accept=".jpg, .jpeg, .png, .webp" type="file" name="files" x-ref="file" @change="fileName = $refs.file.files[0].name"
-                                            class="absolute inset-0 z-50 w-full h-full p-0 m-0 outline-none opacity-0 cursor-pointer"
-                                            @dragover="$refs.dnd.classList.add('bg-odc-blue-700')"
-                                            @dragleave="$refs.dnd.classList.remove('bg-odc-blue-700')"
-                                            @drop="$refs.dnd.classList.remove('bg-odc-blue-700')"
-                                        />
-                                        <div class="flex flex-col items-center justify-center text-xs text-center">
-                                            <x-svg-icon name="export"/>
-                                            <div class="mt-2 text-center">
-                                                <p>Drag and Drop here</p>
-                                                <p>or</p>
-                                                <p class="underline">Browse Files</p>
-                                            </div>
-                                            <p class="mt-2 text-blue-primary text-opacity-55">Supported File Types: PNG, JPG, JPEG and WEBP only.</p>
-                                        </div>
+                        <div class="flex flex-col h-52 overflow-y-auto">
+                            <div class="rounded-md border border-dashed border-blue-secondary bg-[#f1f0ef]">
+                                <x-input.filepond xModel="ticketFiles" name="files" multiple/>
+
+                                {{-- @if ($ticket->files) --}}
+                                    {{-- @foreach ($ticket->files as $file)
+                                        <div>
+                                            <span>{{ $file->file_name }}</span> --}}
+                                            {{-- <a href="{{ route('load-file', ['id' => $file->id]) }}" target="_blank">{{ $file->file_name }}</a> --}}
+                                        {{-- </div> --}}
+                                    {{-- @endforeach --}}
+                                {{-- @else --}}
+                                    {{-- <p>No files uploaded for this ticket.</p> --}}
+                                {{-- @endif --}}
+
+                                {{-- @foreach ($ticket->files ?? collect() as $file)
+                                    <div>
+                                        <a href="{{ route('tmp-load', ['folder' => $file->folder, 'filename' => $file->file_name]) }}" target="_blank">{{ $file->file_name }}</a>
                                     </div>
-                                    <div class="mt-2 relative w-full">
-                                        <div x-show.transition="isUploading" class="rounded-xl bg-gray-dark">
-                                            <div
-                                                class="pl-2 text-center text-xs text-white bg-blue-500 rounded-xl"
-                                                x-bind:style="`width: ${progress}%`"
-                                                role="progressbar"
-                                                aria-valuemin="0"
-                                                aria-valuemax="100"
-                                                x-text="progress ? progress + '%' : '0%'"
-                                                >
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="flex justify-center">
-                                        <span x-show="fileName" x-text="fileName" class="px-4 rounded-full border border-blue-secondary text-xs text-center text-blue-secondary"></span>
-                                    </div>
-                                </div>
+                                @endforeach --}}
                             </div>
+                            @if ($files->isNotEmpty())
+                                <div class="mt-4">
+                                    <h2 class="text-xs">Attachments:</h2>
+                                    <ul>
+                                        <div>
+                                            @foreach($files as $file)
+                                                @if(isset($files[0]))
+                                                <li class="hidden">
+                                                    <a href="{{ asset('storage/attached_files/' . $file->file_path . $file->file_name) }}" target="_blank"
+                                                        class="text-xs"
+                                                    >{{ $file->file_name }}</a>
+                                                    <form action="{{ route('tickets.files.destroy', ['ticket' => $ticket, 'file' => $file])}}" method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit">Delete</button>
+                                                    </form>
+                                                </li>
+                                                @endif
+
+                                                <li class="flex items-center justify-between">
+                                                    <a href="{{ asset('storage/attached_files/' . $file->file_path . $file->file_name) }}" target="_blank"
+                                                        class="text-xs"
+                                                    >{{ $file->file_name }}</a>
+                                                    <form action="{{ route('tickets.files.destroy', ['ticket' => $ticket, 'file' => $file])}}" method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="text-xs">Delete</button>
+                                                    </form>
+                                                </li>
+                                            @endforeach
+                                        </div>
+                                    </ul>
+                                </div>
+                            @else
+                                <span class="mt-4 text-center text-xs text-blue-secondary">No files attached to this ticket.</span>
+                            @endif
                         </div>
                     </div>
                     {{-- * Left Column --}}
                     <div class="flex flex-col w-[75%] pr-10 border-r border-r-slate-200">
                         <div class="grid grid-cols-3 grid-rows-1 gap-4 mb-6">
-                            <x-form.input-tooltip :value="old('requested_by', $ticket->requested_by)" name="requested_by" labelname="Requested By" type="text" tooltip="Person who requested assistance."/>
-                            <x-form.input-tooltip :value="old('client', $ticket->client)" name="client" labelname="Client" type="text" tooltip="Client or customer associated."/>
-                            <x-form.input-tooltip :value="old('product', $ticket->product)" name="product" labelname="Product" type="text" tooltip="Relevant product or service."/>
+                            <x-form.input-tooltip xModel="ticketRequestedBy" :value="old('requested_by', $ticket->requested_by)" name="requested_by" labelname="Requested By" type="text" tooltip="Person who requested assistance."/>
+                            <x-form.input-tooltip xModel="ticketClient" :value="old('client', $ticket->client)" name="client" labelname="Client" type="text" tooltip="Client or customer associated."/>
+                            <x-form.input-tooltip xModel="ticketProduct" :value="old('product', $ticket->product)" name="product" labelname="Product" type="text" tooltip="Relevant product or service."/>
                         </div>
                         <div class="flex flex-col space-y-4 border-t border-t-slate-200">
                             {{-- * Title --}}
-                            <x-form.input-tooltip :value="old('title', $ticket->title)" name="title" labelname="Title" type="text" tooltip="Brief description of the problem."/>
+                            <x-form.input-tooltip xModel="ticketTitle" :value="old('title', $ticket->title)" name="title" labelname="Title" type="text" tooltip="Brief description of the problem."/>
 
                             {{-- <x-input.rich-text name="issue" id="issue" :value="$issue" /> --}}
-                            <div>
-                                <input
+                            <div class="relative">
+                                <x-form.trix-input x-model="ticketIssue" value="{!! $ticket->issue->toTrixHTML() !!}" id="issue" name="issue" class="h-52 rounded-md overflow-y-auto"/>
+                                {{-- <input
                                     id="x"
+                                    xModel="ticketIssue"
                                     value="{{old('issue', $ticket->issue)}}"
                                     type="hidden"
                                     name="issue">
@@ -126,9 +163,9 @@
                                         }
                                     }"
                                     x-on:trix-attachment-add="upload"
-                                    class="h-52 w-[42rem] rounded-md overflow-y-auto"
+                                    class="h-52 rounded-md overflow-y-auto"
                                 ></trix-editor>
-                                <x-form.error name="issue"/>
+                                <x-form.error name="issue"/> --}}
                             </div>
 
                             <div>

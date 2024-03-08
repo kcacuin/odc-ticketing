@@ -17,7 +17,7 @@ class TicketList extends Component
 
     public $id;
     public $showDeleteModal = false;
-    public $showFilters = false;
+    // public $showFilters = false;
     public $filters = [
         'search' => '',
         'status' => '',
@@ -47,42 +47,13 @@ class TicketList extends Component
     {
         $this->useCachedRows();
 
-        $this->showFilters = ! $this->showFilters;
+        // $this->showFilters = ! $this->showFilters;
     }
 
     public function resetFilters()
     {
         $this->reset('filters');
     }
-    // public function render()
-    // {
-    //     $sortField = $this->sortField ?: 'date_received';
-
-    //     $query = Ticket::query();
-
-    //     $query->when($this->filters['status'], fn($query, $status) => $query->where('status_id', $status));
-
-    //     $query->when($this->filters['date-min'], function ($query, $date) {
-    //         $query->where('date_received', '>=', Carbon::parse($date));
-    //     });
-
-    //     $query->when($this->filters['date-max'], function ($query, $date) {
-    //         $query->where('date_received', '<=', Carbon::parse($date));
-    //     });
-
-    //     $query->filter([
-    //         'search' => $this->filters['search'] ?? '',
-    //         // 'status' => $this->filters['status'] ?? '',
-    //         // 'client' => $this->filters['client'] ?? '',
-    //     ]);
-
-    //     $tickets = $query->orderBy($sortField, $this->sortDirection)->paginate(15);
-
-    //     return view('livewire.ticket-list', [
-    //         'statuses' => Status::all(),
-    //         'tickets' => $tickets,
-    //     ]);
-    // }
 
     public function getRowsQueryProperty()
     {

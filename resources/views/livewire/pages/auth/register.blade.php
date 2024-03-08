@@ -1,5 +1,6 @@
 <?php
 
+use App\Mail\VerificationEmail;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use App\Rules\AllowedEmailDomain;
@@ -53,6 +54,7 @@ new #[Layout('layouts.guest')] class extends Component
             $validated['image'] = $this->image->store('images');
         }
 
+        // Mail::to($user->email)->send(new VerificationEmail($user));
         event(new Registered($user = User::create($validated)));
 
         Auth::login($user);

@@ -24,7 +24,6 @@ return new class extends Migration
             $table->string('requested_by');
             $table->string('client');
             $table->string('product');
-            $table->string('files')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -11,21 +11,25 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
         <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
-        <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@1.2.3/dist/trix.css">
-
+        <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
+        <link
+            href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css"
+            rel="stylesheet"
+        />
         @stack('styles')
         <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/css/pikaday.css', 'resources/js/app.js'])
+        @vite(['resources/css/app.css', 'resources/css/filepond.css', 'resources/js/app.js'])
+        <x-rich-text::styles theme="richtextlaravel" data-turbo-track="false" />
     </head>
-    <body class="font-sans antialiased">
-        <div class="flex min-h-screen bg-gray-100 dark:bg-gray-900">
+    <body class="font-sans antialiased overflow-hidden">
+        <div class="flex min-h-screen bg-gray-100 dark:bg-gray-900 overflow-hidden">
             <livewire:layout.navigation />
 
             <!-- Page Heading -->
             <div class="flex flex-col w-full">
                 @if (isset($header))
-                    <header class="relative z-[1] bg-gradient-to-br from-blue-primary to-blue-secondary dark:bg-gray-800 shadow">
-                        <div class="relative odc-header-overlay flex items-center justify-between h-20 w-full mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                    <header class="relative bg-gradient-to-br from-blue-primary to-blue-secondary dark:bg-gray-800 shadow">
+                        <div class="relative z-[1] odc-header-overlay flex items-center justify-between h-20 w-full mx-auto py-6 px-4 sm:px-6 lg:px-8">
                             {{ $header }}
                             <div>
                                 <!-- Settings Dropdown -->
@@ -40,7 +44,7 @@
                                             </button>
                                         </x-slot>
 
-                                        <x-slot name="content">
+                                        <x-slot name="content" class="z-[1]">
                                             <x-dropdown-link :href="route('profile')">
                                                 {{ __('Profile') }}
                                             </x-dropdown-link>
@@ -78,10 +82,13 @@
                     {{ $slot }}
                 </main>
 
+                <x-flash-message key="login-success" icon="check-circle">Your session is now active.</x-flash-message>
             </div>
+
         </div>
         <livewire:scripts />
-        <script src="https://unpkg.com/trix@1.2.3/dist/trix.js"></script>
-        {{-- @stack('scripts') --}}
+        <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
+        <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
+        @stack('scripts')
     </body>
 </html>

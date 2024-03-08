@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\EmailController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\UploadController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
@@ -16,34 +19,34 @@ use Illuminate\Support\Facades\Storage;
 |
 */
 
+Route::middleware('guest')->group(function ($middleware) {
+    Route::get('/send-email', [EmailController::class, 'index'])->name('send.mail');
+    Route::get('/send-email', [EmailController::class, 'store'])->name('send.email.post');
+});
+
 Route::view('/', 'welcome');
-
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
-
-Route::view('profile', 'profile')
-    ->middleware(['auth'])
-    ->name('profile');
 
 require __DIR__.'/auth.php';
 
-Route::patch('/tickets/{ticket}', [TicketController::class, 'update'])->name('tickets.update');
-Route::resource('tickets', TicketController::class);
-Route::middleware('auth')->resource('tickets.notes', NoteController::class);
 
 
-Route::post('/attachments', function () {
-    request()->validate([
-        'attachment' => ['required', 'file'],
-    ]);
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::view('dashboard', 'dashboard')->name('dashboard');
+    Route::view('profile', 'profile')->name('profile');
 
-    $path = request()->file('attachment')->store('ticket-attachments', 'public');
+    Route::patch('/tickets/{ticket}', [TicketController::class, 'update'])->name('tickets.update');
 
-    return [
-        'image_url' => Storage::disk('public')->url($path),
-    ];
-})->middleware(['auth'])->name('attachments.store');
+    Route::resource('tickets', TicketController::class);
+    Route::resource('tickets.files', FileController::class);
+    Route::resource('tickets.notes', NoteController::class);
 
-Route::delete('/tickets/delete-file/{fileName}',
-[TicketController::class, 'deleteFile'])->name('tickets.deleteFile');
+    Route::post('upload', [UploadController::class, 'store']);
+
+    Route::post('/tmp-upload', [UploadController::class, 'tmpUpload']);
+    Route::get('/tmp-load/{folder}/{file_name}', [UploadController::class, 'tmpLoad'])->name('tmp-load');
+    Route::delete('/tmp-delete', [UploadController::class, 'tmpDelete']);
+
+    Route::post('/attachments', [UploadController::class, 'trixAttachmentStore'])->name('attachments.store');
+});
+
+

@@ -21,6 +21,8 @@ new #[Layout('layouts.guest')] class extends Component
 
         Session::regenerate();
 
+        Session::flash('login-success', "Welcome Back!". " " . Auth::user()->username);
+
         $this->redirect(
             session('url.intended', RouteServiceProvider::HOME),
             navigate: true

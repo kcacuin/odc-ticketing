@@ -44,13 +44,13 @@ return [
             'throw' => false,
         ],
 
-        // 'ticket-attachments' => [
-        //     'driver' => 'local',
-        //     'root' => storage_path('app/ticket-files'),
-        //     'url' => env('APP_URL').'/ticket-files',
-        //     'visibility' => 'public',
-        //     'throw' => false,
-        // ],
+        'ticket-attachments' => [
+            'driver' => 'local',
+            'root' => storage_path('app/ticket-attachments'),
+            'url' => env('APP_URL').'/ticket-attachments',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
 
         's3' => [
             'driver' => 's3',
