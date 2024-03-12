@@ -1,10 +1,5 @@
 <div class="odc-main-con-height p-4">
     <div class="h-full flex flex-col justify-between relative overflow-hidden sm:rounded-lg">
-        {{-- <form method="GET" action="#" class="max-w-2xl mb-4"> --}}
-            {{-- @if (request('status'))
-                <input type="hidden" name="status" value="{{ request('status') }}">
-            @endif --}}
-            {{-- </form> --}}
         <div x-data="{ expanded: false }">
             <div class="max-w-4xl mb-4 flex space-x-4">
                 <div class="flex w-3/4">
@@ -194,7 +189,7 @@
                                     <x-slot name="content">
                                         <ul class="py-2 text-xs text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefault">
                                             <li>
-                                                <x-dropdown-link href="{{ route('tickets.show', $ticket) }}"
+                                                <x-dropdown-link href="{{ route('tickets.show', $ticket->number) }}"
                                                 class="group flex items-center px-4 py-2 hover:text-white
                                                 hover:bg-gradient-to-br hover:from-blue-primary hover:to-blue-secondary
                                                 dark:hover:bg-gray-600 dark:hover:text-white">
@@ -208,7 +203,7 @@
                                                 </x-dropdown-link>
                                             </li>
                                             <li>
-                                                <x-dropdown-link href="/tickets/{{ $ticket->id }}/edit"
+                                                <x-dropdown-link href="{{ route('tickets.edit', $ticket->number) }}"
                                                 class="group flex items-center px-4 py-2 hover:text-white
                                                 hover:bg-gradient-to-br hover:from-blue-primary hover:to-blue-secondary
                                                 dark:hover:bg-gray-600 dark:hover:text-white">
@@ -222,7 +217,7 @@
                                                 </x-dropdown-link>
                                             </li>
                                             <li>
-                                                <form id="delete" method="POST" action="/tickets/{{ $ticket->id }}"
+                                                <form id="delete" method="POST" action="/tickets/incident-{{ $ticket->number }}"
                                                 >
                                                     @csrf
                                                     @method('DELETE')

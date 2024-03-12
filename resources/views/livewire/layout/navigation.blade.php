@@ -16,20 +16,24 @@ new class extends Component
     }
 }; ?>
 
-<nav x-data="{ open: false }" class="odc-nav h-screen group relative bg-white dark:bg-gray-800 w-28 ease-out duration-300 hover:w-72 dark:border-gray-700">
+<nav x-data="{ open: false  }" class="odc-nav h-screen group relative bg-white dark:bg-gray-800 w-28 ease-out duration-300 hover:w-72 dark:border-gray-700">
 
     {{-- * Primary Navigation --}}
-    <div class="odc-nav-bg-overlay overflow-hidden h-full bg-gradient-to-br from-blue-primary to-blue-secondary dark:bg-gray-700 w-28 ease-out duration-300 group-hover:w-72 shadow-lg lg:block">
-        <div class="h-full flex flex-col mx-6">
+    <div x-on:mouseover="open = true" x-on:mouseleave="open = false" class="odc-nav-bg-overlay overflow-hidden h-full bg-gradient-to-br from-blue-primary to-blue-secondary dark:bg-gray-700 w-28 ease-out duration-300 group-hover:w-72 shadow-lg lg:block">
+        <div  class="h-full flex flex-col mx-6">
             <div class="flex items-center justify-center pt-6 round">
                 <div class="odc-logo-clip shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo-full class="block h-9 w-auto" />
+                    <a href="{{ route('dashboard') }}" class="flex flex-col items-center space-y-1">
+                        <x-application-logo-full />
+                        <div :class="open ? 'visible opacity-100 transition ease-in-out delay-100' : 'invisible opacity-0 transition ease-in-out delay-100'"    >
+                            <x-application-logo-full-label/>
+                        </div>
                     </a>
                 </div>
             </div>
             <nav class="h-full mt-6 flex flex-col justify-between">
-                <div class="flex flex-col">
+                <div>
+                    <span class="ml-4 uppercase tracking-widest text-xs text-center text-slate-400 text-opacity-65 font-thin">Main</span>
                     <x-nav-link
                         :href="route('dashboard')"
                         :active="request()->routeIs('dashboard')" wire:navigate>
@@ -51,38 +55,59 @@ new class extends Component
                             :active="request()->routeIs('tickets.index')" />
                         <x-nav-link-icon class="flex text-nowrap"
                             :active="request()->routeIs('tickets.index')">
-                            Ticket<span class="text-transparent">_</span>List
+                            <span class="whitespace-nowrap">Ticket List</span>
                         </x-nav-link-icon>
                     </x-nav-link>
                 </div>
-                {{-- <div>
+                <div>
+                    <span x-show="open"
+                        x-transition:enter.duration.500ms
+                        x-transition:leave.duration.50ms
+                        class="ml-5 uppercase tracking-widest text-xs text-center text-slate-400 text-opacity-65 font-thin">System Settings</span>
                     <x-nav-link
-                        :href="route('settings')"
-                        :active="request()->routeIs('settings')">
+                        href="#"
+                       >
                         <x-svg-icon
+                            class="scale-90"
                             name="settings"
-                            :active="request()->routeIs('settings')" />
+                            />
                         <x-nav-link-icon
                             :active="request()->routeIs('settings')"
-                            src="{{ asset('storage/icons/settings.svg') }}"
                             alt="settings">
                             Settings
                         </x-nav-link-icon>
                     </x-nav-link>
                     <x-nav-link
-                        :href="route('admin')"
-                        :active="request()->routeIs('admin')">
+                        href="#"
+                       >
                         <x-svg-icon
+                            class="scale-90"
                             name="admin"
-                            :active="request()->routeIs('admin')" />
+                            />
                         <x-nav-link-icon
                             :active="request()->routeIs('admin')"
-                            src="{{ asset('storage/icons/admin.svg') }}"
                             alt="admin">
                             Admin
                         </x-nav-link-icon>
                     </x-nav-link>
-                </div> --}}
+                    {{-- <form method="POST" action="{{ route('logout') }}" id="logout-form">
+                        @csrf
+                        <x-nav-link
+                            :href="route('logout')"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                            class="transition duration-150 hover:text-red-primary"
+                            >
+                            <x-svg-icon
+                                class="scale-90"
+                                name="logout"
+                                />
+                            <x-nav-link-icon
+                                alt="admin">
+                                <span class="whitespace-nowrap">Log out</span>
+                            </x-nav-link-icon>
+                        </x-nav-link>
+                    </form> --}}
+                </div>
             </nav>
         </div>
     </div>

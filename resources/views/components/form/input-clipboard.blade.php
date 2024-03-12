@@ -6,7 +6,7 @@
     'wireModel' => '',
     'type' => '',
     'labelname',
-    'xModel'
+    // 'xModel'
 ])
 
 @php
@@ -24,12 +24,12 @@
                 name="{{ $name }}"
                 id="{{ $name }}"
                 placeholder="placeholder"
-                x-model="{{ $xModel }}"
+                {{-- x-model="{{ $xModel }}" --}}
                 {{ $attributes(['value' => $value ?? old($name)]) }}
             >
+            <x-form.label name="{{ $name }}" labelname="{{ $labelname }}" />
             <x-form.error name="{{ $name }}" />
 
-            <x-form.label name="{{ $name }}" labelname="{{ $labelname }}" />
         </div>
         <div class="overflow-hidden absolute right-2 -top-1 translate-y-1/2">
             <a type="button" @click.prevent="navigator.clipboard.writeText(input), showMsg = true, setTimeout(() => showMsg = false, 1000)" class="group inline-flex items-center justify-center text-lg font-normal text-center text-slate-500 truncate rounded-b transition-colors hover:text-slate-400">

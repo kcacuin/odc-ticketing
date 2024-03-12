@@ -29,18 +29,26 @@
             </a>
         </h2>
     </x-slot>
-    <div class="max-w-8xl mx-auto relative my-8">
+    @section('title', 'Edit - Incident ' . $ticket->number)
+
+    <div class="max-w-8xl mx-auto relative my-8" x-data="{ submitting: false }">
         @auth
-            <form method="POST" action="{{ route('tickets.update', ['ticket' => $ticket->id]) }}" enctype="multipart/form-data" class="py-2 pb-6 px-8 bg-white mx-8">
+            <div x-show="submitting" @click.window="handleWindowClick" class="fixed inset-0 flex items-center justify-center pointer-event-all">
+                <div class="absolute inset-0 opacity-50 pointer-event-all"></div>
+            </div>
+
+            <form @submit="submitting = true;" method="POST" action="{{ route('tickets.update', $ticket->number) }}" enctype="multipart/form-data" class="py-2 pb-6 px-8 bg-white mx-8">
                 @csrf
                 @method('PATCH')
 
-                <div class="flex flex-row-reverse w-full gap-10">
+                <div class="flex flex-row-reverse w-full gap-10"
+
+                >
                     {{-- * Right Column --}}
                     <div class="flex flex-col w-[25%]">
                         <div class="mb-4">
                             {{-- * Ticket Number (Copy to Clipboard) --}}
-                            <x-form.input-clipboard xModel="ticketNumber" :value="old('number', $ticket->number)" name="number" labelname="Ticket Number" type="number"/>
+                            <x-form.input-clipboard :value="old('number', $ticket->number)" name="number" labelname="Ticket Number" type="number"/>
                             {{-- * Status --}}
                             <x-form.field>
                                 <select xModel="ticketStatus" name="status_id" id="status_id"
@@ -66,56 +74,11 @@
                         <div class="flex flex-col h-52 overflow-y-auto">
                             <div class="rounded-md border border-dashed border-blue-secondary bg-[#f1f0ef]">
                                 <x-input.filepond xModel="ticketFiles" name="files" multiple/>
-
-                                {{-- @if ($ticket->files) --}}
-                                    {{-- @foreach ($ticket->files as $file)
-                                        <div>
-                                            <span>{{ $file->file_name }}</span> --}}
-                                            {{-- <a href="{{ route('load-file', ['id' => $file->id]) }}" target="_blank">{{ $file->file_name }}</a> --}}
-                                        {{-- </div> --}}
-                                    {{-- @endforeach --}}
-                                {{-- @else --}}
-                                    {{-- <p>No files uploaded for this ticket.</p> --}}
-                                {{-- @endif --}}
-
-                                {{-- @foreach ($ticket->files ?? collect() as $file)
-                                    <div>
-                                        <a href="{{ route('tmp-load', ['folder' => $file->folder, 'filename' => $file->file_name]) }}" target="_blank">{{ $file->file_name }}</a>
-                                    </div>
-                                @endforeach --}}
                             </div>
                             @if ($files->isNotEmpty())
-                                <div class="mt-4">
-                                    <h2 class="text-xs">Attachments:</h2>
-                                    <ul>
-                                        <div>
-                                            @foreach($files as $file)
-                                                @if(isset($files[0]))
-                                                <li class="hidden">
-                                                    <a href="{{ asset('storage/attached_files/' . $file->file_path . $file->file_name) }}" target="_blank"
-                                                        class="text-xs"
-                                                    >{{ $file->file_name }}</a>
-                                                    <form action="{{ route('tickets.files.destroy', ['ticket' => $ticket, 'file' => $file])}}" method="POST">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit">Delete</button>
-                                                    </form>
-                                                </li>
-                                                @endif
-
-                                                <li class="flex items-center justify-between">
-                                                    <a href="{{ asset('storage/attached_files/' . $file->file_path . $file->file_name) }}" target="_blank"
-                                                        class="text-xs"
-                                                    >{{ $file->file_name }}</a>
-                                                    <form action="{{ route('tickets.files.destroy', ['ticket' => $ticket, 'file' => $file])}}" method="POST">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="text-xs">Delete</button>
-                                                    </form>
-                                                </li>
-                                            @endforeach
-                                        </div>
-                                    </ul>
+                                <div class="mt-4 flex flex-col text-center text-xs text-blue-secondary">
+                                    <span>There are files attached to this ticket.</span>
+                                    <a href="{{ route('tickets.show', $ticket->number) }}" class="underline">Click here to view</a>
                                 </div>
                             @else
                                 <span class="mt-4 text-center text-xs text-blue-secondary">No files attached to this ticket.</span>
@@ -133,57 +96,91 @@
                             {{-- * Title --}}
                             <x-form.input-tooltip xModel="ticketTitle" :value="old('title', $ticket->title)" name="title" labelname="Title" type="text" tooltip="Brief description of the problem."/>
 
-                            {{-- <x-input.rich-text name="issue" id="issue" :value="$issue" /> --}}
                             <div class="relative">
                                 <x-form.trix-input x-model="ticketIssue" value="{!! $ticket->issue->toTrixHTML() !!}" id="issue" name="issue" class="h-52 rounded-md overflow-y-auto"/>
-                                {{-- <input
-                                    id="x"
-                                    xModel="ticketIssue"
-                                    value="{{old('issue', $ticket->issue)}}"
-                                    type="hidden"
-                                    name="issue">
-                                <trix-editor
-                                    input="x"
-                                    x-data="{
-                                        upload(event) {
-                                            const data = new FormData();
-                                            data.append('attachment', event.attachment.file);
-
-                                            window.axios.post('/attachments', data, {
-                                                onUploadProgress(progressEvent) {
-                                                    event.attachment.setUploadProgress(
-                                                        progressEvent.loaded / progressEvent.total * 100
-                                                    );
-                                                },
-                                            }).then(({ data }) => {
-                                                event.attachment.setAttributes({
-                                                    url: data.image_url,
-                                                });
-                                            });
-                                        }
-                                    }"
-                                    x-on:trix-attachment-add="upload"
-                                    class="h-52 rounded-md overflow-y-auto"
-                                ></trix-editor>
-                                <x-form.error name="issue"/> --}}
                             </div>
 
                             <div>
-                                <x-primary-button class="mt-4 float-end border border-slate-300">Update</x-primary-button>
+                                <div x-data="{ modelOpen: false }">
+                                    <x-primary-button @click.prevent="modelOpen =!modelOpen"
+                                        type="button" class="mt-4 float-end border border-slate-300"
+                                    >Update</x-primary-button>
+
+                                    <div x-show="modelOpen" x-bind:class="{ 'pointer-events-none': submitting }" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                                        <div class="flex items-center justify-center min-h-screen px-4 text-center md:items-center sm:block sm:p-0">
+                                            <div x-cloak @click.prevent="modelOpen = false" x-show="modelOpen"
+                                                x-transition:enter="transition ease-out duration-300 transform"
+                                                x-transition:enter-start="opacity-0"
+                                                x-transition:enter-end="opacity-100"
+                                                x-transition:leave="transition ease-in duration-200 transform"
+                                                x-transition:leave-start="opacity-100"
+                                                x-transition:leave-end="opacity-0"
+                                                class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-55" aria-hidden="true"
+                                            ></div>
+
+                                            <div x-cloak x-show="modelOpen"
+                                                x-transition:enter="transition ease-out duration-300 transform"
+                                                x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                                x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                                                x-transition:leave="transition ease-in duration-200 transform"
+                                                x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                                                x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                                class="inline-block w-full max-w-xl p-8 my-20 overflow-hidden text-left transition-all transform bg-white rounded-lg shadow-xl 2xl:max-w-2xl"
+                                            >
+                                                <div class="flex items-center justify-between space-x-4">
+                                                    <h1 class="text-xl font-extrabold text-gray-800 ">Save Changes?</h1>
+                                                </div>
+
+                                                <p class="mt-2 text-base text-slate-500">
+                                                    Kindly review the fields before saving the changes.
+                                                </p>
+
+                                                <div class="mt-5">
+                                                    <div class="flex justify-end mt-6 space-x-2">
+                                                        <x-primary-button @click.prevent="modelOpen = false" type="button" class="border border-slate-300">Review Changes</x-primary-button>
+                                                        <button :disabled="submitting" class="px-3 py-2 text-xs tracking-widest text-white uppercase transition-colors duration-200 transform bg-odc-blue-600 rounded-md dark:bg-odc-blue-700 dark:hover:bg-odc-blue-800 dark:focus:bg-odc-blue-800 hover:bg-odc-blue-700 focus:outline-none focus:bg-odc-blue-600 focus:ring focus:ring-odc-blue-400 focus:ring-opacity-50">
+                                                            <span x-show="!submitting">Confirm and Save</span>
+                                                            <span x-show="submitting">
+                                                                <svg aria-hidden="true" role="status" class="inline w-4 h-4 me-1 text-gray-200 animate-spin dark:text-gray-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                                                                    <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="#1C64F2"/>
+                                                                </svg>
+                                                                Updating...
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div>
+
+                </div>
             </form>
         @endauth
     </div>
-    {{-- @livewire('ticket-edit') --}}
+    <x-flash-message key="update-ticket-success" icon="check-circle"/>
+    <x-flash-message key="no-changes-to-incident" icon="check-circle"/>
 </x-app-layout>
-
-{{-- @push('styles')
-<link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@1.2.3/dist/trix.css">
-@endpush
-
-@push('scripts')
-<script src="https://unpkg.com/trix@1.2.3/dist/trix.js"></script>
-@endpush --}}
+<script>
+    // window.Alpine.data('submitting', function () {
+    //     return {
+    //     submitting: false,
+    //     handleWindowClick(event) {
+    //         // Prevent clicks on the window while the form is being submitted
+    //         // event.stopPropagation();
+    //         event.preventDefault();
+    //     }
+    //     };
+    // });
+    window.onbeforeunload = function() {
+        if (document.getElementById('title').value.trim() !== '' || document.getElementById('issue').value.trim() !== '') {
+            return "Are you sure you want to leave this page? Your changes may not be saved.";
+        }
+    };
+</script>

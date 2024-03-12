@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Livewire\Features\SupportFileUploads\WithFileUploads;
 class TicketController extends Controller
 {
@@ -45,7 +46,7 @@ class TicketController extends Controller
         $temporaryFiles = TemporaryFile::all();
 
         // * Validate the request data
-        $validator = Validator::make($request->all(), $this->rules());
+        $validator = Validator::make($request->all(), $this->rules(null));
 
         if ($validator->fails()) {
             // * Delete temporary files
@@ -56,6 +57,14 @@ class TicketController extends Controller
 
             // * Redirect back with input and errors
             return redirect()->back()->withInput()->withErrors($validator);
+        }
+
+        // * Check if the ticket number already exists
+        $existingTicket = Ticket::where('number', $request->input('number'))->exists();
+
+        if ($existingTicket) {
+            // * Ticket number is already taken, redirect back with error message
+            return redirect()->back()->withErrors(['number' => 'Ticket number is already taken'])->withInput();
         }
 
         // * Validation passed, proceed with storing ticket and files
@@ -86,8 +95,19 @@ class TicketController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Ticket $ticket)
+    // public function show(Ticket $ticket)
+    // {
+    //     $files = File::where('ticket_id', $ticket->id)->get();
+
+    //     return view('livewire.pages.ticket.show', [
+    //         'ticket' => $ticket,
+    //         'notes' => $ticket->notes()->latest()->with('user')->paginate(10),
+    //         'files' => $files,
+    //     ]);
+    // }
+    public function show($ticket)
     {
+        $ticket = Ticket::where('number', $ticket)->firstOrFail();
         $files = File::where('ticket_id', $ticket->id)->get();
 
         return view('livewire.pages.ticket.show', [
@@ -100,8 +120,19 @@ class TicketController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Ticket $ticket)
+    // public function edit(Ticket $ticket)
+    // {
+    //     $files = File::where('ticket_id', $ticket->id)->get();
+
+    //     return view('livewire.pages.ticket.edit', [
+    //         'ticket' => $ticket,
+    //         'files' => $files,
+    //     ]);
+    // }
+
+    public function edit($ticket)
     {
+        $ticket = Ticket::where('number', $ticket)->firstOrFail();
         $files = File::where('ticket_id', $ticket->id)->get();
 
         return view('livewire.pages.ticket.edit', [
@@ -113,13 +144,24 @@ class TicketController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Ticket $ticket)
+    public function update(Request $request, $ticket)
     {
+        $ticket = Ticket::where('number', $ticket)->firstOrFail();
         // * Retrieve all temporary files
         $temporaryFiles = TemporaryFile::all();
 
         // * Validate the request data
-        $validator = Validator::make($request->all(), $this->rules());
+        // $validator = Validator::make($request->all(), $this->rules());
+        // * Validate the request data
+        $validator = Validator::make($request->all(), $this->rules($ticket->id)); // Pass the current ticket id to the rules method
+
+        // * Check if the ticket number already exists
+        $existingTicket = Ticket::where('number', $request->input('number'))->where('id', '!=', $ticket->id)->exists();
+
+        if ($existingTicket) {
+            // * Ticket number is already taken, redirect back with error message
+            return redirect()->back()->withErrors(['number' => 'Ticket number is already taken'])->withInput();
+        }
 
         if ($validator->fails()) {
             // * Delete temporary files
@@ -139,24 +181,8 @@ class TicketController extends Controller
             $validatedData['status_id'] = $request->input('status_id');
         }
 
-        // $ticket->update($validatedData);
-
-        // foreach ($temporaryFiles as $temporaryFile) {
-        //     Storage::copy(
-        //         'attached_files/tmp/' . $temporaryFile->folder . '/' . $temporaryFile->file_name,
-        //         'attached_files/' . $temporaryFile->folder . '/' . $temporaryFile->file_name
-        //     );
-        //     File::create([
-        //         'ticket_id' => $ticket->id,
-        //         'file_name' => $temporaryFile->file_name,
-        //         'file_path' => $temporaryFile->folder . '/' . $temporaryFile->file,
-        //     ]);
-        //     Storage::deleteDirectory('attached_files/tmp/' . $temporaryFile->folder);
-        //     $temporaryFile->delete();
-        // }
-
         if ($temporaryFiles->isNotEmpty()) {
-            // Store temporary files
+            // * Store temporary files
             foreach ($temporaryFiles as $temporaryFile) {
                 Storage::copy(
                     'attached_files/tmp/' . $temporaryFile->folder . '/' . $temporaryFile->file_name,
@@ -176,14 +202,47 @@ class TicketController extends Controller
 
         Session::flash('update-ticket-success', 'Incident was updated successfully!');
 
-        return redirect('/tickets');
+        // return redirect('/tickets');
+        return redirect()->back();
     }
+
+    // public function update(Request $request, $ticket)
+    // {
+    //     // dd($ticket->number);
+    //     // Find the ticket by ticket number
+    //     $ticket = Ticket::where('number', $ticket)->firstOrFail();
+
+    //     // Validate the request data
+    //     $validator = Validator::make($request->all(), $this->rules($ticket->id));
+
+    //     if ($validator->fails()) {
+    //         return redirect()->back()->withInput()->withErrors($validator);
+    //     }
+
+    //     // Update other ticket attributes
+    //     $ticket->fill($request->except(['_token', '_method', 'files']));
+
+    //     // Check if file data is present in the request
+    //     if ($request->hasFile('files')) {
+    //         // Handle file updates
+    //         // ...
+    //     }
+
+    //     // Save the ticket
+    //     $ticket->save();
+
+    //     Session::flash('update-ticket-success', 'Incident was updated successfully!');
+
+    //     return redirect('/tickets');
+    // }
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Ticket $ticket)
+    public function destroy($ticket)
     {
+        $ticket = Ticket::where('number', $ticket)->firstOrFail();
         $ticket->delete();
 
         return back()->with('success', 'Ticket has been moved to archive.');
@@ -218,17 +277,20 @@ class TicketController extends Controller
     //         'files.*' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,png,jpeg,jpg,gif,svg|max:5120',
     //     ]));
     // }
-    protected function rules(): array
+    protected function rules($currentTicketId): array
     {
         return [
-            'number' => 'required',
+            'number' => [
+                'required', 'max:8',
+                Rule::unique('tickets')->ignore($currentTicketId),
+            ],
             'date_received' => 'required',
             'title' => 'required',
             'issue' => 'required',
             'requested_by' => 'required',
             'client' => 'required',
             'product' => 'required',
-            'files.*' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,png,jpeg,jpg,gif,svg|max:5120',
+            // 'files.*' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,png,jpeg,jpg,gif,svg|max:5120',
         ];
     }
 

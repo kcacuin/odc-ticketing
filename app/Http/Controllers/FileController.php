@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\File;
 use App\Models\Ticket;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 
 class FileController extends Controller
@@ -16,7 +17,9 @@ class FileController extends Controller
         // Delete the file
         $file->delete();
 
+        Session::flash('delete-attached-success', 'Attached file deleted successfully!');
+
         // Redirect back to the ticket's edit page with the 'files' fragment
-        return redirect()->route('tickets.edit', $ticket)->withFragment('files');
+        return redirect()->back()->withFragment('files');
     }
 }

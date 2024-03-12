@@ -1,9 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="mr-10 text-left font-semibold text-xl text-white dark:text-gray-200 leading-tight">
-            {{ __('Add Incident') }}
+            {{ __('Create Incident') }}
         </h2>
     </x-slot>
+    @section('title', 'Create Incident')
+
     <div class="max-w-8xl mx-auto relative my-8" x-data="{ submitting: false }">
         @auth
             <div x-show="submitting" @click.window="handleWindowClick" class="fixed inset-0 flex items-center justify-center pointer-event-all">
@@ -39,7 +41,7 @@
                         <div class="mb-4">
                             {{-- * Ticket Number (Copy to Clipboard) --}}
                             <div class="opacity-90">
-                                <x-form.input-clipboard xModel="ticketNumber, showMsg" name="number" labelname="Ticket Number" type="number" readonly="true" :value="$nextTicketNumber" class="disabled:opacity-90"/>
+                                <x-form.input-clipboard name="number" labelname="Ticket Number" type="number" readonly="true" :value="$nextTicketNumber" class="disabled:opacity-90"/>
                                 <input type="hidden" x-on:input="wire.emit('ticketIdUpdated', input)">
                             </div>
                             {{-- * Status --}}
@@ -114,16 +116,10 @@
                                             >
                                                 <div class="flex items-center justify-between space-x-4">
                                                     <h1 class="text-xl font-medium text-gray-800 ">Overview</h1>
-
-                                                    <button @click.prevent="modelOpen = false" type="button" class="text-gray-600 focus:outline-none hover:text-gray-700">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                        </svg>
-                                                    </button>
                                                 </div>
 
-                                                <p class="mt-2 text-sm text-slate-500">
-                                                    Please review the fields for this incident before submitting.
+                                                <p class="mt-2 text-base text-slate-500">
+                                                    Kindly review the fields before submitting the incident.
                                                 </p>
 
                                                 <div class="mt-5">
@@ -158,7 +154,7 @@
                                                             <div class="flex items-center justify-between">
                                                                 <p class="text-slate-500">Product</p>
                                                                 <p x-text="ticketProduct ? ticketProduct :'***This field is required***'"
-                                                                :class="{ 'text-red-primary italic': !ticketProduct, '  ': ticketProduct }"
+                                                                :class="{ 'text-red-primary italic': !ticketProduct, '': ticketProduct }"
                                                                 ></p>
                                                             </div>
                                                         </div>
@@ -166,15 +162,15 @@
                                                             <div class="flex items-center justify-between">
                                                                 <p class="text-slate-500">Title</p>
                                                                 <p x-text="ticketTitle ? ticketTitle : '***This field is required***'"
-                                                                :class="{ 'text-red-primary italic': !ticketTitle, 'text-slate-500': ticketTitle }"
+                                                                :class="{ 'text-red-primary italic': !ticketTitle, '': ticketTitle }"
                                                                 ></p>
                                                             </div>
-                                                            <div class="flex items-center justify-between">
+                                                            {{-- <div class="flex items-center justify-between">
                                                                 <p class="text-slate-500">Issue</p>
                                                                 <div x-text="ticketIssue ? ticketIssue : '***This field is required***'"
                                                                 :class="{ 'text-red-primary italic': !ticketIssue, 'text-slate-500': ticketIssue }"
                                                                 ></div>
-                                                            </div>
+                                                            </div> --}}
                                                         </div>
                                                     </div>
 
@@ -208,14 +204,19 @@
 </x-app-layout>
 
 <script>
-    window.Alpine.data('submitting', function () {
-        return {
-        submitting: false,
-        handleWindowClick(event) {
-            // Prevent clicks on the window while the form is being submitted
-            event.stopPropagation();
-            event.preventDefault();
+    // window.Alpine.data('submitting', function () {
+    //     return {
+    //     submitting: false,
+    //     handleWindowClick(event) {
+    //         // Prevent clicks on the window while the form is being submitted
+    //         event.stopPropagation();
+    //         event.preventDefault();
+    //     }
+    //     };
+    // });
+    window.onbeforeunload = function() {
+        if (document.getElementById('title').value.trim() !== '' || document.getElementById('issue').value.trim() !== '') {
+            return "Are you sure you want to leave this page? Your changes may not be saved.";
         }
-        };
-    });
+    };
 </script>

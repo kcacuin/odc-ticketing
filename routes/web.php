@@ -19,24 +19,24 @@ use Illuminate\Support\Facades\Storage;
 |
 */
 
-Route::middleware('guest')->group(function ($middleware) {
-    Route::get('/send-email', [EmailController::class, 'index'])->name('send.mail');
-    Route::get('/send-email', [EmailController::class, 'store'])->name('send.email.post');
-});
-
 Route::view('/', 'welcome');
 
 require __DIR__.'/auth.php';
-
 
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
     Route::view('profile', 'profile')->name('profile');
 
-    Route::patch('/tickets/{ticket}', [TicketController::class, 'update'])->name('tickets.update');
+    Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
+    Route::get('/tickets/incident/create', [TicketController::class, 'create'])->name('tickets.create');
+    Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
+    Route::get('/tickets/incident-{ticket}', [TicketController::class, 'show'])->name('tickets.show');
+    Route::get('/tickets/incident-{ticket}/edit', [TicketController::class, 'edit'])->name('tickets.edit');
+    Route::patch('/tickets/incident-{ticket}', [TicketController::class, 'update'])->name('tickets.update');
+    Route::delete('/tickets/incident-{ticket}', [TicketController::class, 'destroy'])->name('tickets.destroy');
 
-    Route::resource('tickets', TicketController::class);
+    // Route::resource('tickets', TicketController::class);
     Route::resource('tickets.files', FileController::class);
     Route::resource('tickets.notes', NoteController::class);
 

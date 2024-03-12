@@ -37,6 +37,10 @@ class Ticket extends Model
         'issue',
         'notes',
     ];
+    public function getRouteKeyName()
+    {
+        return 'number';
+    }
 
     public function scopeFilter($query, array $filters)
     {
