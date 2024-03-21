@@ -7,7 +7,7 @@
     </x-slot>
     @section('title', 'Incident ' . $ticket->number)
 
-    <div class="mt-6 px-6 py-6 max-w-6xl mx-auto bg-white border border-slate-200">
+    <div class="mt-6 px-6 py-6 max-w-6xl mx-auto bg-white rounded-md border border-gray-300">
         <div class="flex justify-between">
             {{-- * Left --}}
             <div class="mr-32">
@@ -18,7 +18,7 @@
                             <h1 class="text-xl text-blue-primary font-semibold">
                                 {!! clean($ticket->title) !!}
                             </h1>
-                            <div class="text-xs">
+                            <div class="flex space-x-1 text-xs">
                                 <span class="text-gray-600">
                                     {{ $ticket->created_at->diffForHumans() }} by
                                 </span>
@@ -37,27 +37,69 @@
                             </a>
                         </div>
                     </div>
-                    <div class="prose my-6 py-6 border-t border-b border-slate-200">
+                    <div class="prose my-6 py-6 border-t border-b border-gray-200">
                         {!! clean($ticket->issue->toTrixHTML()) !!}
                     </div>
                 </div>
                 {{-- * Bottom --}}
                 <div>
                     @auth
-                    <div>
+                    <div class="mb-2">
                         <h3 class="text-lg font-bold">Notes</h3>
                     </div>
-                    <ul class="divide-y mt-2 divide-slate-200">
-                        @foreach ($notes as $note)
-                        <li class="py-4 p-2">
-                            <div class="px-3 py-2 rounded-md bg-slate-100">
-                                <p class="text-base font-bold">{{ $note->user->first_name }} {{ $note->user->last_name }}</p>
-                                <div>{!! clean($note->body) !!}</div>
-                            </div>
-                            <div class="px-3 flex items-center justify-between">
-                                <span class="text-xs text-gray-600">
-                                    {{ $note->created_at->diffForHumans() }}
+                    <div class="ml-4">
+                        <ol class="relative pl-2 border-s border-gray-200 dark:border-gray-700">
+                            @foreach ($statusTimeline as $entry)
+                            <li class="mb-10 ms-6 flex">            
+                                <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                    <!-- Display user image or initials -->
                                 </span>
+                                <div class="items-center justify-between w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
+                                    <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ \Carbon\Carbon::parse($entry['start_date'])->format('M d, Y') }}</time>
+                                    <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ \Carbon\Carbon::parse($entry['start_time'])->format('H:i A') }}</time>
+                                    <div class="text-sm font-normal text-gray-500 dark:text-gray-300">
+                                        <!-- Display user who made the change -->
+                                        {{ $entry['user_id'] }}
+                                        <!-- Display changes made -->
+                                        <!-- Example: Attachments -->
+                                        @foreach ($entry['files'] as $file)
+                                            <a href="{{ asset('storage/' . $file->file_path) }}" class="font-semibold text-blue-600 dark:text-blue-500 hover:underline">{{ $file->file_name }}</a>
+                                        @endforeach
+                                        <!-- Example: Status Change -->
+                                        has changed 
+                                        <a href="#" class="font-semibold text-blue-600 dark:text-blue-500 hover:underline">Incident {{ $ticket->number }}</a> 
+                                        status to 
+                                        <x-badge class="bg-{{ $entry['status'] }}-100 text-{{ $entry['status'] }}-800 dark:bg-{{ $entry['status'] }}-900 dark:text-{{ $entry['status'] }}-300">{{ $entry['status'] }}</x-badge>
+                                    </div>
+                                </div>
+                                <!-- Additional functionality for each entry -->
+                            </li>
+                            @endforeach
+                        
+                            @foreach ($notes as $note)
+                            <li class="mb-10 ms-6 flex">            
+                                <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                    @if ($note->user->image)
+                                        <div class="relative">
+                                            <div class="w-10 h-10 rounded-full overflow-clip">
+                                                <img src="{{ asset("storage/" . $note->user->image) }}" alt="User Image">
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="relative inline-flex items-center justify-center text-slate-600 bg-slate-100 w-10 h-10 rounded-full">
+                                            {{ strtoupper(substr($note->user->first_name, 0, 1)) . strtoupper(substr($note->user->last_name, 0, 1)) }}
+                                        </div>
+                                    @endif
+                                </span>
+                                <div class="items-center justify-between w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
+                                    <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ $note->created_at->diffForHumans() }}</time>
+                                    <div class="text-sm font-normal text-gray-500 dark:text-gray-300">{{ Auth::user()->first_name . ' ' . Auth::user()->last_name }} 
+                                            has changed 
+                                        <a href="#" class="font-semibold text-blue-600 dark:text-blue-500 hover:underline">Incident {{ $ticket->number }}</a> 
+                                            status to 
+                                        <x-badge class="bg-{{ $newStatus }}-100 text-{{ $newStatus }}-800 dark:bg-{{ $newStatus }}-900 dark:text-{{ $newStatus }}-300">{{ $newStatus }}</x-badge>
+                                    </div>
+                                </div>
                                 <div
                                     x-data="{
                                         open: false,
@@ -81,17 +123,19 @@
                                     x-on:keydown.escape.prevent.stop="close($refs.button)"
                                     x-on:focusin.window="! $refs.panel.contains($event.target) && close()"
                                     x-id="['dropdown-button']"
-                                    class="relative"
+                                    class="relative flex items-center justify-center"
                                 >
-                                    <!-- Button -->
                                     <button
                                         x-ref="button"
                                         x-on:click="toggle()"
                                         :aria-expanded="open"
                                         :aria-controls="$id('dropdown-button')"
                                         type="button"
+                                        class="text-slate-500"
                                     >
-                                        •••
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
+                                        </svg>
                                     </button>
                                     <!-- Panel -->
                                     <div
@@ -101,15 +145,15 @@
                                         x-on:click.outside="close($refs.button)"
                                         :id="$id('dropdown-button')"
                                         style="display: none;"
-                                        class="absolute z-10 left-12 -bottom-6 rounded-md"
+                                        class="absolute z-10 left-6 bottom-2 rounded-md"
                                     >
                                         {{-- * Add edit button here --}}
-
+        
                                         <form action="{{ route('tickets.notes.destroy', ['ticket' => $ticket, 'note' => $note])}}"
                                             method="POST" class="mt-2">
                                             @csrf
                                             @method('DELETE')
-
+        
                                             <x-danger-button type="submit">
                                                 <x-svg-icon class="scale-75 mr-2" name="trash"/>
                                                 Delete
@@ -117,52 +161,66 @@
                                         </form>
                                     </div>
                                 </div>
-                            </div>
-
-                            {{-- @can('delete', $note)
-                            @endcan --}}
-                        </li>
-                        @endforeach
-                    </ul>
+                            </li>
+                            @endforeach    
+                            {{-- <div>
+                                <p>Previous Status: {{ $previousStatus }}</p>
+                                <p>New Status: {{ $newStatus }}</p>
+                            </div>        --}}
+                            {{-- <li class="mb-10 ms-6">
+                                <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                    @if ($note->user->image)
+                                        <div class="relative">
+                                            <div class="w-10 h-10 rounded-full overflow-clip">
+                                                <img src="{{ asset("storage/" . $note->user->image) }}" alt="User Image">
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="relative inline-flex items-center justify-center text-slate-600 bg-slate-100 w-10 h-10 rounded-full">
+                                            {{ strtoupper(substr($note->user->first_name, 0, 1)) . strtoupper(substr($note->user->last_name, 0, 1)) }}
+                                        </div>
+                                    @endif
+                                </span>
+                                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-700 dark:border-gray-600">
+                                    <div class="items-center justify-between mb-3 sm:flex">
+                                        <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">2 hours ago</time>
+                                        <div class="text-sm font-normal text-gray-500 lex dark:text-gray-300">Thomas Lean commented on  <a href="#" class="font-semibold text-gray-900 dark:text-white hover:underline">Flowbite Pro</a></div>
+                                    </div>
+                                    <div class="p-3 text-xs italic font-normal text-gray-500 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-gray-300">Hi ya'll! I wanted to share a webinar zeroheight is having regarding how to best measure your design system! This is the second session of our new webinar series on #DesignSystems discussions where we'll be speaking about Measurement.</div>
+                                </div>
+                            </li>
+                            <li class="ms-6">
+                                <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                    @if (Auth::check() && Auth::user()->image)
+                                        <div class="relative">
+                                            <div class="w-10 h-10 rounded-full overflow-clip">
+                                                <img src="{{ asset("storage/" . Auth::user()->image) }}" alt="User Image">
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="relative inline-flex items-center justify-center bg-slate-200 w-10 h-10 rounded-full">
+                                            {{ Auth::user()->first_name, 0, 1 . Auth::user()->last_name, 0, 1 }}
+                                        </div>
+                                    @endif
+                                </span>
+                                <div class="items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
+                                    <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">1 day ago</time>
+                                    <div class="text-sm font-normal text-gray-500 lex dark:text-gray-300">Jese Leos has changed <a href="#" class="font-semibold text-blue-600 dark:text-blue-500 hover:underline">Pricing page</a> task status to  <span class="font-semibold text-gray-900 dark:text-white">Finished</span></div>
+                                </div>
+                            </li> --}}
+                        </ol>
+                    </div>
                     <form action="{{ route('tickets.notes.store', $ticket) }}" method="POST" class="mt-2">
                         @csrf
                         {{-- * Add Notes --}}
                         <div class="relative">
                             <div class="mt-6">
                                 <x-form.trix-input value="{!! $ticket->notes->body->toTrixHTML() !!}" id="body" name="body" class="h-52 rounded-md overflow-y-auto" placeholder="Write your notes here..."/>
-                                {{-- <input
-                                    id="x"
-                                    name="body"
-                                    type="hidden"> --}}
-                                {{-- <trix-editor
-                                    placeholder="Write your notes here..."
-                                    input="x"
-                                    x-data="{
-                                        upload(event) {
-                                            const data = new FormData();
-                                            data.append('attachment', event.attachment.file);
-
-                                            window.axios.post('/attachments', data, {
-                                                onUploadProgress(progressEvent) {
-                                                    event.attachment.setUploadProgress(
-                                                        progressEvent.loaded / progressEvent.total * 100
-                                                    );
-                                                },
-                                            }).then(({ data }) => {
-                                                event.attachment.setAttributes({
-                                                    url: data.image_url,
-                                                });
-                                            });
-                                        }
-                                    }"
-                                    x-on:trix-attachment-add="upload"
-                                    class="h-52 rounded-md overflow-y-auto"
-                                ></trix-editor> --}}
                             </div>
                             <div class="relative">
                                 <div class="absolute right-4 bottom-2">
                                     <button type="submit" class="group text-blue-secondary hover:text-odc-blue-950">
-                                        <x-svg-icon class="transition group-hover:drop-shadow-xl group-focus    :translate-x-1 " name="send"/>
+                                        <x-svg-icon class="transition group-hover:drop-shadow-xl group-focus    :trangray-x-1 " name="send"/>
                                     </button>
                                 </div>
                             </div>
@@ -178,8 +236,8 @@
             {{-- * Right --}}
             <div class="flex flex-col gap-4 w-80 text-blue-primary text-xs">
                 {{-- * Top --}}
-                <div class="flex flex-col border border-slate-200">
-                    <div class="p-3 bg-slate-200">
+                <div class="flex flex-col rounded border border-gray-200">
+                    <div class="p-3 bg-gray-200">
                         <h3>Your request has been submitted</h3>
                     </div>
                     <div class="p-3">
@@ -194,35 +252,35 @@
                         <div class="flex justify-between py-3">
                             <p class="font-bold">Created</p>
 
-                            <div x-data="{ tooltip: false }" class="relative z-30 inline-flex">
+                            <div x-data="{ tooltip: false }" class="relative inline-flex">
                                 <span x-on:mouseover="tooltip = true" x-on:mouseleave="tooltip = false">
                                     {{ $ticket->created_at->diffForHumans() }}
                                 </span>
-                                <div x-cloak x-show.transition.origin.top="tooltip">
-                                    <div class="info-tooltip absolute z-[999] max-w-2xl ring-1 ring-slate-400 whitespace-nowrap -top-2 left-1/2 p-2 -mt-1 text-xs font-medium leading-tight text-white transform -translate-x-1/2 -translate-y-full bg-gray-dark rounded-lg shadow-lg">
+                                {{-- <div x-cloak x-show.transition.origin.top="tooltip">
+                                    <div class="info-tooltip absolute z-10 max-w-2xl ring-1 ring-gray-400 whitespace-nowrap -top-2 left-1/2 p-2 -mt-1 text-xs font-medium leading-tight text-white transform -trangray-x-1/2 -trangray-y-full bg-gray-dark rounded-lg shadow-lg">
                                     {{ $ticket->created_at }}
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                         <div class="flex justify-between py-3">
                             <p class="font-bold">Updated</p>
-                            <div x-data="{ tooltip: false }" class="relative z-30 inline-flex">
+                            <div x-data="{ tooltip: false }" class="relative inline-flex">
                                 <span x-on:mouseover="tooltip = true" x-on:mouseleave="tooltip = false">
                                     {{ $ticket->updated_at->diffForHumans() }}
                                 </span>
-                                <div x-cloak x-show.transition.origin.top="tooltip">
-                                    <div class="info-tooltip absolute z-[999] max-w-2xl ring-1 ring-slate-400 whitespace-nowrap -top-2 left-1/2 p-2 -mt-1 text-xs font-medium leading-tight text-white transform -translate-x-1/2 -translate-y-full bg-gray-dark rounded-lg shadow-lg">
+                                {{-- <div x-cloak x-show.transition.origin.top="tooltip">
+                                    <div class="info-tooltip absolute z-10 max-w-2xl ring-1 ring-gray-400 whitespace-nowrap -top-2 left-1/2 p-2 -mt-1 text-xs font-medium leading-tight text-white transform -trangray-x-1/2 -trangray-y-full bg-gray-dark rounded-lg shadow-lg">
                                     {{ $ticket->updated_at }}
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </div>
                 </div>
                 {{-- * Bottom --}}
-                <div class="flex flex-col border border-slate-300">
-                    <div class="p-3 flex justify-between bg-slate-200">
+                <div class="flex flex-col rounded border border-gray-300">
+                    <div class="p-3 flex justify-between bg-gray-200">
                         <h3>Attachments</h3>
                         <x-svg-icon class="scale-90" name="attachment" />
                     </div>
@@ -256,11 +314,11 @@
 
                                                         <div x-cloak x-show="modelOpen"
                                                             x-transition:enter="transition ease-out duration-300 transform"
-                                                            x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                                                            x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                                                            x-transition:enter-start="opacity-0 trangray-y-4 sm:trangray-y-0 sm:scale-95"
+                                                            x-transition:enter-end="opacity-100 trangray-y-0 sm:scale-100"
                                                             x-transition:leave="transition ease-in duration-200 transform"
-                                                            x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-                                                            x-transition:leave-end="opacity-0 transate-y-4 sm:translate-y-0 sm:scale-95"
+                                                            x-transition:leave-start="opacity-100 trangray-y-0 sm:scale-100"
+                                                            x-transition:leave-end="opacity-0 transate-y-4 sm:trangray-y-0 sm:scale-95"
                                                             class="inline-block w-full max-w-sm p-4 my-20 overflow-hidden text-left transition-all transform bg-white rounded-lg shadow-xl 2xl:max-w-2xl"
                                                         >
                                                             <div class="p-4 md:p-5 text-center">
@@ -270,7 +328,7 @@
                                                                 <h1 class="mb-3 text-xl font-extrabold text-gray-800 ">Are you sure?</h1>
                                                                 <h3 class="mb-4 text-sm font-normal text-gray-500 dark:text-gray-400">This action will delete <span class="font-bold">{{ $file->file_name }}</span>!</h3>
                                                                 <div class="space-x-4">
-                                                                    <x-primary-button @click.prevent="modelOpen = false" type="button" class="border border-slate-300">No, cancel</x-primary-button>
+                                                                    <x-primary-button @click.prevent="modelOpen = false" type="button" class="border border-gray-300">No, cancel</x-primary-button>
                                                                     <button :disabled="submitting" class="px-3 py-2 text-xs tracking-widest text-white uppercase transition-colors duration-200 transform bg-odc-red-600 rounded-md dark:bg-odc-red-700 dark:hover:bg-odc-red-800 dark:focus:bg-odc-red-800 hover:bg-odc-red-700 focus:outline-none focus:bg-odc-red-600 focus:ring focus:ring-odc-red-400 focus:ring-opacity-50">
                                                                         <span x-show="!submitting">Yes, delete it</span>
                                                                         <span x-show="submitting">

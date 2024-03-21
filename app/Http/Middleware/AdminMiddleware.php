@@ -15,10 +15,10 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user() && $request->user()->is_admin) {
+        if (auth()->check() && auth()->user()->role->name === 'Admin') {
             return $next($request);
         }
-
-        return redirect('/'); // Redirect to home if not an admin
+        return abort(403); // Redirect or show an error page
+        // return redirect('/'); // Redirect to home if not an admin
     }
 }

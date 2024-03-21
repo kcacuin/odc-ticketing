@@ -31,9 +31,11 @@ new class extends Component
                     </a>
                 </div>
             </div>
-            <nav class="h-full mt-6 flex flex-col justify-between">
+            <nav class="h-full mt-6 mb-4 flex flex-col justify-between">
                 <div>
-                    <span class="ml-4 uppercase tracking-widest text-xs text-center text-slate-400 text-opacity-65 font-thin">Main</span>
+                    <div class="pb-2">
+                        <span class="ml-4 uppercase tracking-widest text-xs text-center text-slate-400 text-opacity-65 font-thin">Main</span>
+                    </div>
                     <x-nav-link
                         :href="route('dashboard')"
                         :active="request()->routeIs('dashboard')" wire:navigate>
@@ -60,10 +62,12 @@ new class extends Component
                     </x-nav-link>
                 </div>
                 <div>
-                    <span x-show="open"
-                        x-transition:enter.duration.500ms
-                        x-transition:leave.duration.50ms
-                        class="ml-5 uppercase tracking-widest text-xs text-center text-slate-400 text-opacity-65 font-thin">System Settings</span>
+                    <div class="pb-2">
+                        <span x-show="open"
+                            x-transition:enter.duration.500ms
+                            x-transition:leave.duration.50ms
+                            class="ml-5 uppercase tracking-widest text-xs text-center text-slate-400 text-opacity-65 font-thin">System Settings</span>
+                    </div>
                     <x-nav-link
                         href="#"
                        >
@@ -77,36 +81,26 @@ new class extends Component
                             Settings
                         </x-nav-link-icon>
                     </x-nav-link>
+                    @php
+                        $user = auth()->user();
+                    @endphp
+                    @if ($user && $user->role->name === 'Admin')
                     <x-nav-link
-                        href="#"
+                        :href="route('admin.index')"
+                        :active="request()->routeIs('admin.index')" wire:navigate
                        >
                         <x-svg-icon
                             class="scale-90"
                             name="admin"
+                            :active="request()->routeIs('admin.index')"
                             />
                         <x-nav-link-icon
-                            :active="request()->routeIs('admin')"
+                            :active="request()->routeIs('admin.index')"
                             alt="admin">
                             Admin
                         </x-nav-link-icon>
                     </x-nav-link>
-                    {{-- <form method="POST" action="{{ route('logout') }}" id="logout-form">
-                        @csrf
-                        <x-nav-link
-                            :href="route('logout')"
-                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                            class="transition duration-150 hover:text-red-primary"
-                            >
-                            <x-svg-icon
-                                class="scale-90"
-                                name="logout"
-                                />
-                            <x-nav-link-icon
-                                alt="admin">
-                                <span class="whitespace-nowrap">Log out</span>
-                            </x-nav-link-icon>
-                        </x-nav-link>
-                    </form> --}}
+                    @endif
                 </div>
             </nav>
         </div>

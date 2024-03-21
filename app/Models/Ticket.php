@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use Tonysm\RichTextLaravel\Models\Traits\HasRichText;
+use Carbon\Carbon;
 
 class Ticket extends Model
 {
@@ -58,6 +59,7 @@ class Ticket extends Model
             );
         });
 
+        // TODO: Phase 2
         // $query->when($filters['issues'] ?? false, fn($query, $issue) =>
         //     $query->whereHas('issues', fn ($query) =>
         //         $query->where('issues', $issue)
@@ -79,7 +81,7 @@ class Ticket extends Model
             'In-progress'=> 'yellow',
             'In-review'=> 'purple',
             'Closed'=> 'green',
-        ][$this->status->name] ?? 'cool-gray';
+        ][$this->status->name] ?? 'slate';
     }
 
     public function user(): BelongsTo
@@ -111,4 +113,78 @@ class Ticket extends Model
     {
         return $this->morphMany(RichText::class, 'record');
     }
+
+    public function getLatestWeeklyTickets()
+    {
+        $startDate = Carbon::now()->startOfWeek();
+        $endDate = Carbon::now()->endOfWeek();
+
+        $tickets = Ticket::whereBetween('created_at', [$startDate, $endDate])
+                            ->orderBy('created_at', 'desc')
+                            ->get();
+
+        $ticketsByDate = [];
+
+        foreach ($tickets as $ticket) {
+            $date = $ticket->created_at->toDateString();
+            if (!isset($ticketsByDate[$date])) {
+                $ticketsByDate[$date] = [];
+            }
+            $ticketsByDate[$date][] = $ticket;
+        }
+    
+        return $ticketsByDate;
+    }
+
+    // public function getStatusChanges()
+    // {
+    //     return $this->notes()->orderBy('created_at')->get();
+    // }
+    public function getStatusTimeline()
+    {
+        $statusTimeline = [];
+        $notes = $this->notes()->where('new_status', '!=', null)->orderBy('created_at')->get();
+    
+        // Initialize the first status of the ticket
+        $currentStatus = $this->status->name;
+        $startDate = $this->created_at;
+        $startTime = $startDate;
+        $endDate = $startDate;
+    
+        foreach ($notes as $note) {
+            // Store the duration for the current status
+            $duration = $endDate->diffInMinutes($startDate);
+            $statusTimeline[] = [
+                'user_id' => $note->user_id,
+                'status' => $currentStatus,
+                'start_date' => Carbon::parse($startDate)->format('M d, Y'),
+                'start_time' => Carbon::parse($startTime)->format('H:i:s'),
+                'end_date' => Carbon::parse($endDate)->format('M d, Y'),
+                'end_time' => Carbon::parse($endDate)->format('H:i:s'),
+                'duration' => $duration,
+            ];
+    
+            // Update the start date for the new status
+            $startDate = $note->created_at;
+            $startTime = $note->created_at;
+            // Change the current status
+            $currentStatus = $note->new_status;
+            // Update the end date
+            $endDate = $note->created_at;
+        }
+    
+        // Include the last status until now
+        $duration = Carbon::now()->diffInMinutes($startDate);
+        $statusTimeline[] = [
+            'status' => $currentStatus,
+            'start_date' => Carbon::parse($startDate)->format('M d, Y'),
+            'start_time' => Carbon::parse($startTime)->format('H:i:s'),
+            'end_date' => Carbon::now()->format('Y-m-d'),
+            'end_time' => Carbon::now()->format('H:i:s'),
+            'duration' => $duration,
+        ];
+    
+        return $statusTimeline;
+    }
+    
 }

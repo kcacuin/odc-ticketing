@@ -10,7 +10,13 @@ class Note extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['body', 'user_id'];
+    protected $fillable = [
+        'ticket_id',
+        'user_id',
+        'body', 
+        'previous_status', 
+        'new_status',
+    ];
 
     public function user(): BelongsTo
     {

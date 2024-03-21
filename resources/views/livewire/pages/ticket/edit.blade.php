@@ -37,7 +37,7 @@
                 <div class="absolute inset-0 opacity-50 pointer-event-all"></div>
             </div>
 
-            <form @submit="submitting = true;" method="POST" action="{{ route('tickets.update', $ticket->number) }}" enctype="multipart/form-data" class="py-2 pb-6 px-8 bg-white mx-8">
+            <form @submit="submitting = true;" method="POST" action="{{ route('tickets.update', $ticket->number) }}" enctype="multipart/form-data" class="py-2 pb-6 px-8 bg-white rounded-md border border-slate-300 mx-8">
                 @csrf
                 @method('PATCH')
 

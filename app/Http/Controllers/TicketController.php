@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Status;
+use App\Models\Note;
 use App\Models\TemporaryFile;
 use App\Models\File;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
@@ -109,11 +111,19 @@ class TicketController extends Controller
     {
         $ticket = Ticket::where('number', $ticket)->firstOrFail();
         $files = File::where('ticket_id', $ticket->id)->get();
+        $notes = $ticket->notes()->latest()->with('user')->paginate(10);
+        $statusTimeline = $ticket->getStatusTimeline();
+
+        $previousStatus = session('previousStatus');
+        $newStatus = session('newStatus');
 
         return view('livewire.pages.ticket.show', [
             'ticket' => $ticket,
-            'notes' => $ticket->notes()->latest()->with('user')->paginate(10),
+            'notes' => $notes,
+            'previousStatus' => $previousStatus,
+            'newStatus' => $newStatus,
             'files' => $files,
+            'statusTimeline' => $statusTimeline,
         ]);
     }
 
@@ -151,8 +161,6 @@ class TicketController extends Controller
         $temporaryFiles = TemporaryFile::all();
 
         // * Validate the request data
-        // $validator = Validator::make($request->all(), $this->rules());
-        // * Validate the request data
         $validator = Validator::make($request->all(), $this->rules($ticket->id)); // Pass the current ticket id to the rules method
 
         // * Check if the ticket number already exists
@@ -178,7 +186,8 @@ class TicketController extends Controller
 
         // * Update the status_id only if it's present in the request
         if ($request->has('status_id')) {
-            $validatedData['status_id'] = $request->input('status_id');
+            $newStatus = Status::findOrFail($request->input('status_id'));
+            $this->updateTicketStatus($ticket, $newStatus);
         }
 
         if ($temporaryFiles->isNotEmpty()) {
@@ -206,36 +215,25 @@ class TicketController extends Controller
         return redirect()->back();
     }
 
-    // public function update(Request $request, $ticket)
-    // {
-    //     // dd($ticket->number);
-    //     // Find the ticket by ticket number
-    //     $ticket = Ticket::where('number', $ticket)->firstOrFail();
+    /**
+     * Update ticket status and create a note for the status change.
+     */
+    private function updateTicketStatus($ticket, $newStatus)
+    {
+        $previousStatus = $ticket->status->name;
+        
+        // Update ticket status
+        $ticket->status_id = $newStatus->id;
+        $ticket->save();
 
-    //     // Validate the request data
-    //     $validator = Validator::make($request->all(), $this->rules($ticket->id));
-
-    //     if ($validator->fails()) {
-    //         return redirect()->back()->withInput()->withErrors($validator);
-    //     }
-
-    //     // Update other ticket attributes
-    //     $ticket->fill($request->except(['_token', '_method', 'files']));
-
-    //     // Check if file data is present in the request
-    //     if ($request->hasFile('files')) {
-    //         // Handle file updates
-    //         // ...
-    //     }
-
-    //     // Save the ticket
-    //     $ticket->save();
-
-    //     Session::flash('update-ticket-success', 'Incident was updated successfully!');
-
-    //     return redirect('/tickets');
-    // }
-
+        // Create a new note to track the status change
+        Note::create([
+            'ticket_id' => $ticket->id,
+            'user_id' => Auth::id(),
+            'previous_status' => $previousStatus,
+            'new_status' => $newStatus->name,
+        ]);
+    }
 
     /**
      * Remove the specified resource from storage.

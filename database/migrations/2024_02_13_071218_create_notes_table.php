@@ -17,7 +17,9 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Ticket::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(User::class)->constrained()->restrictOnDelete();
-            $table->longText('body');
+            $table->string('previous_status');
+            $table->string('new_status');
+            $table->longText('body')->nullable();
             $table->timestamps();
         });
     }

@@ -37,5 +37,32 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'last_login' => 'datetime',
     ];
+
+    public function getUserColorAttribute()
+    {
+        return [
+            'admin'=> 'odc-red',
+            'user'=> 'slate',
+        ][$this->role] ?? 'slate';
+    }
+
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['search'] ?? false, function ($query, $search) {
+            $query->where(fn ($query) =>
+                $query->where('first_name', 'like', '%' . $search . '%')
+                    ->orWhere('last_name', 'like', '%' . $search . '%')
+                    ->orWhere('username', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%')
+                    ->orWhere('role_id', 'like', '%' . $search . '%')
+            );
+        });
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
 }

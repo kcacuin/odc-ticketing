@@ -1,10 +1,11 @@
 <?php
 
-use App\Http\Controllers\EmailController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UploadController;
+use App\Http\Controllers\UserController;
+use App\Livewire\UserList;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
@@ -23,10 +24,13 @@ Route::view('/', 'welcome');
 
 require __DIR__.'/auth.php';
 
+Route::get('admin', UserList::class)->name('admin.index')->middleware('admin');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
     Route::view('profile', 'profile')->name('profile');
+    
+    // Route::get('admin', [UserController::class, 'index'])->name('admin.index');
 
     Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
     Route::get('/tickets/incident/create', [TicketController::class, 'create'])->name('tickets.create');

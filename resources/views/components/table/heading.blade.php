@@ -4,7 +4,7 @@
     'multiColumn' => null,
 ])
 
-<th scope="col" {{ $attributes->merge(['class' => 'px-2']) }} >
+<th scope="col" {{ $attributes->merge(['class' => 'px-2 text-slate-700']) }} >
     @unless ($sortable)
         <span>{{ $slot }}</span>
     @else

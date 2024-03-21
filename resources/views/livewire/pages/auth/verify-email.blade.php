@@ -42,7 +42,8 @@ new #[Layout('layouts.guest')] class extends Component
             <x-odc-support-app-logo />
             <h4 class="my-6 text-lg font-semibold uppercase tracking-widest text-white">Verification</h4>
             <span class="text-center">
-                {{ __('Please wait, for the admin is verifying your registration credentials. Thank you.') }}
+                <p>Please wait, for the admin is verifying your registration credentials.</p>
+                <span>Thank you.</span>
             </span>
         </div>
     </div>

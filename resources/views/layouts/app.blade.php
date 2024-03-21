@@ -30,38 +30,282 @@
             <div class="flex flex-col w-full">
                 @if (isset($header))
                     <header class="relative bg-gradient-to-br from-blue-primary to-blue-secondary dark:bg-gray-800 shadow">
-                        <div class="relative z-[1] odc-header-overlay flex items-center justify-between h-20 w-full mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                        <div class="relative odc-header-overlay z-10 flex items-center justify-between h-20 w-full mx-auto py-6 px-4 sm:px-6 lg:px-8">
                             {{ $header }}
                             <div>
                                 <!-- Settings Dropdown -->
-                                <div class="hidden sm:flex sm:items-center sm:ms-6">
-                                    <x-dropdown align="right" width="48">
-                                        <x-slot name="trigger">
-                                            <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
-                                                <div class="flex items-center text-white">
-                                                    <x-svg-icon class="mr-2" name="profile-def" />
-                                                    {{ Auth::user()->username }}
+                                <div class="hidden space-x-2 sm:flex sm:items-center sm:ms-6">
+                                    {{-- <button type="button" class="relative">
+                                        <span class="sr-only">Notifications</span>
+                                        <div class="mt-2">
+                                            <x-svg-icon name="bell" class="text-white w-7 h-7" />
+                                            <span class="relative flex h-[10px] w-[10px]">
+                                                <span class="animate-ping absolute -top-7 -end-4 inline-flex h-full w-full rounded-full bg-odc-red-400 opacity-75"></span>
+                                                <span class="relative inline-flex -top-7 -end-4 rounded-full h-[10px] w-[10px] bg-odc-red-500"></span>
+                                            </span>
+                                        </div>
+
+                                    </button> --}}
+                                    {{-- * Notifications' Dropdown --}}
+                                    <div class="flex justify-center mt-3">
+                                        <div
+                                            x-data="{
+                                                open: false,
+                                                toggle() {
+                                                    if (this.open) {
+                                                        return this.close()
+                                                    }
+
+                                                    this.$refs.button.focus()
+
+                                                    this.open = true
+                                                },
+                                                close(focusAfter) {
+                                                    if (! this.open) return
+
+                                                    this.open = false
+
+                                                    focusAfter && focusAfter.focus()
+                                                }
+                                            }"
+                                            x-on:keydown.escape.prevent.stop="close($refs.button)"
+                                            x-on:focusin.window="! $refs.panel.contains($event.target) && close()"
+                                            x-id="['dropdown-button']"
+                                            class="relative"
+                                        >
+                                            <button 
+                                                x-ref="button"
+                                                x-on:click="toggle()"
+                                                :aria-expanded="open"
+                                                :aria-controls="$id('dropdown-button')"
+                                                type="button" 
+                                            >
+                                                <span class="sr-only">Notifications</span>
+                                                <div>
+                                                    <x-svg-icon name="bell" class="text-white w-7 h-7" />
+                                                    <span class="relative flex h-[10px] w-[10px]">
+                                                        <span class="animate-ping absolute -top-7 -end-4 inline-flex h-full w-full rounded-full bg-odc-red-400 opacity-75"></span>
+                                                        <span class="relative inline-flex -top-7 -end-4 rounded-full h-[10px] w-[10px] bg-odc-red-500"></span>
+                                                    </span>
                                                 </div>
                                             </button>
-                                        </x-slot>
+                                            <!-- Panel -->
+                                            <div
+                                                x-ref="panel"
+                                                x-show="open"
+                                                x-transition.origin.top.right
+                                                x-on:click.outside="close($refs.button)"
+                                                :id="$id('dropdown-button')"
+                                                style="display: none;"
+                                                class="absolute right-0 z-20 mt-2 w-[30rem] h-[30rem] rounded-md bg-white shadow-md overflow-y-auto"
+                                            >
+                                                <div class="p-5 border border-gray-100 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+                                                    <h3 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">Notifications</h3>
+                                                    @php
+                                                        $ticketModel = new \App\Models\Ticket;
+                                                        $latestTickets = $ticketModel->getLatestWeeklyTickets();
+                                                    @endphp
+                                                    @foreach($latestTickets as $date => $tickets)
+                                                    <div>
+                                                        <div class="border-b border-slate-200">
+                                                            <time class="text-base font-semibold text-gray-900 dark:text-white">{{ Carbon\Carbon::parse($date)->format('F j, Y') }}</time>
+                                                        </div>
+                                                        <ol class="my-2">
+                                                            @foreach($tickets as $ticket) 
+                                                            <li>
+                                                                <a href="{{ route('tickets.show', $ticket) }}" class="items-center block p-3 rounded-md sm:flex hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                                    <div class="mr-3">
+                                                                        @if ($ticket->user->image)
+                                                                            <div class="relative">
+                                                                                <div class="w-10 h-10 rounded-full overflow-clip">
+                                                                                    <img src="{{ asset("storage/" . $ticket->user->image) }}" alt="User Image">
+                                                                                </div>
+                                                                            </div>
+                                                                        @else
+                                                                            <div class="relative inline-flex items-center justify-center text-slate-600 bg-slate-200 w-10 h-10 rounded-full">
+                                                                                {{ strtoupper(substr($ticket->user->first_name, 0, 1)) . strtoupper(substr($ticket->user->last_name, 0, 1)) }}
+                                                                            </div>
+                                                                        @endif
+                                                                    </div>
+                                                                    <div class="text-gray-600 dark:text-gray-400">
+                                                                        <div class="text-sm font-normal">
+                                                                            <span class="font-medium text-gray-900 dark:text-white">{{ Auth::user()->first_name . ' ' . Auth::user()->last_name }}</span> 
+                                                                            created an incident requested by 
+                                                                            <span class="font-medium text-gray-900 dark:text-white">{{ $ticket->requested_by }}</span>
+                                                                            -
+                                                                            <span class="bg-slate-100 text-odc-blue-900 text-xs font-normal me-2 px-2.5 py-0.5 rounded dark:bg-gray-600 dark:text-gray-300">{{ $ticket->client }}</span>
+                                                                        </div>
+                                                                        <div class="text-sm font-normal">
+                                                                            <span>"{{ $ticket->title }}"</span>
+                                                                        </div>
+                                                                        <div class="text-xs font-normal">
+                                                                            <span>{{ $ticket->created_at->diffForHumans() }}</span>
+                                                                            •
+                                                                            <x-badge class="bg-{{ $ticket->status_color }}-100 text-{{ $ticket->status_color }}-800 dark:bg-{{ $ticket->status_color }}-900 dark:text-{{ $ticket->status_color }}-300">{{ $ticket->status->name }}</x-badge>
+                                                                        </div>
+                                                                    </div>
+                                                                </a>
+                                                            </li>
+                                                            @endforeach
+                                                        </ol>
+                                                    </div>
+                                                    @endforeach
+                                                </div>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                        <x-slot name="content" class="z-[1]">
-                                            <x-dropdown-link :href="route('profile')">
-                                                {{ __('Profile') }}
-                                            </x-dropdown-link>
-
-                                            <!-- Authentication -->
-                                            <form method="POST" action="{{ route('logout') }}">
-                                                @csrf
-
-                                                <x-responsive-nav-link class="text-sm text-red-primary" :href="route('logout')"
-                                                        onclick="event.preventDefault();
-                                                                    this.closest('form').submit();">
-                                                    {{ __('Log Out') }}
-                                                </x-responsive-nav-link>
-                                            </form>
-                                        </x-slot>
-                                    </x-dropdown>
+                                    {{-- * Profile's Dropdown --}}
+                                    <div class="flex justify-end">
+                                        <!-- Dropdown Container -->
+                                        <div x-data="{ open: false }" class="relative inline-block">
+                                        <!-- Dropdown Toggle Button -->
+                                        <button
+                                            type="button"
+                                            class="inline-flex items-center justify-center space-x-2 rounded-full p-1 text-sm font-semibold leading-5 text-white  focus:ring focus:ring-odc-blue-400 focus:ring-opacity-50 active:border-odc-blue-700 active:bg-odc-blue-700 dark:focus:ring-odc-blue-400 dark:focus:ring-opacity-90"
+                                            id="tk-dropdown"
+                                            aria-haspopup="true"
+                                            x-bind:aria-expanded="open"
+                                            x-on:click="open = true"
+                                        >
+                                        @if (Auth::check() && Auth::user()->image)
+                                            <div class="relative">
+                                                <div class="w-10 h-10 rounded-full overflow-clip">
+                                                    <img src="{{ asset("storage/" . Auth::user()->image) }}" alt="User Image">
+                                                </div>
+                                                <x-svg-icon name="chev-down" class="absolute bg-white w-[10.2px] h-[10.2px] rounded-[50%] left-[27px] bottom-0 text-slate-600 ring-2 ring-[#1A5378]" />
+                                            </div>
+                                        @else
+                                            <div class="relative inline-flex items-center justify-center w-10 h-10 rounded-full">
+                                                <span class="absolute z-10 font-medium text-slate-600 dark:text-gray-300">{{ strtoupper(substr(Auth::user()->first_name, 0, 1)) . strtoupper(substr(Auth::user()->last_name, 0, 1)) }}</span>
+                                                {{-- * DP-Container --}}
+                                                <span class="absolute w-[40px] h-[40px] overflow-hidden rounded-[50%] after:content-[''] after:absolute after:w-[13px] after:h-[13px] after:shadow-[0px_0px_0px_2000px_#f1f5f9] after:rounded-[50%] after:left-1/2 after:bottom-0
+                                                after:translate-x-[5.4px] after:translate-y-[1.2px]"></span>
+                                                <x-svg-icon name="chev-down" class="absolute bg-slate-100 w-[10.2px] h-[10.2px] rounded-[50%] left-[27px] bottom-0  text-slate-600"/>
+                                            </div>
+                                        @endif
+                                        </button>
+                                        <!-- END Dropdown Toggle Button -->
+                                    
+                                        <!-- Dropdown -->
+                                        <div
+                                            x-cloak
+                                            x-show="open"
+                                            x-transition:enter="transition ease-out duration-100"
+                                            x-transition:enter-start="opacity-0 scale-90"
+                                            x-transition:enter-end="opacity-100 scale-100"
+                                            x-transition:leave="transition ease-in duration-75"
+                                            x-transition:leave-start="opacity-100 scale-100"
+                                            x-transition:leave-end="opacity-0 scale-90"
+                                            x-on:click.outside="open = false"
+                                            role="menu"
+                                            aria-labelledby="tk-dropdown"
+                                            class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-lg shadow-xl dark:shadow-gray-900"
+                                        >
+                                            <div
+                                            class="divide-y divide-gray-100 rounded-lg bg-white ring-1 ring-black ring-opacity-5 dark:divide-gray-700 dark:bg-gray-800 dark:ring-gray-700"
+                                            >
+                                            {{-- <div class="space-y-1 p-2.5">
+                                                <a
+                                                role="menuitem"
+                                                href="javascript:void(0)"
+                                                class="group flex items-center justify-between space-x-2 rounded-lg border border-transparent px-2.5 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-800 active:border-blue-100 dark:text-gray-200 dark:hover:bg-gray-700/75 dark:hover:text-white dark:active:border-gray-600"
+                                                >
+                                                <svg
+                                                    class="hi-mini hi-inbox inline-block size-5 flex-none opacity-25 group-hover:opacity-50"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 20 20"
+                                                    fill="currentColor"
+                                                    aria-hidden="true"
+                                                >
+                                                    <path
+                                                    fill-rule="evenodd"
+                                                    d="M1 11.27c0-.246.033-.492.099-.73l1.523-5.521A2.75 2.75 0 015.273 3h9.454a2.75 2.75 0 012.651 2.019l1.523 5.52c.066.239.099.485.099.732V15a2 2 0 01-2 2H3a2 2 0 01-2-2v-3.73zm3.068-5.852A1.25 1.25 0 015.273 4.5h9.454a1.25 1.25 0 011.205.918l1.523 5.52c.006.02.01.041.015.062H14a1 1 0 00-.86.49l-.606 1.02a1 1 0 01-.86.49H8.236a1 1 0 01-.894-.553l-.448-.894A1 1 0 006 11H2.53l.015-.062 1.523-5.52z"
+                                                    clip-rule="evenodd"
+                                                    />
+                                                </svg>
+                                                <span class="grow">Inbox</span>
+                                                </a>
+                                            </div> --}}
+                                            <div class="space-y-1 p-2.5">
+                                                <a
+                                                role="menuitem"
+                                                href="{{ route('profile') }}"
+                                                class="group flex items-center justify-between space-x-2 rounded-lg border border-transparent px-2.5 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-800 active:border-blue-100 dark:text-gray-200 dark:hover:bg-gray-700/75 dark:hover:text-white dark:active:border-gray-600"
+                                                >
+                                                <svg
+                                                    class="hi-mini hi-user-circle inline-block size-5 flex-none opacity-25 group-hover:opacity-50"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 20 20"
+                                                    fill="currentColor"
+                                                    aria-hidden="true"
+                                                >
+                                                    <path
+                                                    fill-rule="evenodd"
+                                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-5.5-2.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM10 12a5.99 5.99 0 00-4.793 2.39A6.483 6.483 0 0010 16.5a6.483 6.483 0 004.793-2.11A5.99 5.99 0 0010 12z"
+                                                    clip-rule="evenodd"
+                                                    />
+                                                </svg>
+                                                <span class="grow">Profile</span>
+                                                </a>
+                                                {{-- <a
+                                                role="menuitem"
+                                                href="javascript:void(0)"
+                                                class="group flex items-center justify-between space-x-2 rounded-lg border border-transparent px-2.5 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-800 active:border-blue-100 dark:text-gray-200 dark:hover:bg-gray-700/75 dark:hover:text-white dark:active:border-gray-600"
+                                                >
+                                                <svg
+                                                    class="hi-mini hi-cog-6-tooth inline-block size-5 flex-none opacity-25 group-hover:opacity-50"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 20 20"
+                                                    fill="currentColor"
+                                                    aria-hidden="true"
+                                                >
+                                                    <path
+                                                    fill-rule="evenodd"
+                                                    d="M7.84 1.804A1 1 0 018.82 1h2.36a1 1 0 01.98.804l.331 1.652a6.993 6.993 0 011.929 1.115l1.598-.54a1 1 0 011.186.447l1.18 2.044a1 1 0 01-.205 1.251l-1.267 1.113a7.047 7.047 0 010 2.228l1.267 1.113a1 1 0 01.206 1.25l-1.18 2.045a1 1 0 01-1.187.447l-1.598-.54a6.993 6.993 0 01-1.929 1.115l-.33 1.652a1 1 0 01-.98.804H8.82a1 1 0 01-.98-.804l-.331-1.652a6.993 6.993 0 01-1.929-1.115l-1.598.54a1 1 0 01-1.186-.447l-1.18-2.044a1 1 0 01.205-1.251l1.267-1.114a7.05 7.05 0 010-2.227L1.821 7.773a1 1 0 01-.206-1.25l1.18-2.045a1 1 0 011.187-.447l1.598.54A6.993 6.993 0 017.51 3.456l.33-1.652zM10 13a3 3 0 100-6 3 3 0 000 6z"
+                                                    clip-rule="evenodd"
+                                                    />
+                                                </svg>
+                                                <span class="grow">Settings</span>
+                                                </a> --}}
+                                            </div>
+                                            <div class="space-y-1 p-2.5">
+                                                <form method="POST" action="{{ route('logout') }}">
+                                                    @csrf
+                                                    <button
+                                                        type="submit"
+                                                        role="menuitem"
+                                                        class="group flex w-full items-center justify-between space-x-2 rounded-lg border border-transparent px-2.5 py-2 text-left text-sm font-medium text-red-primary hover:bg-odc-red-50 hover:text-odc-red-800 active:border-odc-red-100 dark:text-gray-200 dark:hover:bg-gray-700/75 dark:hover:text-white dark:active:border-gray-600"
+                                                    >
+                                                        <svg
+                                                        class="hi-mini hi-lock-closed inline-block size-5 flex-none opacity-25 group-hover:opacity-50"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 20 20"
+                                                        fill="currentColor"
+                                                        aria-hidden="true"
+                                                        >
+                                                        <path
+                                                            fill-rule="evenodd"
+                                                            d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z"
+                                                            clip-rule="evenodd"
+                                                        />
+                                                        </svg>
+                                                        <span class="grow">Log out</span>
+                                                    </button>
+                                                    {{-- <x-responsive-nav-link class="text-sm text-red-primary" :href="route('logout')"
+                                                            onclick="event.preventDefault();
+                                                                        this.closest('form').submit();">
+                                                        {{ __('Log Out') }}
+                                                    </x-responsive-nav-link> --}}
+                                                </form>
+                                            </div>
+                                            </div>
+                                        </div>
+                                        <!-- END Dropdown -->
+                                        </div>
+                                        <!-- Dropdown Container -->
+                                    </div>
                                 </div>
 
                                 <!-- Hamburger -->

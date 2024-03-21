@@ -19,6 +19,7 @@
         "@tailwindcss/typography": "^0.5.10",
         "filepond": "^4.30.6",
         "pikaday": "^1.8.2",
+        "update": "^0.7.4",
         "vite-plugin-import-css": "^0.1.5"
     }
 }

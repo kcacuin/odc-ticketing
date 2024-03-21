@@ -6,6 +6,7 @@ use App\Livewire\DataTable\WithPerPagePagination;
 use App\Livewire\DataTable\WithBulkActions;
 use App\Livewire\DataTable\WithCachedRows;
 use App\Livewire\DataTable\WithSorting;
+use Illuminate\Support\Facades\Session;
 use App\Models\Status;
 use App\Models\Ticket;
 use Carbon\Carbon;
@@ -16,8 +17,7 @@ class TicketList extends Component
     use WithPerPagePagination, WithBulkActions, WithCachedRows, WithSorting;
 
     public $id;
-    public $showDeleteModal = false;
-    // public $showFilters = false;
+    public $showDeleteModal;
     public $filters = [
         'search' => '',
         'status' => '',
@@ -27,11 +27,28 @@ class TicketList extends Component
 
     public $queryString = ['sorts'];
 
-
     public function updatedFilters()
     {
         $this->resetPage();
     }
+
+    public function delete($ticketId)
+    {
+        $this->id = $ticketId;
+        $this->showDeleteModal = true;
+    }
+
+    public function confirmDelete()
+    {
+        $ticket = Ticket::findOrFail($this->id);
+
+        $ticket->delete();
+
+        Session::flash('delete-ticket-success', 'Incident deleted successfully.');
+
+        $this->reset();
+    }
+
     public function deleteSelected()
     {
         $deleteCount = $this->selectedRowsQuery->count();
@@ -46,8 +63,6 @@ class TicketList extends Component
     public function toggleShowFilters()
     {
         $this->useCachedRows();
-
-        // $this->showFilters = ! $this->showFilters;
     }
 
     public function resetFilters()

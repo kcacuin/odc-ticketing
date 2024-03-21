@@ -11,7 +11,7 @@
             <div x-show="submitting" @click.window="handleWindowClick" class="fixed inset-0 flex items-center justify-center pointer-event-all">
                 <div class="absolute inset-0 opacity-50 pointer-event-all"></div>
             </div>
-            <form @submit="submitting = true;" method="POST" action="/tickets" enctype="multipart/form-data" class="py-6 px-8 bg-white mx-8 border border-slate-200">
+            <form @submit="submitting = true;" method="POST" action="/tickets" enctype="multipart/form-data" class="py-6 px-8 bg-white mx-8 border rounded-md border-slate-300">
                 @csrf
 
                 <div class="flex flex-row-reverse w-full gap-10"
@@ -204,16 +204,6 @@
 </x-app-layout>
 
 <script>
-    // window.Alpine.data('submitting', function () {
-    //     return {
-    //     submitting: false,
-    //     handleWindowClick(event) {
-    //         // Prevent clicks on the window while the form is being submitted
-    //         event.stopPropagation();
-    //         event.preventDefault();
-    //     }
-    //     };
-    // });
     window.onbeforeunload = function() {
         if (document.getElementById('title').value.trim() !== '' || document.getElementById('issue').value.trim() !== '') {
             return "Are you sure you want to leave this page? Your changes may not be saved.";

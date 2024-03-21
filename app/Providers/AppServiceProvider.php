@@ -27,8 +27,12 @@ class AppServiceProvider extends ServiceProvider
         Relation::enforceMorphMap([
             'ticket' => Ticket::class,
         ]);
+        Relation::morphMap([
+            'user' => 'App\Models\User',
+            // Add other morphable models here if needed
+        ]);
         Component::macro('notify', function ($message) {
-            $this->dispatchBrowserEvent('notify', $message);
+            $this->dispatch('notify', $message);
         });
 
         Builder::macro('search', function ($field, $string) {
