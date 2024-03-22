@@ -17,7 +17,7 @@ return new class extends Migration
         {
             DB::table('rich_texts')->insert([
                 'field' => 'issue',
-                'body' => '<div>' . $ticket->issue . '</div>',
+                'body' => '<div class="trix-content"> <!--[if BLOCK]><![endif]--> ' . $ticket->issue . ' <!--[if ENDBLOCK]><![endif]--> </div>',
                 'record_type' => (new Ticket())->getMorphClass(),
                 'record_id' => $ticket->id,
                 'created_at' => $ticket->created_at,

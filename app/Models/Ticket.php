@@ -84,6 +84,20 @@ class Ticket extends Model
         ][$this->status->name] ?? 'slate';
     }
 
+    public function getUpdatedStatusColor($statusName)
+    {
+        $colors = [
+            'Open' => 'red',
+            'Pending' => 'blue',
+            'In-progress' => 'yellow',
+            'In-review' => 'purple',
+            'Closed' => 'green',
+        ];
+    
+        return $colors[$statusName] ?? 'slate';
+    }
+
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -104,6 +118,22 @@ class Ticket extends Model
         return $this->hasMany(File::class);
     }
 
+    public function updateFiles($user, $previousFiles, $newFiles)
+    {
+        $fileChanges = [
+            'previous_files' => $previousFiles,
+            'new_files' => $newFiles,
+        ];
+
+        TicketChange::create([
+            'ticket_id' => $this->id,
+            'user_id' => $user->id,
+            'field' => 'files',
+            'previous_value' => json_encode($fileChanges['previous_files']),
+            'new_value' => json_encode($fileChanges['new_files']),
+        ]);
+    }
+
     public function temporaryFiles()
     {
         return $this->hasMany(TemporaryFile::class);
@@ -112,6 +142,11 @@ class Ticket extends Model
     public function richTexts()
     {
         return $this->morphMany(RichText::class, 'record');
+    }
+
+    public function changes()
+    {
+        return $this->hasMany(TicketChange::class);
     }
 
     public function getLatestWeeklyTickets()
@@ -134,57 +169,6 @@ class Ticket extends Model
         }
     
         return $ticketsByDate;
-    }
-
-    // public function getStatusChanges()
-    // {
-    //     return $this->notes()->orderBy('created_at')->get();
-    // }
-    public function getStatusTimeline()
-    {
-        $statusTimeline = [];
-        $notes = $this->notes()->where('new_status', '!=', null)->orderBy('created_at')->get();
-    
-        // Initialize the first status of the ticket
-        $currentStatus = $this->status->name;
-        $startDate = $this->created_at;
-        $startTime = $startDate;
-        $endDate = $startDate;
-    
-        foreach ($notes as $note) {
-            // Store the duration for the current status
-            $duration = $endDate->diffInMinutes($startDate);
-            $statusTimeline[] = [
-                'user_id' => $note->user_id,
-                'status' => $currentStatus,
-                'start_date' => Carbon::parse($startDate)->format('M d, Y'),
-                'start_time' => Carbon::parse($startTime)->format('H:i:s'),
-                'end_date' => Carbon::parse($endDate)->format('M d, Y'),
-                'end_time' => Carbon::parse($endDate)->format('H:i:s'),
-                'duration' => $duration,
-            ];
-    
-            // Update the start date for the new status
-            $startDate = $note->created_at;
-            $startTime = $note->created_at;
-            // Change the current status
-            $currentStatus = $note->new_status;
-            // Update the end date
-            $endDate = $note->created_at;
-        }
-    
-        // Include the last status until now
-        $duration = Carbon::now()->diffInMinutes($startDate);
-        $statusTimeline[] = [
-            'status' => $currentStatus,
-            'start_date' => Carbon::parse($startDate)->format('M d, Y'),
-            'start_time' => Carbon::parse($startTime)->format('H:i:s'),
-            'end_date' => Carbon::now()->format('Y-m-d'),
-            'end_time' => Carbon::now()->format('H:i:s'),
-            'duration' => $duration,
-        ];
-    
-        return $statusTimeline;
     }
     
 }

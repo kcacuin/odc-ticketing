@@ -17,9 +17,20 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Ticket::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(User::class)->constrained()->restrictOnDelete();
-            $table->string('previous_status');
-            $table->string('new_status');
+            // $table->string('field')->nullable();
+            // $table->string('previous_status')->nullable();
+            // $table->string('new_status')->nullable();
             $table->longText('body')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('ticket_changes', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(Ticket::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
+            $table->string('field');
+            $table->longText('previous_value')->nullable();
+            $table->longText('new_value')->nullable();
             $table->timestamps();
         });
     }
@@ -30,5 +41,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('notes');
+        Schema::dropIfExists('ticket_changes');
+
     }
 };

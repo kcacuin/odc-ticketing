@@ -49,165 +49,365 @@
                     </div>
                     <div class="ml-4">
                         <ol class="relative pl-2 border-s border-gray-200 dark:border-gray-700">
-                            @foreach ($statusTimeline as $entry)
-                            <li class="mb-10 ms-6 flex">            
-                                <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-                                    <!-- Display user image or initials -->
-                                </span>
-                                <div class="items-center justify-between w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
-                                    <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ \Carbon\Carbon::parse($entry['start_date'])->format('M d, Y') }}</time>
-                                    <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ \Carbon\Carbon::parse($entry['start_time'])->format('H:i A') }}</time>
-                                    <div class="text-sm font-normal text-gray-500 dark:text-gray-300">
-                                        <!-- Display user who made the change -->
-                                        {{ $entry['user_id'] }}
-                                        <!-- Display changes made -->
-                                        <!-- Example: Attachments -->
-                                        @foreach ($entry['files'] as $file)
-                                            <a href="{{ asset('storage/' . $file->file_path) }}" class="font-semibold text-blue-600 dark:text-blue-500 hover:underline">{{ $file->file_name }}</a>
-                                        @endforeach
-                                        <!-- Example: Status Change -->
-                                        has changed 
-                                        <a href="#" class="font-semibold text-blue-600 dark:text-blue-500 hover:underline">Incident {{ $ticket->number }}</a> 
-                                        status to 
-                                        <x-badge class="bg-{{ $entry['status'] }}-100 text-{{ $entry['status'] }}-800 dark:bg-{{ $entry['status'] }}-900 dark:text-{{ $entry['status'] }}-300">{{ $entry['status'] }}</x-badge>
-                                    </div>
-                                </div>
-                                <!-- Additional functionality for each entry -->
-                            </li>
-                            @endforeach
-                        
-                            @foreach ($notes as $note)
-                            <li class="mb-10 ms-6 flex">            
-                                <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-                                    @if ($note->user->image)
-                                        <div class="relative">
-                                            <div class="w-10 h-10 rounded-full overflow-clip">
-                                                <img src="{{ asset("storage/" . $note->user->image) }}" alt="User Image">
+                            @php
+                                $timeline = $ticket->changes->merge($notes);
+                                $timeline = $timeline->sortByDesc('created_at');
+                            @endphp
+                            @if ($timeline->isNotEmpty())
+                                @foreach ($timeline as $item)
+                                    @if ($item instanceof \App\Models\TicketChange)
+                                        @if ($item->field == 'status') 
+                                            <li class="mb-10 ms-6 flex">
+                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                                    @if ($item->user->image)
+                                                        <div class="relative">
+                                                            <div class="w-10 h-10 rounded-full overflow-clip">
+                                                                <img src="{{ asset("storage/" . $item->user->image) }}" alt="User Image">
+                                                            </div>
+                                                        </div>
+                                                    @else
+                                                        <div class="relative inline-flex items-center justify-center text-slate-600 bg-slate-100 w-10 h-10 rounded-full">
+                                                            {{ strtoupper(substr($item->user->first_name, 0, 1)) . strtoupper(substr($item->user->last_name, 0, 1)) }}
+                                                        </div>
+                                                    @endif
+                                                </span>
+                                                <div class="items-center justify-between w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
+                                                    <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ $item->created_at->diffForHumans() }}</time>
+                                                    <div class="flex space-x-1 items-center text-sm font-normal text-gray-500 dark:text-gray-300">
+                                                        <span class="font-medium text-slate-500">{{ $item->user->first_name . ' ' . $item->user->last_name }}</span>
+                                                        <span>has updated</span>
+                                                        <a href="#" class="font-semibold text-blue-600 dark:text-blue-500 hover:underline">Incident {{ $ticket->number }}</a> 
+                                                        <span>status from</span>
+                                                        <span>
+                                                            <x-badge class="mb-1 bg-{{ $ticket->getUpdatedStatusColor($item->previous_value) }}-100 text-{{ $ticket->getUpdatedStatusColor($item->previous_value) }}-800 dark:bg-{{ $ticket->getUpdatedStatusColor($item->previous_value) }}-900 dark:text-{{ $ticket->getUpdatedStatusColor($item->previous_value) }}-300">{{ $item->previous_value }}</x-badge>
+                                                            <span class="pl-1">to</span>
+                                                            <x-badge class="mb-1 bg-{{ $ticket->getUpdatedStatusColor($item->new_value) }}-100 text-{{ $ticket->getUpdatedStatusColor($item->new_value) }}-800 dark:bg-{{ $ticket->getUpdatedStatusColor($item->new_value) }}-900 dark:text-{{ $ticket->getUpdatedStatusColor($item->new_value) }}-300">{{ $item->new_value }}</x-badge>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        @elseif ($item->field == 'number')
+                                            <li class="mb-10 ms-6 flex">
+                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                                    @if ($item->user->image)
+                                                        <div class="relative">
+                                                            <div class="w-10 h-10 rounded-full overflow-clip">
+                                                                <img src="{{ asset("storage/" . $item->user->image) }}" alt="User Image">
+                                                            </div>
+                                                        </div>
+                                                    @else
+                                                        <div class="relative inline-flex items-center justify-center text-slate-600 bg-slate-100 w-10 h-10 rounded-full">
+                                                            {{ strtoupper(substr($item->user->first_name, 0, 1)) . strtoupper(substr($item->user->last_name, 0, 1)) }}
+                                                        </div>
+                                                    @endif
+                                                </span>
+                                                <div class="items-center justify-between w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
+                                                    <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ $item->created_at->diffForHumans() }}</time>
+                                                    <div class="text-sm font-normal text-gray-500 dark:text-gray-300">
+                                                        <span class="font-medium text-slate-500">{{ $item->user->first_name . ' ' . $item->user->last_name }}</span>
+                                                        has updated incident number from 
+                                                        <span class="font-semibold">{{ $item->previous_value }}</span>
+                                                        to 
+                                                        <a href="#" class="font-semibold text-blue-600 dark:text-blue-500 hover:underline">{{ $item->new_value }}</a> 
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        @elseif ($item->field == 'date_received')
+                                            <li class="mb-10 ms-6 flex">
+                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                                    @if ($item->user->image)
+                                                        <div class="relative">
+                                                            <div class="w-10 h-10 rounded-full overflow-clip">
+                                                                <img src="{{ asset("storage/" . $item->user->image) }}" alt="User Image">
+                                                            </div>
+                                                        </div>
+                                                    @else
+                                                        <div class="relative inline-flex items-center justify-center text-slate-600 bg-slate-100 w-10 h-10 rounded-full">
+                                                            {{ strtoupper(substr($item->user->first_name, 0, 1)) . strtoupper(substr($item->user->last_name, 0, 1)) }}
+                                                        </div>
+                                                    @endif
+                                                </span>
+                                                <div class="items-center justify-between w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
+                                                    <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ $item->created_at->diffForHumans() }}</time>
+                                                    <div class="text-sm font-normal text-gray-500 dark:text-gray-300">
+                                                        <span class="font-medium text-slate-500">{{ $item->user->first_name . ' ' . $item->user->last_name }}</span>
+                                                        has changed date receieved from 
+                                                        <span class="font-semibold">{{ $item->previous_value }}</span>
+                                                        to 
+                                                        <a href="#" class="font-semibold text-blue-600 dark:text-blue-500 hover:underline">{{ $item->new_value }}</a> 
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        @elseif ($item->field == 'files')
+                                            @if ($files->isNotEmpty())
+                                                <li class="mb-10 ms-6 flex">
+                                                    <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                                        @if ($item->user->image)
+                                                            <div class="relative">
+                                                                <div class="w-10 h-10 rounded-full overflow-clip">
+                                                                    <img src="{{ asset("storage/" . $item->user->image) }}" alt="User Image">
+                                                                </div>
+                                                            </div>
+                                                        @else
+                                                            <div class="relative inline-flex items-center justify-center text-slate-600 bg-slate-100 w-10 h-10 rounded-full">
+                                                                {{ strtoupper(substr($item->user->first_name, 0, 1)) . strtoupper(substr($item->user->last_name, 0, 1)) }}
+                                                            </div>
+                                                        @endif
+                                                    </span>
+                                                    <div class="items-center justify-between w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
+                                                        <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ $item->created_at->diffForHumans() }}</time>
+                                                        <div class="text-sm font-normal text-gray-500 dark:text-gray-300">
+                                                            <span class="font-medium text-slate-500">{{ $item->user->first_name . ' ' . $item->user->last_name }}</span>
+                                                            attached a file/s
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            @endif
+                                        @elseif ($item->field == 'title')
+                                            <li class="mb-10 ms-6 flex">
+                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                                    @if ($item->user->image)
+                                                        <div class="relative">
+                                                            <div class="w-10 h-10 rounded-full overflow-clip">
+                                                                <img src="{{ asset("storage/" . $item->user->image) }}" alt="User Image">
+                                                            </div>
+                                                        </div>
+                                                    @else
+                                                        <div class="relative inline-flex items-center justify-center text-slate-600 bg-slate-100 w-10 h-10 rounded-full">
+                                                            {{ strtoupper(substr($item->user->first_name, 0, 1)) . strtoupper(substr($item->user->last_name, 0, 1)) }}
+                                                        </div>
+                                                    @endif
+                                                </span>
+                                                <div class="items-center justify-between w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
+                                                    <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ $item->created_at->diffForHumans() }}</time>
+                                                    <div class="text-sm font-normal text-gray-500 dark:text-gray-300">
+                                                        <span class="font-medium text-slate-500">{{ $item->user->first_name . ' ' . $item->user->last_name }}</span>
+                                                        has updated the <span class="italic">title</span> from 
+                                                        <span class="font-semibold">{{ $item->previous_value }}</span>
+                                                        to 
+                                                        <a href="#" class="font-semibold text-blue-600 dark:text-blue-500 hover:underline">{{ $item->new_value }}</a> 
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        @elseif ($item->field == 'issue')
+                                            <li class="mb-10 ms-6 flex">
+                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                                    @if ($item->user->image)
+                                                        <div class="relative">
+                                                            <div class="w-10 h-10 rounded-full overflow-clip">
+                                                                <img src="{{ asset("storage/" . $item->user->image) }}" alt="User Image">
+                                                            </div>
+                                                        </div>
+                                                    @else
+                                                        <div class="relative inline-flex items-center justify-center text-slate-600 bg-slate-100 w-10 h-10 rounded-full">
+                                                            {{ strtoupper(substr($item->user->first_name, 0, 1)) . strtoupper(substr($item->user->last_name, 0, 1)) }}
+                                                        </div>
+                                                    @endif
+                                                </span>
+                                                <div class="flex flex-col w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
+                                                    <div class="flex items-center justify-between text-sm font-normal text-gray-500 dark:text-gray-300">
+                                                        <p class="flex space-x-1">
+                                                            <span class="font-medium text-slate-500">{{ $item->user->first_name . ' ' . $item->user->last_name }}</span>
+                                                            <span class="flex items-center space-x-1">
+                                                                <span>has updated the issue</span>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4">
+                                                                    <path fill-rule="evenodd" d="M13.836 2.477a.75.75 0 0 1 .75.75v3.182a.75.75 0 0 1-.75.75h-3.182a.75.75 0 0 1 0-1.5h1.37l-.84-.841a4.5 4.5 0 0 0-7.08.932.75.75 0 0 1-1.3-.75 6 6 0 0 1 9.44-1.242l.842.84V3.227a.75.75 0 0 1 .75-.75Zm-.911 7.5A.75.75 0 0 1 13.199 11a6 6 0 0 1-9.44 1.241l-.84-.84v1.371a.75.75 0 0 1-1.5 0V9.591a.75.75 0 0 1 .75-.75H5.35a.75.75 0 0 1 0 1.5H3.98l.841.841a4.5 4.5 0 0 0 7.08-.932.75.75 0 0 1 1.025-.273Z" clip-rule="evenodd" />
+                                                                </svg>
+                                                            </span>
+                                                        </p>
+                                                        <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ $item->created_at->diffForHumans() }}</time>
+                                                    </div>
+                                                    <div class="pt-4 space-y-2 w-full text-sm font-normal text-gray-500 dark:text-gray-300">
+                                                        <div class="p-3 bg-slate-50 text-xs text-slate-400 border border-gray-200 rounded-lg dark:bg-gray-600 dark:border-gray-500 dark:text-gray-300">
+                                                            <div class="trix-content">
+                                                                {!! clean($item->previous_value) !!}
+                                                            </div>
+                                                        </div>
+                                                        <div class="p-3 bg-slate-50 text-xs border border-gray-200 rounded-lg dark:bg-gray-600 dark:border-gray-500 dark:text-gray-300">
+                                                            <div class="trix-content">
+                                                                {!! clean($item->new_value) !!}
+                                                            </div>
+                                                        </div> 
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        @elseif ($item->field == 'requested_by')
+                                            <li class="mb-10 ms-6 flex">
+                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                                    @if ($item->user->image)
+                                                        <div class="relative">
+                                                            <div class="w-10 h-10 rounded-full overflow-clip">
+                                                                <img src="{{ asset("storage/" . $item->user->image) }}" alt="User Image">
+                                                            </div>
+                                                        </div>
+                                                    @else
+                                                        <div class="relative inline-flex items-center justify-center text-slate-600 bg-slate-100 w-10 h-10 rounded-full">
+                                                            {{ strtoupper(substr($item->user->first_name, 0, 1)) . strtoupper(substr($item->user->last_name, 0, 1)) }}
+                                                        </div>
+                                                    @endif
+                                                </span>
+                                                <div class="items-center justify-between w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
+                                                    <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ $item->created_at->diffForHumans() }}</time>
+                                                    <div class="text-sm font-normal text-gray-500 dark:text-gray-300">
+                                                        <span class="font-medium text-slate-500">{{ $item->user->first_name . ' ' . $item->user->last_name }}</span>
+                                                        has updated requested by from
+                                                        <span class="font-semibold">{{ $item->previous_value }}</span>
+                                                        to 
+                                                        <a href="#" class="font-semibold text-blue-600 dark:text-blue-500 hover:underline">{{ $item->new_value }}</a> 
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        @elseif ($item->field == 'client')
+                                            <li class="mb-10 ms-6 flex">
+                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                                    @if ($item->user->image)
+                                                        <div class="relative">
+                                                            <div class="w-10 h-10 rounded-full overflow-clip">
+                                                                <img src="{{ asset("storage/" . $item->user->image) }}" alt="User Image">
+                                                            </div>
+                                                        </div>
+                                                    @else
+                                                        <div class="relative inline-flex items-center justify-center text-slate-600 bg-slate-100 w-10 h-10 rounded-full">
+                                                            {{ strtoupper(substr($item->user->first_name, 0, 1)) . strtoupper(substr($item->user->last_name, 0, 1)) }}
+                                                        </div>
+                                                    @endif
+                                                </span>
+                                                <div class="items-center justify-between w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
+                                                    <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ $item->created_at->diffForHumans() }}</time>
+                                                    <div class="text-sm font-normal text-gray-500 dark:text-gray-300">
+                                                        <span class="font-medium text-slate-500">{{ $item->user->first_name . ' ' . $item->user->last_name }}</span>
+                                                        has updated the client from
+                                                        <span class="font-semibold">{{ $item->previous_value }}</span>
+                                                        to 
+                                                        <a href="#" class="font-semibold text-blue-600 dark:text-blue-500 hover:underline">{{ $item->new_value }}</a> 
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        @elseif ($item->field == 'product')
+                                            <li class="mb-10 ms-6 flex">
+                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                                    @if ($item->user->image)
+                                                        <div class="relative">
+                                                            <div class="w-10 h-10 rounded-full overflow-clip">
+                                                                <img src="{{ asset("storage/" . $item->user->image) }}" alt="User Image">
+                                                            </div>
+                                                        </div>
+                                                    @else
+                                                        <div class="relative inline-flex items-center justify-center text-slate-600 bg-slate-100 w-10 h-10 rounded-full">
+                                                            {{ strtoupper(substr($item->user->first_name, 0, 1)) . strtoupper(substr($item->user->last_name, 0, 1)) }}
+                                                        </div>
+                                                    @endif
+                                                </span>
+                                                <div class="items-center justify-between w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
+                                                    <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ $item->created_at->diffForHumans() }}</time>
+                                                    <div class="text-sm font-normal text-gray-500 dark:text-gray-300">
+                                                        <span class="font-medium text-slate-500">{{ $item->user->first_name . ' ' . $item->user->last_name }}</span>
+                                                        has updated the product from
+                                                        <span class="font-semibold">{{ $item->previous_value }}</span>
+                                                        to 
+                                                        <a href="#" class="font-semibold text-blue-600 dark:text-blue-500 hover:underline">{{ $item->new_value }}</a> 
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        @else
+                                        @endif
+                                    @elseif ($item instanceof \App\Models\Note)
+                                        {{-- Display user note --}}
+                                        {{-- <div>{{ $item->body }}</div> --}}
+                                        <li class="mb-10 ms-6 flex">
+                                            <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                                @if ($item->user->image)
+                                                    <div class="relative">
+                                                        <div class="w-10 h-10 rounded-full overflow-clip">
+                                                            <img src="{{ asset("storage/" . $item->user->image) }}" alt="User Image">
+                                                        </div>
+                                                    </div>
+                                                @else
+                                                    <div class="relative inline-flex items-center justify-center text-slate-600 bg-slate-100 w-10 h-10 rounded-full">
+                                                        {{ strtoupper(substr($item->user->first_name, 0, 1)) . strtoupper(substr($item->user->last_name, 0, 1)) }}
+                                                    </div>
+                                                @endif
+                                            </span>
+                                            <div class="w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-700 dark:border-gray-600">
+                                                <div class="items-center justify-between mb-3 sm:flex">
+                                                    <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ $item->created_at->diffForHumans() }}</time>
+                                                    <div class="text-sm font-normal text-gray-500 lex dark:text-gray-300">
+                                                        <span class="font-medium text-slate-500">{{ $item->user->first_name . ' ' . $item->user->last_name }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="p-3 text-xs font-normal text-gray-500 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-gray-300">{!! clean($item->body) !!}</div>
                                             </div>
-                                        </div>
-                                    @else
-                                        <div class="relative inline-flex items-center justify-center text-slate-600 bg-slate-100 w-10 h-10 rounded-full">
-                                            {{ strtoupper(substr($note->user->first_name, 0, 1)) . strtoupper(substr($note->user->last_name, 0, 1)) }}
-                                        </div>
-                                    @endif
-                                </span>
-                                <div class="items-center justify-between w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
-                                    <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ $note->created_at->diffForHumans() }}</time>
-                                    <div class="text-sm font-normal text-gray-500 dark:text-gray-300">{{ Auth::user()->first_name . ' ' . Auth::user()->last_name }} 
-                                            has changed 
-                                        <a href="#" class="font-semibold text-blue-600 dark:text-blue-500 hover:underline">Incident {{ $ticket->number }}</a> 
-                                            status to 
-                                        <x-badge class="bg-{{ $newStatus }}-100 text-{{ $newStatus }}-800 dark:bg-{{ $newStatus }}-900 dark:text-{{ $newStatus }}-300">{{ $newStatus }}</x-badge>
-                                    </div>
-                                </div>
-                                <div
-                                    x-data="{
-                                        open: false,
-                                        toggle() {
-                                            if (this.open) {
-                                                return this.close()
-                                            }
-
-                                            this.$refs.button.focus()
-
-                                            this.open = true
-                                        },
-                                        close(focusAfter) {
-                                            if (! this.open) return
-
-                                            this.open = false
-
-                                            focusAfter && focusAfter.focus()
-                                        }
-                                    }"
-                                    x-on:keydown.escape.prevent.stop="close($refs.button)"
-                                    x-on:focusin.window="! $refs.panel.contains($event.target) && close()"
-                                    x-id="['dropdown-button']"
-                                    class="relative flex items-center justify-center"
-                                >
-                                    <button
-                                        x-ref="button"
-                                        x-on:click="toggle()"
-                                        :aria-expanded="open"
-                                        :aria-controls="$id('dropdown-button')"
-                                        type="button"
-                                        class="text-slate-500"
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
-                                        </svg>
-                                    </button>
-                                    <!-- Panel -->
-                                    <div
-                                        x-ref="panel"
-                                        x-show="open"
-                                        x-transition.origin.bottom.right
-                                        x-on:click.outside="close($refs.button)"
-                                        :id="$id('dropdown-button')"
-                                        style="display: none;"
-                                        class="absolute z-10 left-6 bottom-2 rounded-md"
-                                    >
-                                        {{-- * Add edit button here --}}
-        
-                                        <form action="{{ route('tickets.notes.destroy', ['ticket' => $ticket, 'note' => $note])}}"
-                                            method="POST" class="mt-2">
-                                            @csrf
-                                            @method('DELETE')
-        
-                                            <x-danger-button type="submit">
-                                                <x-svg-icon class="scale-75 mr-2" name="trash"/>
-                                                Delete
-                                            </x-danger-button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </li>
-                            @endforeach    
-                            {{-- <div>
-                                <p>Previous Status: {{ $previousStatus }}</p>
-                                <p>New Status: {{ $newStatus }}</p>
-                            </div>        --}}
-                            {{-- <li class="mb-10 ms-6">
-                                <span class="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-                                    @if ($note->user->image)
-                                        <div class="relative">
-                                            <div class="w-10 h-10 rounded-full overflow-clip">
-                                                <img src="{{ asset("storage/" . $note->user->image) }}" alt="User Image">
+                                            {{-- **** This only be visible to the user who made this note. If not other user cannot abuse this and delete other users notes. Only their notes --}}
+                                            @if (Auth::user()->id === $item->user_id)
+                                            <div
+                                                x-data="{
+                                                    open: false,
+                                                    toggle() {
+                                                        if (this.open) {
+                                                            return this.close()
+                                                        }
+            
+                                                        this.$refs.button.focus()
+            
+                                                        this.open = true
+                                                    },
+                                                    close(focusAfter) {
+                                                        if (! this.open) return
+            
+                                                        this.open = false
+            
+                                                        focusAfter && focusAfter.focus()
+                                                    }
+                                                }"
+                                                x-on:keydown.escape.prevent.stop="close($refs.button)"
+                                                x-on:focusin.window="! $refs.panel.contains($event.target) && close()"
+                                                x-id="['dropdown-button']"
+                                                class="relative flex items-center justify-center"
+                                            >
+                                                <button
+                                                    x-ref="button"
+                                                    x-on:click="toggle()"
+                                                    :aria-expanded="open"
+                                                    :aria-controls="$id('dropdown-button')"
+                                                    type="button"
+                                                    class="text-slate-500"
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
+                                                    </svg>
+                                                </button>
+                                                <!-- Panel -->
+                                                <div
+                                                    x-ref="panel"
+                                                    x-show="open"
+                                                    x-transition.origin.bottom.right
+                                                    x-on:click.outside="close($refs.button)"
+                                                    :id="$id('dropdown-button')"
+                                                    style="display: none;"
+                                                    class="absolute z-10 left-6 bottom-2 rounded-md"
+                                                >
+                                                    {{-- * Add edit button here --}}
+                    
+                                                    <form action="{{ route('tickets.notes.destroy', ['ticket' => $ticket, 'note' => $item])}}"
+                                                        method="POST" class="mt-2">
+                                                        @csrf
+                                                        @method('DELETE')
+                    
+                                                        <x-danger-button type="submit">
+                                                            <x-svg-icon class="scale-75 mr-2" name="trash"/>
+                                                            Delete
+                                                        </x-danger-button>
+                                                    </form>
+                                                </div>
                                             </div>
-                                        </div>
-                                    @else
-                                        <div class="relative inline-flex items-center justify-center text-slate-600 bg-slate-100 w-10 h-10 rounded-full">
-                                            {{ strtoupper(substr($note->user->first_name, 0, 1)) . strtoupper(substr($note->user->last_name, 0, 1)) }}
-                                        </div>
+                                            @endif
+                                        </li>
                                     @endif
-                                </span>
-                                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-700 dark:border-gray-600">
-                                    <div class="items-center justify-between mb-3 sm:flex">
-                                        <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">2 hours ago</time>
-                                        <div class="text-sm font-normal text-gray-500 lex dark:text-gray-300">Thomas Lean commented on  <a href="#" class="font-semibold text-gray-900 dark:text-white hover:underline">Flowbite Pro</a></div>
-                                    </div>
-                                    <div class="p-3 text-xs italic font-normal text-gray-500 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-gray-300">Hi ya'll! I wanted to share a webinar zeroheight is having regarding how to best measure your design system! This is the second session of our new webinar series on #DesignSystems discussions where we'll be speaking about Measurement.</div>
-                                </div>
-                            </li>
-                            <li class="ms-6">
-                                <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-                                    @if (Auth::check() && Auth::user()->image)
-                                        <div class="relative">
-                                            <div class="w-10 h-10 rounded-full overflow-clip">
-                                                <img src="{{ asset("storage/" . Auth::user()->image) }}" alt="User Image">
-                                            </div>
-                                        </div>
-                                    @else
-                                        <div class="relative inline-flex items-center justify-center bg-slate-200 w-10 h-10 rounded-full">
-                                            {{ Auth::user()->first_name, 0, 1 . Auth::user()->last_name, 0, 1 }}
-                                        </div>
-                                    @endif
-                                </span>
-                                <div class="items-center justify-between p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
-                                    <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">1 day ago</time>
-                                    <div class="text-sm font-normal text-gray-500 lex dark:text-gray-300">Jese Leos has changed <a href="#" class="font-semibold text-blue-600 dark:text-blue-500 hover:underline">Pricing page</a> task status to  <span class="font-semibold text-gray-900 dark:text-white">Finished</span></div>
-                                </div>
-                            </li> --}}
+                                @endforeach
+                            @else
+                                <p>No updates yet recorded for this ticket.</p>
+                            @endif
+                            
                         </ol>
                     </div>
                     <form action="{{ route('tickets.notes.store', $ticket) }}" method="POST" class="mt-2">

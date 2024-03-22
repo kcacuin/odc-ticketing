@@ -139,120 +139,131 @@
                             </x-table.cell>
                         </x-table.row>
                         @endif --}}
-                        @forelse ($users as $user)
-                            <x-table.row wire:key="{{ $user->id }}" wire:loading.class.delay='opacity-35 animate-pulse'>
-                                <x-table.cell class="w-4 px-4 py-1">
-                                    <div class="flex items-center">
-                                        <x-input.checkbox wire:model="selected" value="{{ $user->id }}" />
-                                    </div>
-                                </x-table.cell>
-                                <x-table.cell>
-                                    <div class="flex items-center space-x-2">
-                                        <div>
-                                            @if ($user->image)
-                                                <div class="relative">
-                                                    <div class="w-10 h-10 rounded-full overflow-clip">
-                                                        <img src="{{ asset("storage/" . $user->image) }}" alt="User Image">
+                        @isset($users)
+                            @forelse ($users as $user)
+                                <x-table.row wire:key="{{ $user->id }}" wire:loading.class.delay='opacity-35 animate-pulse'>
+                                    <x-table.cell class="w-4 px-4 py-1">
+                                        <div class="flex items-center">
+                                            <x-input.checkbox wire:model="selected" value="{{ $user->id }}" />
+                                        </div>
+                                    </x-table.cell>
+                                    <x-table.cell>
+                                        <div class="flex items-center space-x-2">
+                                            <div>
+                                                @if ($user->image)
+                                                    <div class="relative">
+                                                        <div class="w-10 h-10 rounded-full overflow-clip">
+                                                            <img src="{{ asset("storage/" . $user->image) }}" alt="User Image">
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            @else
-                                                <div class="relative inline-flex items-center justify-center text-slate-600 bg-slate-100 w-10 h-10 rounded-full">
-                                                    {{ strtoupper(substr($user->first_name, 0, 1)) . strtoupper(substr($user->last_name, 0, 1)) }}
-                                                </div>
-                                            @endif
-                                        </div>
-                                        <div class="flex flex-col">
-                                            <span class="font-bold text-odc-blue-800">
-                                                {{ $user->first_name . ' ' . $user->last_name }}
-                                            </span>
-                                            <span class="text-slate-500">
-                                                {{ '@' . $user->username }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </x-table.cell>
-                                <x-table.cell>
-                                    {{ $user->email }}
-                                </x-table.cell>
-                                <x-table.cell>
-                                    @if ($user->email_verified_at)
-                                    <span class="inline-flex items-center space-x-2 text-green-500">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
-                                            <path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0 1 12 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 0 1 3.498 1.307 4.491 4.491 0 0 1 1.307 3.497A4.49 4.49 0 0 1 21.75 12a4.49 4.49 0 0 1-1.549 3.397 4.491 4.491 0 0 1-1.307 3.497 4.491 4.491 0 0 1-3.497 1.307A4.49 4.49 0 0 1 12 21.75a4.49 4.49 0 0 1-3.397-1.549 4.49 4.49 0 0 1-3.498-1.306 4.491 4.491 0 0 1-1.307-3.498A4.49 4.49 0 0 1 2.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 0 1 1.307-3.497 4.49 4.49 0 0 1 3.497-1.307Zm7.007 6.387a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
-                                        </svg>
-                                        <span>
-                                            {{ $user->email_verified_at }}
-                                        </span>
-                                    </span>
-                                    @else
-                                    <span class="inline-flex items-center space-x-2 text-yellow-500">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
-                                            <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd" />
-                                        </svg>
-                                        <span>
-                                            Waiting for verification
-                                        </span>
-                                    </span>
-                                    @endif
-                                </x-table.cell>
-                                <x-table.cell>
-                                    {{ $user->role->name }}
-                                </x-table.cell>
-                                <x-table.cell>
-                                    @if ($user->last_login)
-                                    {{ $user->last_login }}
-                                    @else
-                                    {{ $user->role->name }} haven't logged in yet
-                                    @endif
-                                </x-table.cell>
-                                <x-table.cell class="px-4 py-1 text-center align-middle">
-                                    <div class="hidden sm:flex sm:items-center sm:justify-center sm:ms-auto">
-                                        <x-dropdown align="right" width="w-40">
-                                            <x-slot name="trigger" class="flex items-center justify-center text-center">
-                                                <span class="text-blue-secondary text-2xl tracking-tighter cursor-pointer select-none">
-                                                    {{ '••' }}
+                                                @else
+                                                    <div class="relative inline-flex items-center justify-center text-slate-600 bg-slate-100 w-10 h-10 rounded-full">
+                                                        {{ strtoupper(substr($user->first_name, 0, 1)) . strtoupper(substr($user->last_name, 0, 1)) }}
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <span class="font-bold text-odc-blue-800">
+                                                    {{ $user->first_name . ' ' . $user->last_name }}
                                                 </span>
-                                            </x-slot>
-                
-                                            <x-slot name="content">
-                                                <ul class="py-2 text-xs text-slate-700 dark:text-slate-200" aria-labelledby="dropdownDefault">
-                                                    <li>
-                                                        <button wire:click="edit({{ $user->id }})" type="button"
-                                                            class="w-full text-start text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out group flex items-center px-4 py-2 hover:text-white
-                                                            hover:bg-gradient-to-br hover:from-blue-primary hover:to-blue-secondary
-                                                            dark:hover:bg-slate-600 dark:hover:text-white">
-                                                            <x-svg-icon
-                                                                class="scale-90 text-blue-secondary group-hover:text-white"
-                                                                name="edit"
-                                                                />
-                                                            <span class="ml-3 text-xs text-blue-secondary group-hover:text-white">
-                                                                Edit
-                                                            </span>
-                                                        </button>
-                                                    </li>
-                                                    <li>
-                                                        <button 
-                                                            wire:click="delete({{ $user->id }})"
-                                                            type="button"
-                                                            class="w-full text-start text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out group flex items-center px-4 py-2 hover:text-white
-                                                            hover:bg-gradient-to-br hover:from-odc-red-600 hover:to-odc-red-500
-                                                            dark:hover:bg-slate-600 dark:hover:text-white">
-                                                            <x-svg-icon
-                                                                class="scale-90 text-blue-secondary group-hover:text-white"
-                                                                name="trash"
-                                                                />
-                                                            <span class="ml-3 text-xs text-blue-secondary group-hover:text-white">
-                                                                Delete
-                                                            </span>
-                                                        </button>
-                                                    </li>
-                                                </ul>
-                                            </x-slot>
-                                        </x-dropdown>
-                                    </div>
-                                </x-table.cell>
-                            </x-table.row>
-                        @empty
+                                                <span class="text-slate-500">
+                                                    {{ '@' . $user->username }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </x-table.cell>
+                                    <x-table.cell>
+                                        {{ $user->email }}
+                                    </x-table.cell>
+                                    <x-table.cell>
+                                        @if ($user->email_verified_at)
+                                        <span class="inline-flex items-center space-x-2 text-green-500">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                                                <path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0 1 12 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 0 1 3.498 1.307 4.491 4.491 0 0 1 1.307 3.497A4.49 4.49 0 0 1 21.75 12a4.49 4.49 0 0 1-1.549 3.397 4.491 4.491 0 0 1-1.307 3.497 4.491 4.491 0 0 1-3.497 1.307A4.49 4.49 0 0 1 12 21.75a4.49 4.49 0 0 1-3.397-1.549 4.49 4.49 0 0 1-3.498-1.306 4.491 4.491 0 0 1-1.307-3.498A4.49 4.49 0 0 1 2.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 0 1 1.307-3.497 4.49 4.49 0 0 1 3.497-1.307Zm7.007 6.387a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+                                            </svg>
+                                            <span>
+                                                {{ $user->email_verified_at }}
+                                            </span>
+                                        </span>
+                                        @else
+                                        <span class="inline-flex items-center space-x-2 text-yellow-500">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                                                <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd" />
+                                            </svg>
+                                            <span>
+                                                Waiting for verification
+                                            </span>
+                                        </span>
+                                        @endif
+                                    </x-table.cell>
+                                    <x-table.cell>
+                                        {{ $user->role->name }}
+                                    </x-table.cell>
+                                    <x-table.cell>
+                                        @if ($user->last_login)
+                                        {{ $user->last_login }}
+                                        @else
+                                        {{ $user->role->name }} haven't logged in yet
+                                        @endif
+                                    </x-table.cell>
+                                    <x-table.cell class="px-4 py-1 text-center align-middle">
+                                        <div class="hidden sm:flex sm:items-center sm:justify-center sm:ms-auto">
+                                            <x-dropdown align="right" width="w-40">
+                                                <x-slot name="trigger" class="flex items-center justify-center text-center">
+                                                    <span class="text-blue-secondary text-2xl tracking-tighter cursor-pointer select-none">
+                                                        {{ '••' }}
+                                                    </span>
+                                                </x-slot>
+                    
+                                                <x-slot name="content">
+                                                    <ul class="py-2 text-xs text-slate-700 dark:text-slate-200" aria-labelledby="dropdownDefault">
+                                                        <li>
+                                                            <button wire:click="edit({{ $user->id }})" type="button"
+                                                                class="w-full text-start text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out group flex items-center px-4 py-2 hover:text-white
+                                                                hover:bg-gradient-to-br hover:from-blue-primary hover:to-blue-secondary
+                                                                dark:hover:bg-slate-600 dark:hover:text-white">
+                                                                <x-svg-icon
+                                                                    class="scale-90 text-blue-secondary group-hover:text-white"
+                                                                    name="edit"
+                                                                    />
+                                                                <span class="ml-3 text-xs text-blue-secondary group-hover:text-white">
+                                                                    Edit
+                                                                </span>
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button 
+                                                                wire:click="delete({{ $user->id }})"
+                                                                type="button"
+                                                                class="w-full text-start text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out group flex items-center px-4 py-2 hover:text-white
+                                                                hover:bg-gradient-to-br hover:from-odc-red-600 hover:to-odc-red-500
+                                                                dark:hover:bg-slate-600 dark:hover:text-white">
+                                                                <x-svg-icon
+                                                                    class="scale-90 text-blue-secondary group-hover:text-white"
+                                                                    name="trash"
+                                                                    />
+                                                                <span class="ml-3 text-xs text-blue-secondary group-hover:text-white">
+                                                                    Delete
+                                                                </span>
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+                                                </x-slot>
+                                            </x-dropdown>
+                                        </div>
+                                    </x-table.cell>
+                                </x-table.row>
+                            @empty
+                                <x-table.row wire:loading.class.delay='opacity-35 animate-pulse'>
+                                    <x-table.cell class="w-4 px-4 py-4 opacity-75 animate-pulse" colspan="7">
+                                        <div class="flex items-center justify-center gap-1">
+                                            <x-svg-icon name="user" class="scale-75"/>
+                                            <span class="font-base font-bold">No users found...</span>
+                                        </div>
+                                    </x-table.cell>
+                                </x-table.row>
+                            @endforelse
+                        @else
                             <x-table.row wire:loading.class.delay='opacity-35 animate-pulse'>
                                 <x-table.cell class="w-4 px-4 py-4 opacity-75 animate-pulse" colspan="7">
                                     <div class="flex items-center justify-center gap-1">
@@ -261,7 +272,7 @@
                                     </div>
                                 </x-table.cell>
                             </x-table.row>
-                        @endforelse
+                        @endisset
                     </x-slot>
                 </x-table.table>
             </div>
