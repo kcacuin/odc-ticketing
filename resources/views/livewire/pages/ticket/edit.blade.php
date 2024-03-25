@@ -41,14 +41,12 @@
                 @csrf
                 @method('PATCH')
 
-                <div class="flex flex-row-reverse w-full gap-10"
-
-                >
+                <div class="flex flex-row-reverse w-full gap-10">
                     {{-- * Right Column --}}
                     <div class="flex flex-col w-[25%]">
                         <div class="mb-4">
                             {{-- * Ticket Number (Copy to Clipboard) --}}
-                            <x-form.input-clipboard :value="old('number', $ticket->number)" name="number" labelname="Ticket Number" type="number"/>
+                            <x-form.input :value="old('number', $ticket->number)" name="number" labelname="Ticket Number" type="number"/>
                             {{-- * Status --}}
                             <x-form.field>
                                 <select xModel="ticketStatus" name="status_id" id="status_id"
@@ -97,7 +95,7 @@
                             <x-form.input-tooltip xModel="ticketTitle" :value="old('title', $ticket->title)" name="title" labelname="Title" type="text" tooltip="Brief description of the problem."/>
 
                             <div class="relative">
-                                <x-form.trix-input x-model="ticketIssue" value="{!! $ticket->issue->toTrixHTML() !!}" id="issue" name="issue" class="h-52 rounded-md overflow-y-auto"/>
+                                <x-form.trix-input value="{!! $ticket->issue->toTrixHTML() !!}" id="issue" name="issue" class="h-52 rounded-md overflow-y-auto"/>
                             </div>
 
                             <div>
@@ -163,24 +161,15 @@
                 </div>
             </form>
         @endauth
+        
     </div>
     <x-flash-message key="update-ticket-success" icon="check-circle"/>
     <x-flash-message key="no-changes-to-incident" icon="check-circle"/>
 </x-app-layout>
-<script>
-    // window.Alpine.data('submitting', function () {
-    //     return {
-    //     submitting: false,
-    //     handleWindowClick(event) {
-    //         // Prevent clicks on the window while the form is being submitted
-    //         // event.stopPropagation();
-    //         event.preventDefault();
-    //     }
-    //     };
-    // });
+{{-- <script>
     window.onbeforeunload = function() {
         if (document.getElementById('title').value.trim() !== '' || document.getElementById('issue').value.trim() !== '') {
             return "Are you sure you want to leave this page? Your changes may not be saved.";
         }
     };
-</script>
+</script> --}}

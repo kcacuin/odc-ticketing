@@ -26,6 +26,6 @@
         }
     "
 >
-    <input type="file" id="{{ $name }}" name="{{ $name }}" x-ref="input">
+    <input type="file" id="{{ $name }}" name="{{ $name }}" wire:model="{{ $name }}" x-ref="input">
 </div>
 

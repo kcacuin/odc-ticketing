@@ -24,7 +24,7 @@ Route::view('/', 'welcome');
 
 require __DIR__.'/auth.php';
 
-Route::get('admin', UserList::class)->name('admin.index')->middleware('admin');
+Route::get('/admin', [UserController::class, 'index'])->name('admin.index')->middleware('admin');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');

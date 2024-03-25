@@ -203,10 +203,10 @@
     </div>
 </x-app-layout>
 
-<script>
+{{-- <script>
     window.onbeforeunload = function() {
         if (document.getElementById('title').value.trim() !== '' || document.getElementById('issue').value.trim() !== '') {
             return "Are you sure you want to leave this page? Your changes may not be saved.";
         }
     };
-</script>
+</script> --}}

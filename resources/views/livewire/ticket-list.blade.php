@@ -272,7 +272,7 @@
                         </x-table.row>
                         @empty
                         <x-table.row wire:loading.class.delay='opacity-35 animate-pulse'>
-                            <x-table.cell class="w-4 px-4 py-4 opacity-75 animate-pulse" colspan="8">
+                            <x-table.cell class="w-4 px-4 py-4 opacity-75 text-slate-700 animate-pulse" colspan="8">
                                 <div class="flex items-center justify-center gap-1">
                                     <x-svg-icon name="ticket" class="scale-75"/>
                                     <span class="font-base font-bold">No tickets found...</span>

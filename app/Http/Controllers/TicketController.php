@@ -10,6 +10,7 @@ use App\Models\Note;
 use App\Models\TemporaryFile;
 use App\Models\File;
 use App\Models\Ticket;
+use App\Models\TicketChange;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
@@ -159,60 +160,105 @@ class TicketController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    // public function update(Request $request, $ticket)
+    // {
+    //     $ticket = Ticket::where('number', $ticket)->firstOrFail();
+    //     // * Retrieve all temporary files
+    //     $temporaryFiles = TemporaryFile::all();
+
+    //     // * Validate the request data
+    //     $validator = Validator::make($request->all(), $this->rules($ticket->id)); // Pass the current ticket id to the rules method
+
+    //     // * Check if the ticket number already exists
+    //     $existingTicket = Ticket::where('number', $request->input('number'))->where('id', '!=', $ticket->id)->exists();
+
+    //     if ($existingTicket) {
+    //         // * Ticket number is already taken, redirect back with error message
+    //         return redirect()->back()->withErrors(['number' => 'Ticket number is already taken'])->withInput();
+    //     }
+
+    //     if ($validator->fails()) {
+    //         // * Delete temporary files
+    //         foreach ($temporaryFiles as $temporaryFile) {
+    //             Storage::deleteDirectory('attached_files/tmp/' . $temporaryFile->folder);
+    //             $temporaryFile->delete();
+    //         }
+
+    //         // * Redirect back with input and errors
+    //         return redirect()->back()->withInput()->withErrors($validator);
+    //     }
+
+    //     $validatedData = $validator->validated();
+
+    //     $changes = $this->getTicketChanges($ticket, $validatedData);
+    //     foreach ($changes as $field => $change) {
+    //         // Log the changes to a custom table
+    //         DB::table('ticket_changes')->insert([
+    //             'ticket_id' => $ticket->id,
+    //             'user_id' => Auth::id(),
+    //             'field' => $field,
+    //             'previous_value' => $change['old'], // Previous value
+    //             'new_value' => $change['new'],
+    //             'created_at' => now(), // Or the appropriate timestamp
+    //             'updated_at' => now(), // Or the appropriate timestamp
+    //         ]);
+    //     }
+
+    //     if ($temporaryFiles->isNotEmpty()) {
+    //         // * Store temporary files
+    //         foreach ($temporaryFiles as $temporaryFile) {
+    //             Storage::copy(
+    //                 'attached_files/tmp/' . $temporaryFile->folder . '/' . $temporaryFile->file_name,
+    //                 'attached_files/' . $temporaryFile->folder . '/' . $temporaryFile->file_name
+    //             );
+    //             File::create([
+    //                 'ticket_id' => $ticket->id,
+    //                 'file_name' => $temporaryFile->file_name,
+    //                 'file_path' => $temporaryFile->folder . '/' . $temporaryFile->file_name,
+    //             ]);
+    //             Storage::deleteDirectory('attached_files/tmp/' . $temporaryFile->folder);
+    //             $temporaryFile->delete();
+    //         }
+    //     }
+
+    //     $ticket->update($validatedData);
+
+    //     Session::flash('update-ticket-success', 'Incident was updated successfully!');
+
+    //     // return redirect('/tickets');
+    //     // return redirect()->back();
+    //     return redirect()->route('tickets.show', ['ticket' => $ticket->number]);
+    // }
     public function update(Request $request, $ticket)
     {
         $ticket = Ticket::where('number', $ticket)->firstOrFail();
-        // * Retrieve all temporary files
+        // Retrieve all temporary files
         $temporaryFiles = TemporaryFile::all();
-
-        // * Validate the request data
-        $validator = Validator::make($request->all(), $this->rules($ticket->id)); // Pass the current ticket id to the rules method
-
-        // * Check if the ticket number already exists
+    
+        // Validate the request data
+        $validator = Validator::make($request->all(), $this->rules($ticket->id));
+    
+        // Check if the ticket number already exists
         $existingTicket = Ticket::where('number', $request->input('number'))->where('id', '!=', $ticket->id)->exists();
-
+    
         if ($existingTicket) {
-            // * Ticket number is already taken, redirect back with error message
+            // Ticket number is already taken, redirect back with error message
             return redirect()->back()->withErrors(['number' => 'Ticket number is already taken'])->withInput();
         }
-
+    
         if ($validator->fails()) {
-            // * Delete temporary files
+            // Delete temporary files
             foreach ($temporaryFiles as $temporaryFile) {
                 Storage::deleteDirectory('attached_files/tmp/' . $temporaryFile->folder);
                 $temporaryFile->delete();
             }
-
-            // * Redirect back with input and errors
+    
+            // Redirect back with input and errors
             return redirect()->back()->withInput()->withErrors($validator);
         }
-
+    
         $validatedData = $validator->validated();
-
-        // * Update the status_id only if it's present in the request
-        // if ($request->has('status_id')) {
-        //     $newStatus = Status::findOrFail($request->input('status_id'));
-        //     $this->updateTicketStatus($ticket, $newStatus);
-        // }
-
-        // * Check for changes in ticket number and date received
-        // $changes = $this->getTicketChanges($ticket, $validatedData);
-        // foreach ($changes as $field => $change) {
-        //     Note::create([
-        //         'ticket_id' => $ticket->id,
-        //         'user_id' => Auth::id(),
-        //         'field' => $field,
-        //         'previous_value' => $change['old'],
-        //         'new_value' => $change['new'],
-        //     ]);
-        // }
-        // if ($request->has('status_id')) {
-        //     $newStatus = Status::findOrFail($request->input('status_id'));
-        //     // Update ticket status and add status change to changes array
-        //     $changes['status'] = ['old' => $ticket->status->name, 'new' => $newStatus->name];
-        //     $ticket->status_id = $newStatus->id;
-        // }
-
+    
         $changes = $this->getTicketChanges($ticket, $validatedData);
         foreach ($changes as $field => $change) {
             // Log the changes to a custom table
@@ -226,9 +272,9 @@ class TicketController extends Controller
                 'updated_at' => now(), // Or the appropriate timestamp
             ]);
         }
-
+    
         if ($temporaryFiles->isNotEmpty()) {
-            // * Store temporary files
+            // Store temporary files
             foreach ($temporaryFiles as $temporaryFile) {
                 Storage::copy(
                     'attached_files/tmp/' . $temporaryFile->folder . '/' . $temporaryFile->file_name,
@@ -239,44 +285,33 @@ class TicketController extends Controller
                     'file_name' => $temporaryFile->file_name,
                     'file_path' => $temporaryFile->folder . '/' . $temporaryFile->file_name,
                 ]);
+    
+                // Log file addition
+                TicketChange::createWithFileChange(
+                    $ticket->id, 
+                    Auth::id(), 
+                    'files', 
+                    null, 
+                    $temporaryFile->file_name, 
+                    true, 
+                    false, 
+                    $temporaryFile->file_name, 
+                    $temporaryFile->folder . '/' . $temporaryFile->file_name
+                );
+    
                 Storage::deleteDirectory('attached_files/tmp/' . $temporaryFile->folder);
                 $temporaryFile->delete();
             }
         }
-
+    
         $ticket->update($validatedData);
-
+    
         Session::flash('update-ticket-success', 'Incident was updated successfully!');
-
+    
         // return redirect('/tickets');
         // return redirect()->back();
         return redirect()->route('tickets.show', ['ticket' => $ticket->number]);
     }
-    // public function update(Request $request, $ticket)
-    
-
-    /**
-     * Update ticket status and create a note for the status change.
-     */
-    // private function updateTicketStatus($ticket, $newStatus)
-    // {
-    //     // Check if the new status is different from the current status
-    //     if ($ticket->status_id != $newStatus->id) {
-    //         $previousStatus = $ticket->status->name;
-    
-    //         // Update ticket status
-    //         $ticket->status_id = $newStatus->id;
-    //         $ticket->save();
-    
-    //         // Create a new note to track the status change
-    //         Note::create([
-    //             'ticket_id' => $ticket->id,
-    //             'user_id' => Auth::id(),
-    //             'previous_status' => $previousStatus,
-    //             'new_status' => $newStatus->name,
-    //         ]);
-    //     }
-    // }
 
     /**
      * Get changes in ticket fields.
@@ -301,31 +336,34 @@ class TicketController extends Controller
         if ($ticket->title != $newData['title']) {
             $changes['title'] = ['old' => $ticket->title, 'new' => $newData['title']];
         }
-    
-        // $previousIssue = trim(strip_tags($ticket->issue));
-        // $newIssue = trim(strip_tags($newData['issue']));
-        // $previousIssue = trim(($ticket->issue));
-        // $newIssue = trim(($this->encapsulateIssue($newData['issue'])));
+
         $previousIssue = $this->removeTrixContent($ticket->issue);
         $newIssue = $this->removeTrixContent($newData['issue']);
 
         if ($previousIssue !== $newIssue) {
             $changes['issue'] = ['old' => $previousIssue, 'new' => $newIssue];
         }
-        // if ($previousIssue !== $newIssue) {
-        //     $changes['issue'] = ['old' => $previousIssue, 'new' => $newIssue];
-        // }
 
-        // if ($ticket->issue != $newData['issue']) {
-        //     $changes['issue'] = ['old' => $ticket->issue, 'new' => $newData['issue']];
-        // }
-
-        // if ($ticket->issue != $newData['issue']) {
-        //     $changes['issue'] = [
-        //         'old' => $previousIssue,
-        //         'new' => $newIssue
-        //     ];
-        // }
+        if ($ticket->files) {
+            // Retrieve the IDs of the files associated with the ticket
+            $oldFileIds = $ticket->files->pluck('id')->toArray();
+            $newFileIds = $newData['files'];
+    
+            if ($oldFileIds !== $newFileIds) {
+                // Retrieve the names of the old files
+                $oldFiles = $ticket->files->pluck('name')->toArray();
+    
+                // Retrieve the names of the new files (assuming they are passed in $newData)
+                $newFiles = File::whereIn('id', $newFileIds)->pluck('name')->toArray();
+    
+                $changes['files'] = ['old' => $oldFiles, 'new' => $newFiles];
+            }
+        } else {
+            // If no files are associated with the ticket, consider it as a change
+            if (!empty($newData['files'])) {
+                $changes['files'] = ['old' => [], 'new' => $newData['files']];
+            }
+        }
     
         if ($ticket->requested_by != $newData['requested_by']) {
             $changes['requested_by'] = ['old' => $ticket->requested_by, 'new' => $newData['requested_by']];
@@ -379,23 +417,23 @@ class TicketController extends Controller
     }
 
 
-    private function encapsulateIssue($issue)
-    {
-        // *
-//         $openingDiv = '<div class="trix-content">
-// <!--[if BLOCK]><![endif]-->    ';
-//         $closingDiv = '
-// <!--[if BLOCK]><![endif]-->
-// </div>';
-        $openingDiv = '<div class="trix-content"><!--[if BLOCK]><![endif]-->';
-        $closingDiv = '<!--[if BLOCK]><![endif]--></div>';
+//     private function encapsulateIssue($issue)
+//     {
+//         // *
+// //         $openingDiv = '<div class="trix-content">
+// // <!--[if BLOCK]><![endif]-->    ';
+// //         $closingDiv = '
+// // <!--[if BLOCK]><![endif]-->
+// // </div>';
+//         $openingDiv = '<div class="trix-content"><!--[if BLOCK]><![endif]-->';
+//         $closingDiv = '<!--[if BLOCK]><![endif]--></div>';
 
-        if (!Str::contains($issue, $openingDiv) && !Str::contains($issue, $closingDiv)) {
-            return $openingDiv . $issue . $closingDiv;
-        }
+//         if (!Str::contains($issue, $openingDiv) && !Str::contains($issue, $closingDiv)) {
+//             return $openingDiv . $issue . $closingDiv;
+//         }
 
-        return $issue;
-    }
+//         return $issue;
+//     }
 
 
     /**

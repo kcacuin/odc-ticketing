@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
 
 use ZxcvbnPhp\Zxcvbn;
@@ -46,6 +47,7 @@ class UserList extends Component
 
     public string $first_name = '';
     public string $last_name = '';
+    public $newImage;
     public $image;
     public string $username = '';
     public $role_id;
@@ -80,19 +82,13 @@ class UserList extends Component
 
     public function render()
     {
-        $query = User::query();
-
-        // $query = $this->rowsQuery;
-        // $query = $this->applySorting($query);
-        // $users = $query->paginate($this->perPage);
-
         $roles = Role::all();
 
-        return view('livewire.pages.user.index', [
+        return view('livewire.user-list', [
             'users' => $this->rows ?? [],
             'roles' => $roles,
             'defaultRoleId' => $roles->where('name', 'User')->first()->id,
-        ])->layout('layouts.app');
+        ]);
         
     }
 
@@ -106,28 +102,38 @@ class UserList extends Component
 
     public function register(): void
     {
-        $validated = $this->validate([
+        $this->validate([
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
-            'image' => ['nullable', 'image', 'max:5120'],
-            'role_id' => ['required', 'exists:roles,id'],
+            'newImage' => ['nullable', 'image', 'max:5120'],
+            // 'role_id' => ['required', 'exists:roles,id'],
             'username' => ['required', 'string', 'min:3', 'max:255', 'unique:users,username'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email', new AllowedEmailDomain('odecci.com')],
             'password' => ['required', 'string', 'min:7', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        // *** Die and Dump
-        // dd($validated);
+        $password = Hash::make($this->password);
 
-        $validated['password'] = Hash::make($validated['password']);
-        if ($this->image) {
-            $validated['image'] = $this->image->store('images');
+        $filename = null;
+
+        if ($this->newImage) {
+            $filename = $this->newImage->store('images');
         }
 
-        event(new Registered($user = User::create($validated)));
+        $user = User::create([
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'username' => $this->username,
+            'email' => $this->email,
+            'password' => $password,
+            'image' => $filename,
+        ]);
 
-        Session::flash('success', 'Registration successful!');
+        event(new Registered($user));
 
+        Session::flash('create-user-success', 'Registration successful!');
+
+        $this->reset();
         $this->redirect(Route('admin.index'));
     }
 
@@ -183,33 +189,46 @@ class UserList extends Component
 
     public function update()
     {
-        $validatedData = $this->validate([
+        $this->validate([
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'role_id' => ['required'],
             'username' => ['required', 'string', 'min:3', 'max:255', Rule::unique('users')->ignore($this->selectedUserId)],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique('users')->ignore($this->selectedUserId)],
-            'image' => ['nullable', 'image', 'max:5120'],
+            'newImage' => ['nullable', 'image', 'max:5120'],
         ]);
     
         $user = User::findOrFail($this->selectedUserId);
-    
-        // Update image if provided
-        if (isset($validatedData['image'])) {
-            // Store the new image
-            $user->image = $validatedData['image']->store('images');
+
+        $filename = null;
+
+        if ($this->newImage) {
+            $filename = $this->newImage->store('images');
         }
     
-        $user->fill($validatedData)->save();
-    
+        $user->update([
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'role_id' => $this->role_id,
+            'username' => $this->username,
+            'email' => $this->email,
+            'image' => $filename,
+        ]);
+
         Session::flash('update-user-success', 'User updated successfully.');
     
         $this->reset();
+        $this->redirect(Route('admin.index'));
     }
 
     public function delete($userId)
     {
-        $this->selectedUserId = $userId;
+        $user = User::findOrFail($userId);
+        $this->selectedUserId = $user->id;
+        $this->first_name = $user->first_name;
+        $this->last_name = $user->last_name;
+        $this->username = $user->username;
+        $this->image = $user->image;
         $this->showDeleteModal = true;
     }
 
@@ -222,5 +241,6 @@ class UserList extends Component
         Session::flash('delete-user-success', 'User deleted successfully.');
 
         $this->reset();
+        $this->redirect(Route('admin.index'));
     }
 }

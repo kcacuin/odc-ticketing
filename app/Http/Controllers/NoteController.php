@@ -39,29 +39,6 @@ class NoteController extends Controller
         return to_route('tickets.show', $ticket)->withFragment('notes');
     }
 
-    // public function store(Request $request, Ticket $ticket)
-    // {
-    //     $data = $request->validate([
-    //         'body' => ['required', 'string', 'max:255']
-    //     ]);
-
-    //     $previousStatus = $ticket->status->name; 
-
-    //     $note = $ticket->notes()->create([
-    //         'body' => $data['body'],
-    //         'previous_status' => $previousStatus, 
-    //         'new_status' => $ticket->status->name, 
-    //         'user_id' => $request->user()->id
-    //     ]);
-
-    //     // Retrieve the new status after creating the note
-    //     // $newStatus = $ticket->status->name;
-
-    //     return redirect()->route('tickets.show', $ticket)->with([
-    //         // 'previousStatus' => $previousStatus,
-    //         // 'newStatus' => $newStatus
-    //     ])->withFragment('notes');
-    // }
 
     /**
      * Display the specified resource.

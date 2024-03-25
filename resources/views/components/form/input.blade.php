@@ -22,7 +22,7 @@
             wire:model="{{ $wireModel }}"
             type="{{ $type }}"
             name="{{ $name }}"
-            id="{{ $name }}"
+            {{-- id="{{ $name }}" --}}
             placeholder="placeholder"
         >
         <x-form.label name="{{ $name }}" labelname="{{ $labelname }}" />

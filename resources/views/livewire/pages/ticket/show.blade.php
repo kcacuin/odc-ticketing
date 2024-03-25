@@ -2,7 +2,41 @@
     <x-slot name="header">
         <h2 class="mr-10 text-left text-xl text-white dark:text-gray-200 leading-3">
             <p class="text-xs font-bold uppercase">Incident</p>
-            <p class="font-thin">ODC{{ $ticket->number }}</p>
+            <div x-data="{ copied: false, timer: null, showclipboard: false, }" x-init="timer = null">
+                <button class="font-thin" 
+                @click.prevent="
+                    clearTimeout(timer); 
+                    navigator.clipboard.writeText('{{ $ticket->number }}').then(() => {
+                        copied = true;
+                        timer = setTimeout(() => copied = false, 1000);
+                    }),
+                    showclipboard = false
+                "
+                @mouseover="showclipboard = true"
+                @mouseout="showclipboard = false"
+                class="relative"
+                >
+                    ODC{{ $ticket->number }}
+                    <span x-show="copied"  x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                        class="absolute -translate-y-4 translate-x-1 opacity-75"
+                    >
+                        <span class="flex space-x-1 items-center text-xs ">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                                <path fill-rule="evenodd" d="M7.502 6h7.128A3.375 3.375 0 0 1 18 9.375v9.375a3 3 0 0 0 3-3V6.108c0-1.505-1.125-2.811-2.664-2.94a48.972 48.972 0 0 0-.673-.05A3 3 0 0 0 15 1.5h-1.5a3 3 0 0 0-2.663 1.618c-.225.015-.45.032-.673.05C8.662 3.295 7.554 4.542 7.502 6ZM13.5 3A1.5 1.5 0 0 0 12 4.5h4.5A1.5 1.5 0 0 0 15 3h-1.5Z" clip-rule="evenodd" />
+                                <path fill-rule="evenodd" d="M3 9.375C3 8.339 3.84 7.5 4.875 7.5h9.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-9.75A1.875 1.875 0 0 1 3 20.625V9.375ZM6 12a.75.75 0 0 1 .75-.75h.008a.75.75 0 0 1 .75.75v.008a.75.75 0 0 1-.75.75H6.75a.75.75 0 0 1-.75-.75V12Zm2.25 0a.75.75 0 0 1 .75-.75h3.75a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75ZM6 15a.75.75 0 0 1 .75-.75h.008a.75.75 0 0 1 .75.75v.008a.75.75 0 0 1-.75.75H6.75a.75.75 0 0 1-.75-.75V15Zm2.25 0a.75.75 0 0 1 .75-.75h3.75a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75ZM6 18a.75.75 0 0 1 .75-.75h.008a.75.75 0 0 1 .75.75v.008a.75.75 0 0 1-.75.75H6.75a.75.75 0 0 1-.75-.75V18Zm2.25 0a.75.75 0 0 1 .75-.75h3.75a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd" />
+                            </svg>
+                            <span class="text-xs">Copied</span>
+                        </span>
+                    </span>
+                    <span x-show="showclipboard" x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-90"
+                        class="absolute -translate-y-4 translate-x-1 opacity-75"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
+                        </svg>
+                    </span>
+                </button>
+            </div>
         </h2>
     </x-slot>
     @section('title', 'Incident ' . $ticket->number)
@@ -47,6 +81,7 @@
                     <div class="mb-2">
                         <h3 class="text-lg font-bold">Notes</h3>
                     </div>
+                    {{-- ***** Ticket Timeline ***** --}}
                     <div class="ml-4">
                         <ol class="relative pl-2 border-s border-gray-200 dark:border-gray-700">
                             @php
@@ -138,31 +173,55 @@
                                                     </div>
                                                 </div>
                                             </li>
-                                        @elseif ($item->field == 'files')
-                                            @if ($files->isNotEmpty())
-                                                <li class="mb-10 ms-6 flex">
-                                                    <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-                                                        @if ($item->user->image)
-                                                            <div class="relative">
-                                                                <div class="w-10 h-10 rounded-full overflow-clip">
-                                                                    <img src="{{ asset("storage/" . $item->user->image) }}" alt="User Image">
-                                                                </div>
+                                        @elseif ($item->field == 'files' && $item->file_added)
+                                            <li class="mb-10 ms-6 flex">
+                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                                    @if ($item->user->image)
+                                                        <div class="relative">
+                                                            <div class="w-10 h-10 rounded-full overflow-clip">
+                                                                <img src="{{ asset("storage/" . $item->user->image) }}" alt="User Image">
                                                             </div>
-                                                        @else
-                                                            <div class="relative inline-flex items-center justify-center text-slate-600 bg-slate-100 w-10 h-10 rounded-full">
-                                                                {{ strtoupper(substr($item->user->first_name, 0, 1)) . strtoupper(substr($item->user->last_name, 0, 1)) }}
-                                                            </div>
-                                                        @endif
-                                                    </span>
-                                                    <div class="items-center justify-between w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
-                                                        <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ $item->created_at->diffForHumans() }}</time>
-                                                        <div class="text-sm font-normal text-gray-500 dark:text-gray-300">
-                                                            <span class="font-medium text-slate-500">{{ $item->user->first_name . ' ' . $item->user->last_name }}</span>
-                                                            attached a file/s
                                                         </div>
+                                                    @else
+                                                        <div class="relative inline-flex items-center justify-center text-slate-600 bg-slate-100 w-10 h-10 rounded-full">
+                                                            {{ strtoupper(substr($item->user->first_name, 0, 1)) . strtoupper(substr($item->user->last_name, 0, 1)) }}
+                                                        </div>
+                                                    @endif
+                                                </span>
+                                                <div class="items-center justify-between w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
+                                                    <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ $item->created_at->diffForHumans() }}</time>
+                                                    <div class="text-sm font-normal text-gray-500 dark:text-gray-300">
+                                                        <span class="font-medium text-slate-500">{{ $item->user->first_name . ' ' . $item->user->last_name }}</span>
+                                                        attached a file
+                                                        <a href="{{ asset('storage/' . $item->file_path .'/'. $item->file_name )}}" class="font-bold text-odc-blue-600">{{ $item->new_value }}</a>
                                                     </div>
-                                                </li>
-                                            @endif
+                                                </div>
+                                            </li>
+                                        @elseif ($item->field == 'files' && $item->file_deleted)
+                                            <li class="mb-10 ms-6 flex">
+                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                                    @if ($item->user->image)
+                                                        <div class="relative">
+                                                            <div class="w-10 h-10 rounded-full overflow-clip">
+                                                                <img src="{{ asset("storage/" . $item->user->image) }}" alt="User Image">
+                                                            </div>
+                                                        </div>
+                                                    @else
+                                                        <div class="relative inline-flex items-center justify-center text-slate-600 bg-slate-100 w-10 h-10 rounded-full">
+                                                            {{ strtoupper(substr($item->user->first_name, 0, 1)) . strtoupper(substr($item->user->last_name, 0, 1)) }}
+                                                        </div>
+                                                    @endif
+                                                </span>
+                                                <div class="items-center justify-between w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
+                                                    <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ $item->created_at->diffForHumans() }}</time>
+                                                    <div class="text-sm font-normal text-gray-500 dark:text-gray-300">
+                                                        <span class="font-medium text-slate-500">{{ $item->user->first_name . ' ' . $item->user->last_name }}</span>
+                                                        <span class="text-odc-red-700">deleted</span>
+                                                        an attached file
+                                                        <span class="font-bold text-odc-red-700">{{ $item->file_name }}</span>
+                                                    </div>
+                                                </div>
+                                            </li>
                                         @elseif ($item->field == 'title')
                                             <li class="mb-10 ms-6 flex">
                                                 <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
@@ -313,7 +372,6 @@
                                         @endif
                                     @elseif ($item instanceof \App\Models\Note)
                                         {{-- Display user note --}}
-                                        {{-- <div>{{ $item->body }}</div> --}}
                                         <li class="mb-10 ms-6 flex">
                                             <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
                                                 @if ($item->user->image)
@@ -405,9 +463,8 @@
                                     @endif
                                 @endforeach
                             @else
-                                <p>No updates yet recorded for this ticket.</p>
+                                <p class="px-6 py-2 text-xs text-slate-500  bg-slate-50 border border-gray-200 rounded-lg shadow-sm dark:bg-gray-700 dark:border-gray-600">No updates yet recorded for this ticket.</p>
                             @endif
-                            
                         </ol>
                     </div>
                     <form action="{{ route('tickets.notes.store', $ticket) }}" method="POST" class="mt-2">
@@ -559,5 +616,17 @@
             </div>
         </div>
     </div>
+
+<div 
+  x-data
+  @click.window="window.scrollTo({top: 0, behavior: 'smooth'})"
+  >
+    <button x-on:click="window.scrollTo(0, 0)" class=" fixed bottom-4 right-5 bg-odc-blue-700 text-white p-3.5 rounded-full shadow">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-bounce w-7 h-7">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 18.75 7.5-7.5 7.5 7.5" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 7.5-7.5 7.5 7.5" />
+    </svg>
+</div>
+
 
 </x-app-layout>

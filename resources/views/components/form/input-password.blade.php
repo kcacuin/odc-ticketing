@@ -33,5 +33,5 @@
         <x-form.label name="{{ $name }}" labelname="{{ $labelname }}" />
         <x-form.error name="{{ $name }}" />
     </div>
-    <x-primary-button wire:click="generatePassword" type="button">Generate</x-primary-button>
+    <x-primary-button wire:click="generatePassword" type="button" class="px-4 py-2 space-x-2 rounded-md border border-slate-300 text-blue-primary text-xs tracking-widest uppercase hover:bg-slate-100">Generate</x-primary-button>
 </div>

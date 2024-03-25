@@ -31,6 +31,10 @@ return new class extends Migration
             $table->string('field');
             $table->longText('previous_value')->nullable();
             $table->longText('new_value')->nullable();
+            $table->boolean('file_added')->default(false);
+            $table->boolean('file_deleted')->default(false);
+            $table->string('file_name')->nullable();
+            $table->string('file_path')->nullable();
             $table->timestamps();
         });
     }
