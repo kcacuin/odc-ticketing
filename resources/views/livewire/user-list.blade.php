@@ -470,6 +470,7 @@
                                                 {{ strtoupper(substr($first_name, 0, 1)) . strtoupper(substr($last_name, 0, 1)) }}
                                             </div>
                                         @endif
+                                        <x-form.error name="newImage"/>
                                     </div>
                                     <div class="flex flex-col w-full space-y-2">
                                         
@@ -502,11 +503,11 @@
                                         </div>
                                     </div>
                                     {{-- * First Name --}}
-                                    <x-form.input name="first_name" labelname="First Name" type="text" wire:model='first_name' class="-mt-8"/>
+                                    <x-form.input name="first_name" labelname="First Name" type="text" wire:model.lazy='first_name' class="-mt-[2rem]"/>
                                     {{-- * Last Name --}}
-                                    <x-form.input name="last_name" labelname="Last Name" type="text" wire:model='last_name' class="-mt-2"/>
+                                    <x-form.input name="last_name" labelname="Last Name" type="text" wire:model.lazy='last_name' class="-mt-2"/>
                                     {{-- * Username --}}
-                                    <x-form.input name="username" labelname="Username" type="text" wire:model='username' class="-mt-2"/>
+                                    <x-form.input name="username" labelname="Username" type="text" wire:model.lazy='username' class="-mt-2"/>
                                     {{-- * Role --}}
                                     <x-form.field>
                                         <select name="role_id" wire:model="role_id" id="role_id"
@@ -526,7 +527,7 @@
                             </div>
                     
                             {{-- * Email --}}
-                            <x-form.input name="email" labelname="Email" type="email" wire:model='email'/>
+                            <x-form.input name="email" labelname="Email" type="email" wire:model.blur='email'/>
                     
                             {{-- * Password --}}
                             <x-form.field>
@@ -544,16 +545,16 @@
                             {{-- * Confirm Password --}}
                             <x-form.input name="password_confirmation" labelname="Confirm Password" type="password" wire:model='password_confirmation'/>
                     
-                            <div class="flex justify-end mt-10 space-x-2">
-                                <x-primary-button @click.prevent="open = false" type="button" class="border border-slate-300">Cancel</x-primary-button>
-                                
-                                <button type="submit" wire:loading.attr="disabled" class="px-3 py-2 text-xs tracking-widest text-white uppercase transition-colors duration-200 transform bg-odc-blue-800 rounded-md dark:bg-odc-blue-700 dark:hover:bg-odc-blue-800 dark:focus:bg-odc-blue-800 
+                            <div class="flex items-center justify-end mt-10 space-x-2">
+                                <x-primary-button wire:loading.remove @click.prevent="open = false" type="button" class="border border-slate-300">Cancel</x-primary-button>
+                                <p wire:loading class="hidden animate-pulse text-sm text-slate-500">Creating new user...</p>
+                                <button wire:click="register" wire:loading.attr="disabled" class="px-3 py-2 text-xs tracking-widest text-white uppercase transition-colors duration-200 transform bg-odc-blue-800 rounded-md dark:bg-odc-blue-700 dark:hover:bg-odc-blue-800 dark:focus:bg-odc-blue-800 
                                 hover:bg-odc-blue-900 focus:outline-none focus:bg-odc-blue-600 focus:ring focus:ring-odc-blue-400 focus:ring-opacity-50">
                                     <span class="text-white">
-                                        {{-- <svg aria-hidden="true" role="status" class="inline w-4 h-4 me-1 text-gray-200 animate-spin dark:text-gray-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <svg wire:loading wire:target="register" aria-hidden="true" role="status" class="hidden w-4 h-4 me-1 text-gray-200 animate-spin dark:text-gray-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
-                                            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="#1C64F2"/>
-                                        </svg> --}}
+                                            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="#FFF"/>
+                                        </svg>
                                         {{ __('Register') }}
                                     </span>
                                 </button>
@@ -620,8 +621,10 @@
                                                 {{ strtoupper(substr($first_name, 0, 1)) . strtoupper(substr($last_name, 0, 1)) }}
                                             </div>
                                         @endif
+                                        
                                     </div>
                                     <div class="flex flex-col w-full space-y-2">
+                                        <x-form.error name="newImage"/>
                                         
                                         <div class="grid grid-cols-2 grid-rows-1 gap-2">
                                             <label for="file2" class="cursor-pointer flex items-center px-4 py-2 space-x-2 rounded-md border border-slate-300 text-blue-primary text-xs tracking-widest uppercase hover:bg-slate-100">
@@ -629,7 +632,7 @@
                                                 <span>Change</span>
                                             </label>
                                             <input type="file" id="file2" wire:model="newImage" class="hidden">
-                                            <button type="button" class="flex items-center px-4 py-2 space-x-2 rounded-md border border-slate-300 text-blue-primary text-xs tracking-widest uppercase hover:bg-slate-100">
+                                            <button wire:click='removeFile' type="button" class="flex items-center px-4 py-2 space-x-2 rounded-md border border-slate-300 text-blue-primary text-xs tracking-widest uppercase hover:bg-slate-100">
                                                 <x-svg-icon name="trash" class="w-[16px] h-[16px]"/>
                                                 <span>Remove</span>
                                             </button>
@@ -653,9 +656,9 @@
                                         </div>
                                     </div>
                                     {{-- * First Name --}}
-                                    <x-form.input name="first_name" labelname="First Name" type="text" wire:model='first_name' class="-mt-8"/>
+                                    <x-form.input name="first_name" labelname="First Name" type="text" wire:model.lazy='first_name' class="-mt-[2rem]"/>
                                     {{-- * Last Name --}}
-                                    <x-form.input name="last_name" labelname="Last Name" type="text" wire:model='last_name' class="-mt-2"/>
+                                    <x-form.input name="last_name" labelname="Last Name" type="text" wire:model.lazy='last_name' class="-mt-2"/>
                                     {{-- * Username --}}
                                     <x-form.input name="username" labelname="Username" type="text" wire:model='username' class="-mt-2"/>
                                     {{-- * Role --}}
@@ -663,13 +666,21 @@
                                         <select name="role_id" wire:model="role_id"
                                         class="appearance-none block mt-1 w-full peer h-[3rem] px-6 text-sm text-white bg-gray-dark rounded-lg border-opacity-75 border-2 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 placeholder-transparent placeholder:pointer-events-none
                                         ring-0 placeholder:select-none focus:shadow-md focus:shadow-odc-blue-700 focus:border-blue-secondary focus:ring-0">
-                                            <option value="{{ $defaultRoleId }}" selected>User</option>
+                                            <option value="{{ $defaultRoleId }}">User</option>
                                             @foreach($roles as $role)
                                                 @if($role->name !== 'User')
                                                     <option value="{{ $role->id }}">{{ $role->name }}</option>
                                                 @endif
                                             @endforeach
                                         </select>
+                                        {{-- <select name="role_id" wire:model="role_id"
+                                        class="appearance-none block mt-1 w-full peer h-[3rem] px-6 text-sm text-white bg-gray-dark rounded-lg border-opacity-75 border-2 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 placeholder-transparent placeholder:pointer-events-none
+                                        ring-0 placeholder:select-none focus:shadow-md focus:shadow-odc-blue-700 focus:border-blue-secondary focus:ring-0">
+                                            <option value="">Select Role</option>
+                                            @foreach($roles as $role)
+                                                <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                            @endforeach
+                                        </select> --}}
                                         <x-form.label class="-translate-y-[6px] peer-focus:-translate-y-[6px]" name="role" labelname="Role"/>
                                         <x-form.error name="role"/>
                                     </x-form.field>
@@ -678,19 +689,19 @@
                            
                             
                             {{-- * Email --}}
-                            <x-form.input name="email" labelname="Email" type="email" wire:model='email'/>
+                            <x-form.input name="email" labelname="Email" type="email" wire:model.blur='email'/>
 
                             
                     
-                            <div class="flex justify-end mt-10 space-x-2">
-                                <x-primary-button @click="open = false" type="button" class="border border-slate-300">Cancel</x-primary-button>
-                                
+                            <div class="flex items-center justify-end mt-10 space-x-2">
+                                <x-primary-button wire:loading.remove @click="open = false" type="button" class="border border-slate-300">Cancel</x-primary-button>
+                                <p wire:loading class="hidden animate-pulse text-sm text-slate-500">Updating user...</p>
                                 <button wire:loading.attr="disabled" type="submit" class="px-3 py-2 text-xs tracking-widest text-white uppercase transition-colors duration-200 transform bg-odc-blue-800 rounded-md dark:bg-odc-blue-700 dark:hover:bg-odc-blue-800 dark:focus:bg-odc-blue-800 
                                 hover:bg-odc-blue-900 focus:outline-none focus:bg-odc-blue-600 focus:ring focus:ring-odc-blue-400 focus:ring-opacity-50">
                                     <span class="text-white">
-                                        <svg wire:loading.delay wire:target="update" aria-hidden="true" role="status" class="inline w-4 h-4 me-1 text-gray-200 animate-spin dark:text-gray-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <svg wire:loading wire:target="update" aria-hidden="true" role="status" class="hidden w-4 h-4 me-1 text-gray-200 animate-spin dark:text-gray-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
-                                            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="#1C64F2"/>
+                                            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="#FFF"/>
                                         </svg>
                                         {{ __('Update') }}
                                     </span>
@@ -733,7 +744,7 @@
                             <h1 class="text-xl font-extrabold text-gray-800 ">Are you sure you want to delete this user?</h1>
                             
                             <div class="flex justify-center ">
-                                <div class="flex items-center space-x-2 px-8 py-2 rounded-full bg-slate-50">
+                                <div class="flex items-center space-x-2 px-4 py-2.5 rounded-full bg-slate-50">
                                     <div>
                                         @if ($image)
                                             <div class="relative">
@@ -762,6 +773,10 @@
                         <div class="space-x-4">
                             <x-primary-button @click="open = false" wire:loading.attr="disabled" type="button"  class="border border-slate-300">No, cancel</x-primary-button>
                             <button wire:click="confirmDelete" wire:loading.attr="disabled" type="submit" class="px-3 py-2 text-xs tracking-widest text-white uppercase transition-colors duration-200 transform bg-odc-red-600 rounded-md dark:bg-odc-red-700 dark:hover:bg-odc-red-800 dark:focus:bg-odc-red-800 hover:bg-odc-red-700 focus:outline-none focus:bg-odc-red-600 focus:ring focus:ring-odc-red-400 focus:ring-opacity-50">
+                                <svg wire:loading wire:target="confirmDelete" aria-hidden="true" role="status" class="hidden w-4 h-4 me-1 text-gray-200 animate-spin dark:text-gray-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                                    <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="#FFF"/>
+                                </svg>
                                 <span>Yes, delete it</span>
                             </button>
                         </div>
@@ -770,4 +785,15 @@
             </div>
         </div>
     </div>
+
+    {{-- ***** Toast ***** --}}
+    <x-action-message-toast on="create-user-success" icon="check-circle" key="User Creation Successful!">
+        {{ __("You've created a new user!") }}
+    </x-action-message-toast>
+    <x-action-message-toast on="update-user-success" icon="check-circle" key="User Updated Successful!">
+        {{ __("You've updated the user successfully!") }}
+    </x-action-message-toast>
+    <x-action-message-toast on="delete-user-success" icon="check-circle" key="User Deleted Successful!">
+        {{ __("You've deleted the user successfully!") }}
+    </x-action-message-toast>
 </div>

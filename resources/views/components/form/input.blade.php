@@ -19,7 +19,7 @@
     <div class="relative">
         <input {{ $disabled ? 'disabled' : '' }} {{ $readonly ? 'readonly' : '' }}
         {!! $attributes->merge(['class' => $classes . ($errors->has($name) ? $errorClasses : ''), 'value' => old($name)]) !!}
-            wire:model="{{ $wireModel }}"
+            {{-- wire:model="{{ $wireModel }}" --}}
             type="{{ $type }}"
             name="{{ $name }}"
             {{-- id="{{ $name }}" --}}

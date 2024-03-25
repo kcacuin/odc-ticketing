@@ -615,18 +615,16 @@
                 </div>
             </div>
         </div>
+        {{-- TODO: Phase 2 - Scroll to top --}}
+        {{-- <div>
+            <button x-show="isVisible" @click="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-4 right-9 bg-odc-blue-700 text-white p-2.5 rounded-full shadow">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 18.75 7.5-7.5 7.5 7.5" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 7.5-7.5 7.5 7.5" />
+                </svg>
+            </button>
+        </div> --}}
     </div>
 
-<div 
-  x-data
-  @click.window="window.scrollTo({top: 0, behavior: 'smooth'})"
-  >
-    <button x-on:click="window.scrollTo(0, 0)" class=" fixed bottom-4 right-5 bg-odc-blue-700 text-white p-3.5 rounded-full shadow">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="animate-bounce w-7 h-7">
-        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 18.75 7.5-7.5 7.5 7.5" />
-        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 7.5-7.5 7.5 7.5" />
-    </svg>
-</div>
-
-
+    <x-flash-message key="update-ticket-success" icon="check-circle"/>
 </x-app-layout>

@@ -21,6 +21,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Validate;
 
 use ZxcvbnPhp\Zxcvbn;
 
@@ -28,6 +29,7 @@ class UserList extends Component
 {
     use WithFileUploads, WithPerPagePagination, WithBulkActions, WithCachedRows, WithSorting;
 
+    public ?User $user;
     public $id;
 
     // * Filters
@@ -45,15 +47,29 @@ class UserList extends Component
     // * Refs
     public $selectedUserId;
 
+    #[Validate(['required', 'string', 'max:255'], onUpdate: true)]
     public string $first_name = '';
+
+    #[Validate(['required', 'string', 'max:255'], onUpdate: true)]
     public string $last_name = '';
+    
+    #[Validate(['image', 'max:5120', 'nullable'], onUpdate: true)]
     public $newImage;
+
+    #[Validate(['image', 'max:5120', 'nullable'], onUpdate: true)]
     public $image;
+
+    #[Validate(['required', 'string', 'min:3', 'max:255', 'unique:users,username'], onUpdate: true)]
     public string $username = '';
+    
+    // #[Validate(['required'], onUpdate: true)]
     public $role_id;
+
+    #[Validate(['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email', new AllowedEmailDomain('odecci.com')], onUpdate: true)]
     public string $email = '';
-    public $text;
+    
     public string $password = '';
+
     public string $password_confirmation = '';
     public int $strengthScore = 1;
     public array $strengthLevels = [
@@ -83,13 +99,35 @@ class UserList extends Component
     public function render()
     {
         $roles = Role::all();
-
         return view('livewire.user-list', [
             'users' => $this->rows ?? [],
             'roles' => $roles,
             'defaultRoleId' => $roles->where('name', 'User')->first()->id,
         ]);
         
+    }
+
+    public function removeFile()
+    {
+        if ($this->newImage) {
+            $filePath = $this->newImage->getRealPath();
+            
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+            
+            $this->newImage = null;
+        } 
+
+        if ($this->image) {
+            $filePath = asset('storage/' . $this->image);
+            
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+            
+            $this->image = null;
+        } 
     }
 
     // *** User Creation
@@ -103,15 +141,8 @@ class UserList extends Component
     public function register(): void
     {
         $this->validate([
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
-            'newImage' => ['nullable', 'image', 'max:5120'],
-            // 'role_id' => ['required', 'exists:roles,id'],
-            'username' => ['required', 'string', 'min:3', 'max:255', 'unique:users,username'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email', new AllowedEmailDomain('odecci.com')],
             'password' => ['required', 'string', 'min:7', 'confirmed', Rules\Password::defaults()],
         ]);
-
         $password = Hash::make($this->password);
 
         $filename = null;
@@ -120,6 +151,10 @@ class UserList extends Component
             $filename = $this->newImage->store('images');
         }
 
+        $roles = Role::all();
+        $userRoleId = $roles->where('name', 'User')->first()->id;
+        $role = $this->role_id === null ? $userRoleId : $this->role_id;
+
         $user = User::create([
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
@@ -127,6 +162,7 @@ class UserList extends Component
             'email' => $this->email,
             'password' => $password,
             'image' => $filename,
+            'role_id' => $role, 
         ]);
 
         event(new Registered($user));
@@ -134,7 +170,8 @@ class UserList extends Component
         Session::flash('create-user-success', 'Registration successful!');
 
         $this->reset();
-        $this->redirect(Route('admin.index'));
+
+        $this->dispatch('create-user-success');
     }
 
     public function generatePassword(): void
@@ -190,14 +227,11 @@ class UserList extends Component
     public function update()
     {
         $this->validate([
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
             'role_id' => ['required'],
-            'username' => ['required', 'string', 'min:3', 'max:255', Rule::unique('users')->ignore($this->selectedUserId)],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique('users')->ignore($this->selectedUserId)],
-            'newImage' => ['nullable', 'image', 'max:5120'],
+            'username' => ['required', 'string', 'min:3', 'max:255', Rule::unique(User::class)->ignore($this->selectedUserId)],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($this->selectedUserId)],
         ]);
-    
+
         $user = User::findOrFail($this->selectedUserId);
 
         $filename = null;
@@ -218,7 +252,8 @@ class UserList extends Component
         Session::flash('update-user-success', 'User updated successfully.');
     
         $this->reset();
-        $this->redirect(Route('admin.index'));
+
+        $this->dispatch('update-user-success');
     }
 
     public function delete($userId)
@@ -238,9 +273,8 @@ class UserList extends Component
 
         $user->delete();
 
-        Session::flash('delete-user-success', 'User deleted successfully.');
-
         $this->reset();
-        $this->redirect(Route('admin.index'));
+
+        $this->dispatch('delete-user-success');
     }
 }

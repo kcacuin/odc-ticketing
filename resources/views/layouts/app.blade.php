@@ -47,7 +47,7 @@
 
                                     </button> --}}
                                     {{-- * Notifications' Dropdown --}}
-                                    <div class="flex justify-center mt-3">
+                                    <div class="flex justify-center  mt-3">
                                         <div
                                             x-data="{
                                                 open: false,
@@ -97,9 +97,9 @@
                                                 x-on:click.outside="close($refs.button)"
                                                 :id="$id('dropdown-button')"
                                                 style="display: none;"
-                                                class="absolute right-0 z-20 mt-2 w-[30rem] h-[30rem] rounded-md bg-white shadow-md overflow-y-auto"
+                                                class="absolute right-0 z-20 mt-2 w-[30rem] h-[30rem] rounded-lg bg-white shadow-md overflow-y-auto"
                                             >
-                                                <div class="p-5 border border-gray-100 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+                                                <div class="p-5  dark:bg-gray-800 dark:border-gray-700">
                                                     <h3 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">Notifications</h3>
                                                     @php
                                                         $ticketModel = new \App\Models\Ticket;
@@ -151,7 +151,68 @@
                                                     </div>
                                                     @endforeach
                                                 </div>
-                                                
+                                                {{-- TODO: Phase 2 - Ticket Updates Notification --}}
+                                                {{-- <div class="p-5 dark:bg-gray-800 dark:border-gray-700">
+                                                    <h3 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">Notifications</h3>
+                                                    @php
+                                                        $ticketModel = new \App\Models\Ticket;
+                                                        $latestTickets = $ticketModel->getLatestWeeklyTickets();
+                                                    @endphp
+                                                    @foreach($latestTickets as $date => $tickets)
+                                                        <div>
+                                                            <div class="border-b border-slate-200">
+                                                                <time class="text-base font-semibold text-gray-900 dark:text-white">{{ Carbon\Carbon::parse($date)->format('F j, Y') }}</time>
+                                                            </div>
+                                                            <ol class="my-2">
+                                                                @foreach($tickets as $ticket)
+                                                                    <li>
+                                                                        <a href="{{ route('tickets.show', $ticket) }}" class="items-center block p-3 rounded-md sm:flex hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                                            <div class="mr-3">
+                                                                                @if ($ticket->user->image)
+                                                                                    <div class="relative">
+                                                                                        <div class="w-10 h-10 rounded-full overflow-clip">
+                                                                                            <img src="{{ asset("storage/" . $ticket->user->image) }}" alt="User Image">
+                                                                                        </div>
+                                                                                    </div>
+                                                                                @else
+                                                                                    <div class="relative inline-flex items-center justify-center text-slate-600 bg-slate-200 w-10 h-10 rounded-full">
+                                                                                        {{ strtoupper(substr($ticket->user->first_name, 0, 1)) . strtoupper(substr($ticket->user->last_name, 0, 1)) }}
+                                                                                    </div>
+                                                                                @endif
+                                                                            </div>
+                                                                            <div class="text-gray-600 dark:text-gray-400">
+                                                                                <div class="text-sm font-normal">
+                                                                                    <span class="font-medium text-gray-900 dark:text-white">{{ Auth::user()->first_name . ' ' . Auth::user()->last_name }}</span> created an incident requested by 
+                                                                                    <span class="font-medium text-gray-900 dark:text-white">{{ $ticket->requested_by }}</span> -
+                                                                                    <span class="bg-slate-100 text-odc-blue-900 text-xs font-normal me-2 px-2.5 py-0.5 rounded dark:bg-gray-600 dark:text-gray-300">{{ $ticket->client }}</span>
+                                                                                </div>
+                                                                                <div class="text-sm font-normal">
+                                                                                    <span>"{{ $ticket->title }}"</span>
+                                                                                </div>
+                                                                                <div class="text-xs font-normal">
+                                                                                    <span>{{ $ticket->created_at->diffForHumans() }}</span> •
+                                                                                    <x-badge class="bg-{{ $ticket->status_color }}-100 text-{{ $ticket->status_color }}-800 dark:bg-{{ $ticket->status_color }}-900 dark:text-{{ $ticket->status_color }}-300">{{ $ticket->status->name }}</x-badge>
+                                                                                </div>
+                                                                            </div>
+                                                                        </a>
+                                                                        @if ($ticket->changes->isNotEmpty())
+                                                                            <ul class="pl-5">
+                                                                                @foreach($ticket->changes as $change)
+                                                                                    <li>
+                                                                                        <div class="text-xs font-normal">
+                                                                                            {{ $change->created_at->diffForHumans() }} •
+                                                                                            <span class="font-medium">{{ $change->user->name }}</span> made a change: "{{ $change->description }}"
+                                                                                        </div>
+                                                                                    </li>
+                                                                                @endforeach
+                                                                            </ul>
+                                                                        @endif
+                                                                    </li>
+                                                                @endforeach
+                                                            </ol>
+                                                        </div>
+                                                    @endforeach
+                                                </div> --}}
                                             </div>
                                         </div>
                                     </div>

@@ -36,7 +36,7 @@ new #[Layout('layouts.guest')] class extends Component
     }
 }; ?>
 
-<div>
+<div class="mx-32">
     <div class="flex flex-col items-center mb-6">
         <h4 class="mt-10 text-lg font-semibold uppercase tracking-widest text-white">Reset Your Password</h4>
     </div>
