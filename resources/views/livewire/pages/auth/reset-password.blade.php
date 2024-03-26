@@ -9,6 +9,7 @@ use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
 use Livewire\Volt\Component;
+use ZxcvbnPhp\Zxcvbn;
 
 new #[Layout('layouts.guest')] class extends Component
 {
@@ -17,6 +18,13 @@ new #[Layout('layouts.guest')] class extends Component
     public string $email = '';
     public string $password = '';
     public string $password_confirmation = '';
+    public int $strengthScore = 1;
+    public array $strengthLevels = [
+        1 => ['status' => 'Weak', 'color' => 'odc-bg-clr-red'],
+        2 => ['status' => 'Fair', 'color' => 'odc-bg-clr-yellow'],
+        3 => ['status' => 'Good', 'color' => 'odc-bg-clr-lightblue'],
+        4 => ['status' => 'Strong', 'color' => 'odc-bg-clr-green'],
+    ];
 
     /**
      * Mount the component.
@@ -67,34 +75,70 @@ new #[Layout('layouts.guest')] class extends Component
 
         $this->redirectRoute('login', navigate: true);
     }
+
+    public function generatePassword(): void
+    {
+        $lowercase = range('a', 'z');
+        $uppercase = range('A', 'Z');
+        $digits = range(0,9);
+        $special = ['!', '@', '#', '$', '%', '^', '*'];
+        $chars = array_merge($lowercase, $uppercase, $digits, $special);
+        $length = 12;
+        do {
+            $password = array();
+
+            for ($i = 0; $i <= $length; $i++) {
+                $int = rand(0, count($chars) - 1);
+                $password[] = $chars[$int];
+            }
+
+        } while (empty(array_intersect($special, $password)));
+
+        $this->setPasswords(implode('', $password));
+    }
+
+    public function updatedPassword($value)
+    {
+        $this->strengthScore = (new Zxcvbn())->passwordStrength($value)['score'];
+    }
+
+    private function setPasswords($value): void
+    {
+        $this->password = $value;
+        $this->passwordConfirmation = $value;
+        $this->updatedPassword($value);
+    }
+
 }; ?>
 
 <div>
     <form wire:submit="resetPassword">
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input wire:model="email" id="email" class="block mt-1 w-full" type="email" name="email" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        <div class="flex flex-col items-center">
+            <h4 class="mt-10 text-lg font-semibold uppercase tracking-widest text-white">Set Your New Password</h4>
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-            <x-text-input wire:model="password" id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        <div class="mb-4 text-sm text-center text-slate-300 dark:text-gray-400">
+            Make sure you create a strong password.
         </div>
 
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+        {{-- * Email Address --}}
+        <x-form.input name="email" labelname="Email" type="email" wire:model='email'/>
 
-            <x-text-input wire:model="password_confirmation" id="password_confirmation" class="block mt-1 w-full"
-                          type="password"
-                          name="password_confirmation" required autocomplete="new-password" />
+        {{-- * Password --}}
+        <x-form.field>
+            <x-form.input-password name="password" labelname="Password" type="password" wire:model.live.debounce.150ms='password'/>
+            <div class="mt-3 relative w-full flex items-center text-sm text">
+                <span class="absolute left-0 text-white text-opacity-55">{{ $strengthLevels[$strengthScore]['status'] ?? 'Weak' }}</span>
+                <div class="absolute right-0 flex gap-2">
+                    @for($i = 1; $i <= $strengthScore; $i++)
+                    <div class="{{$strengthLevels[$strengthScore]['color']}} bg-gray-dark rounded-full h-2 w-12"></div>
+                    @endfor
+                </div>
+            </div>
+        </x-form.field>
 
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
+        {{-- * Password Confirmation --}}
+        <x-form.input name="password_confirmation" labelname="Password Confirmation" type="password" wire:model='password_confirmation'/>
 
         <div class="flex items-center justify-end mt-4">
             <x-primary-button>

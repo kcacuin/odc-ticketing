@@ -142,7 +142,9 @@ class UserList extends Component
     {
         $this->validate([
             'password' => ['required', 'string', 'min:7', 'confirmed', Rules\Password::defaults()],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email', new AllowedEmailDomain('odecci.com')],
         ]);
+
         $password = Hash::make($this->password);
 
         $filename = null;
