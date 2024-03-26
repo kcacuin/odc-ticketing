@@ -16,27 +16,17 @@
 
                 <div class="flex flex-row-reverse w-full gap-10"
                     x-data="{
-                        {{-- *** Ticket Number *** --}}
                         ticketNumber: '{{ $nextTicketNumber }}',
                         showMsg: false,
-                        {{-- *** Ticket Date *** --}}
                         ticketDate: '{{ now()->format('Y-m-d') }}',
-                        {{-- *** Ticket Status *** --}}
                         ticketStatus: 'Open',
-                        {{-- *** Ticket Requested By *** --}}
                         ticketRequestedBy: '{{ old('requested_by')}}',
-                        {{-- *** Ticket Client *** --}}
                         ticketClient: '{{ old('client')}}',
-                        {{-- *** Ticket Product *** --}}
                         ticketProduct: '{{ old('product')}}',
-                        {{-- *** Ticket Title *** --}}
                         ticketTitle: '{{ old('title')}}',
-                        {{-- *** Ticket Issue *** --}}
                         ticketIssue: '{!! old('issue') !!}',
-                        {{-- *** Ticket Files *** --}}
                     }"
                 >
-                    {{-- * Right Column --}}
                     <div class="flex flex-col w-[25%]">
                         <div class="mb-4">
                             {{-- * Ticket Number (Copy to Clipboard) --}}
@@ -44,7 +34,6 @@
                                 <x-form.input-clipboard name="number" labelname="Ticket Number" type="number" readonly="true" :value="$nextTicketNumber" class="disabled:opacity-90"/>
                                 <input type="hidden" x-on:input="wire.emit('ticketIdUpdated', input)">
                             </div>
-                            {{-- * Status --}}
                             <x-form.field>
                                 <select name="status_id" id="status_id" disabled
                                 class="disabled:opacity-90 disabled:text-slate-300 appearance-none block mt-1 w-full peer h-[3rem] px-6 text-sm text-white bg-gray-dark rounded-lg border-opacity-75 border-2 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 placeholder-transparent placeholder:pointer-events-none
@@ -63,17 +52,14 @@
                                 <x-form.label class="-translate-y-[6px] peer-focus:-translate-y-[6px]" name="status" labelname="Status"/>
                                 <x-form.error name="status_id"/>
                             </x-form.field>
-                            {{-- * Date --}}
                             <div>
                                 <x-form.date x-model="ticketDate" name="date_received" labelname="Date Received" type="date" class="appearance-none"/>
                             </div>
                         </div>
-                        {{-- * Dropzone --}}
                         <div class="relative max-h-52 overflow-y-auto bg-[#f1f0ef] rounded-md border border-dashed border-blue-secondary">
                             <x-input.filepond name="files" multiple/>
                         </div>
                     </div>
-                    {{-- * Left Column --}}
                     <div class="flex flex-col w-[75%] pr-10 border-r border-r-slate-200">
                         <div class="grid grid-cols-3 grid-rows-1 gap-4 mb-6">
                             <x-form.input-tooltip x-model="ticketRequestedBy" name="requested_by" labelname="Requested By" type="text" tooltip="Person who requested assistance."/>
@@ -81,7 +67,6 @@
                             <x-form.input-tooltip x-model="ticketProduct" name="product" labelname="Product" type="text" tooltip="Relevant product or service."/>
                         </div>
                         <div class="flex flex-col border-t border-t-slate-200">
-                            {{-- * Title --}}
                             <x-form.input-tooltip x-model="ticketTitle" name="title" labelname="Title" type="text" tooltip="Brief description of the problem."/>
 
                             <div class="relative">
@@ -164,12 +149,6 @@
                                                                 :class="{ 'text-red-primary italic': !ticketTitle, '': ticketTitle }"
                                                                 ></p>
                                                             </div>
-                                                            {{-- <div class="flex items-center justify-between">
-                                                                <p class="text-slate-500">Issue</p>
-                                                                <div x-text="ticketIssue ? ticketIssue : '***This field is required***'"
-                                                                :class="{ 'text-red-primary italic': !ticketIssue, 'text-slate-500': ticketIssue }"
-                                                                ></div>
-                                                            </div> --}}
                                                         </div>
                                                     </div>
 
@@ -192,8 +171,6 @@
                                     </div>
                                 </div>
                             </div>
-
-
                         </div>
                     </div>
                 </div>
@@ -201,11 +178,3 @@
         @endauth
     </div>
 </x-app-layout>
-
-{{-- <script>
-    window.onbeforeunload = function() {
-        if (document.getElementById('title').value.trim() !== '' || document.getElementById('issue').value.trim() !== '') {
-            return "Are you sure you want to leave this page? Your changes may not be saved.";
-        }
-    };
-</script> --}}

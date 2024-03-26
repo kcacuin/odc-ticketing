@@ -10,10 +10,9 @@ class MultipleFileUpload extends Component
 {
     use WithFileUploads;
 
-    public $ticketId; // Change $number to $ticketId
+    public $ticketId;
     public $files = [];
 
-    // Listen for the custom event and update $ticketId
     protected $listeners = ['ticketIdUpdated'];
 
     public function ticketIdUpdated($newTicketId)
@@ -24,15 +23,14 @@ class MultipleFileUpload extends Component
     public function updatedFiles()
     {
         $this->validate([
-            'files.*' => 'image|max:1024', // Example validation rules, adjust as needed
+            'files.*' => 'image|max:1024',
         ]);
 
         foreach ($this->files as $file) {
-            $path = $file->store('files'); // Store the file in the 'storage/app/files' directory
+            $path = $file->store('files');
             $fileName = $file->getClientOriginalName();
             $fileMimeType = $file->getClientMimeType();
 
-            // Create a new record in the files table
             File::create([
                 'file_name' => $fileName,
                 'file_path' => $path,

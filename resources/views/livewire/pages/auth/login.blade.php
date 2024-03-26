@@ -31,7 +31,6 @@ new #[Layout('layouts.guest')] class extends Component
 }; ?>
 
 <div>
-    <!-- Session Status -->
     <x-auth-session-status class="mb-4" icon="check-circle" key="New Password Has Been Created!" :status="session('status')" />
 
     <div class="flex flex-col items-center">
@@ -41,15 +40,12 @@ new #[Layout('layouts.guest')] class extends Component
 
     <form wire:submit="login" class="w-full">
         <div class="relative">
-            {{-- * Email --}}
             <x-form.input name="email" labelname="Email" type="email" wire:model='form.email' />
 
-            {{-- * Password --}}
             <x-form.input name="form.password" labelname="Password" type="password" wire:model='form.password'/>
         </div>
 
         <div class="mt-5 flex gap-8 justify-between">
-            <!-- Remember Me -->
             <div class="flex">
                 <label for="remember" class="inline-flex items-center">
                     <input wire:model="form.remember" id="remember" type="checkbox" class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-odc-blue-600 shadow-sm focus:ring-odc-blue-500 dark:focus:ring-odc-blue-600 dark:focus:ring-offset-gray-800" name="remember">
@@ -76,11 +72,6 @@ new #[Layout('layouts.guest')] class extends Component
                     <span>Log<span wire:loading.delay>ging</span> In<span wire:loading.delay>...</span></span>
                 </span>
             </x-primary-button>
-            {{-- <x-primary-button-tr class="flex justify-center pointer-events-none" >
-                <a class="underline font-light pointer-events-auto text-white dark:text-white hover:text-slate-300 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-odc-blue-500 dark:focus:ring-offset-white" href="{{ route('register')}}" wire:navigate>
-                    {{ __('Register') }}
-                </a>
-            </x-primary-button-tr> --}}
         </div>
     </form>
 

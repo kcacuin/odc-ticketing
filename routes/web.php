@@ -30,8 +30,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
     Route::view('profile', 'profile')->name('profile');
     
-    // Route::get('admin', [UserController::class, 'index'])->name('admin.index');
-
     Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
     Route::get('/tickets/incident/create', [TicketController::class, 'create'])->name('tickets.create');
     Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');
@@ -40,7 +38,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/tickets/incident-{ticket}', [TicketController::class, 'update'])->name('tickets.update');
     Route::delete('/tickets/incident-{ticket}', [TicketController::class, 'destroy'])->name('tickets.destroy');
 
-    // Route::resource('tickets', TicketController::class);
     Route::resource('tickets.files', FileController::class);
     Route::resource('tickets.notes', NoteController::class);
 

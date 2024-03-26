@@ -42,12 +42,9 @@
                 @method('PATCH')
 
                 <div class="flex flex-row-reverse w-full gap-10">
-                    {{-- * Right Column --}}
                     <div class="flex flex-col w-[25%]">
                         <div class="mb-4">
-                            {{-- * Ticket Number (Copy to Clipboard) --}}
                             <x-form.input :value="old('number', $ticket->number)" name="number" labelname="Ticket Number" type="number"/>
-                            {{-- * Status --}}
                             <x-form.field>
                                 <select xModel="ticketStatus" name="status_id" id="status_id"
                                 class="appearance-none block mt-1 w-full peer h-[3rem] px-6 text-sm text-white bg-gray-dark rounded-lg border-opacity-75 border-2 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 placeholder-transparent placeholder:pointer-events-none
@@ -65,10 +62,8 @@
                                 <x-form.label class="-translate-y-[6px] peer-focus:-translate-y-[6px]" name="status" labelname="Status"/>
                                 <x-form.error name="status_id"/>
                             </x-form.field>
-                            {{-- * Date --}}
                             <x-form.date xModel="ticketDate" :value="old('date_received', $ticket->date_received)" name="date_received" labelname="Date Received" type="date" class="appearance-none"/>
                         </div>
-                        {{-- * Dropzone --}}
                         <div class="flex flex-col h-52 overflow-y-auto">
                             <div class="rounded-md border border-dashed border-blue-secondary bg-[#f1f0ef]">
                                 <x-input.filepond xModel="ticketFiles" name="files" multiple/>
@@ -83,7 +78,6 @@
                             @endif
                         </div>
                     </div>
-                    {{-- * Left Column --}}
                     <div class="flex flex-col w-[75%] pr-10 border-r border-r-slate-200">
                         <div class="grid grid-cols-3 grid-rows-1 gap-4 mb-6">
                             <x-form.input-tooltip xModel="ticketRequestedBy" :value="old('requested_by', $ticket->requested_by)" name="requested_by" labelname="Requested By" type="text" tooltip="Person who requested assistance."/>
@@ -91,7 +85,6 @@
                             <x-form.input-tooltip xModel="ticketProduct" :value="old('product', $ticket->product)" name="product" labelname="Product" type="text" tooltip="Relevant product or service."/>
                         </div>
                         <div class="flex flex-col space-y-4 border-t border-t-slate-200">
-                            {{-- * Title --}}
                             <x-form.input-tooltip xModel="ticketTitle" :value="old('title', $ticket->title)" name="title" labelname="Title" type="text" tooltip="Brief description of the problem."/>
 
                             <div class="relative">
@@ -157,7 +150,6 @@
                     </div>
                 </div>
                 <div>
-
                 </div>
             </form>
         @endauth
@@ -166,10 +158,3 @@
     
     <x-flash-message key="no-changes-to-incident" icon="check-circle"/>
 </x-app-layout>
-{{-- <script>
-    window.onbeforeunload = function() {
-        if (document.getElementById('title').value.trim() !== '' || document.getElementById('issue').value.trim() !== '') {
-            return "Are you sure you want to leave this page? Your changes may not be saved.";
-        }
-    };
-</script> --}}

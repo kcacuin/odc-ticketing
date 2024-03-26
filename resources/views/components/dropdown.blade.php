@@ -9,15 +9,6 @@ switch ($align) {
         $alignmentClasses = 'bottom-0 right-0 -translate-y-10';
         break;
 }
-
-// switch ($width) {
-//     case '48':
-//         $width = 'w-48';
-//         break;
-//     case '42':
-//         $width = 'w-42';
-//         break;
-// }
 @endphp
 
 <div 

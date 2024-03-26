@@ -20,7 +20,6 @@
     x-transition:leave-end="opacity-0 translate-x-full"
     id="toast-top-right"
     {{ $attributes->merge(['class' => $classes])}} role="alert">
-        {{-- <span class="sr-only">Info</span> --}}
         <div class="flex flex-col">
             <div class="flex items-center text-odc-blue-600">
                 <x-svg-icon name="{{ $icon }}" class="flex-shrink-0 inline scale-75 me-2" aria-hidden="true"/>

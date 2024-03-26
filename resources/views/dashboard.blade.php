@@ -45,7 +45,6 @@
                         </div>
                     </div>
 
-                    {{-- <div class="grid grid-cols-2 grid-rows-1 gap-6"> --}}
                     <div class="flex gap-6">
                         <div role="status" class="w-full p-4 space-y-4 bg-white border border-gray-200 divide-y divide-gray-200 rounded shadow animate-pulse dark:divide-gray-700 md:p-6 dark:border-gray-700">
                             <div class="flex items-center justify-between">

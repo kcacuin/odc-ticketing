@@ -1,10 +1,4 @@
 @props(['active'])
-{{-- @props(['name']) --}}
-@php
-// $classes = ($active ?? false)
-//             ? 'fill-red w-6'
-//             : 'fw-6';
-@endphp
 
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
     <symbol id="dashboard" viewBox="0 0 38 35">
@@ -42,9 +36,6 @@
 </svg>
 
 {{-- * The actual navlink component --}}
-    {{-- <svg {{ $attributes->merge(['class' => 'icon']) }}>
-        <use xlink:href="#{{ $name }}" />
-    </svg> --}}
 <span class="max-w-0 translate-x-8 text-sm transition-opacity duration-300 group-hover:visible group-hover:opacity-100">
     {{ $slot }}
 </span>

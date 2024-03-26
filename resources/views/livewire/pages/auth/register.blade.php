@@ -54,7 +54,6 @@ new #[Layout('layouts.guest')] class extends Component
             $validated['image'] = $this->image->store('images');
         }
 
-        // Mail::to($user->email)->send(new VerificationEmail($user));
         event(new Registered($user = User::create($validated)));
 
         Auth::login($user);
@@ -154,20 +153,15 @@ new #[Layout('layouts.guest')] class extends Component
                 <div x-text="fileName" class="mt-2 text-xs text-center text-white"></div>
             </div>
             <div class="relative">
-                {{-- * First Name --}}
                 <x-form.input name="first_name" labelname="First Name" type="text" wire:model='first_name' class="w-full"/>
-                {{-- * Last Name --}}
                 <x-form.input name="last_name" labelname="Last Name" type="text" wire:model='last_name' class="w-full"/>
             </div>
         </div>
 
-        {{-- * Username --}}
         <x-form.input name="username" labelname="Username" type="text" wire:model='username'/>
 
-        {{-- * Email --}}
         <x-form.input name="email" labelname="Email" type="email" wire:model='email'/>
 
-        {{-- * Password --}}
         <x-form.field>
             <x-form.input-password name="password" labelname="Password" type="password" wire:model.live.debounce.150ms='password'/>
             <div class="mt-3 relative w-full flex items-center text-sm text">
@@ -180,7 +174,6 @@ new #[Layout('layouts.guest')] class extends Component
             </div>
         </x-form.field>
 
-        {{-- * Confirm Password --}}
         <x-form.input name="password_confirmation" labelname="Confirm Password" type="password" wire:model='password_confirmation'/>
 
         <div class="mt-6 flex flex-col justify-center">

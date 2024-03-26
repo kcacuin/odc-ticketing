@@ -135,7 +135,6 @@ body,
     height: 100%;
 }
 
-/* Firefox */
 * {
 scrollbar-width: auto;
 scrollbar-color: #0F2B3C;
@@ -146,7 +145,6 @@ scrollbar-color: #0F2B3C;
     background: #205375;
 }
 
-/* Chrome, Edge, and Safari */
 *::-webkit-scrollbar {
 width: 8px;
 height: 8px;
@@ -165,14 +163,13 @@ table {
     border-collapse: collapse;
 }
 
-/* Set header to stick to the top of the container. */
 thead {
     position: sticky;
     top: 0;
     z-index: 1;
     overflow: hidden;
     border-bottom: 1px solid rgb(203 213 225);
-    width: calc( 100% - 1em )/* scrollbar is average 1em/16px width, remove it from thead width */
+    width: calc( 100% - 1em )
 }
 
 .odc-bg {
@@ -275,15 +272,10 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endCo
     clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
 }
 
-/** FOR CALC STYLES **/
 .odc-main-con-height {
     height: calc(100vh - 5rem);
 }
 
-
-/* **** ODC COLORS **** */
-
-/* * ODC BG */
 .odc-bg-clr-red {
     background: #ED1C24 !important;
 }
@@ -300,7 +292,6 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endCo
     background: #22c55e !important;
 }
 
-/* * ODC BORDERS */
 .odc-brdr-clr-red:focus,
 .odc-brdr-clr-red {
     outline-color: #ED1C24 !important;
@@ -341,7 +332,6 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endCo
     @apply ring-2 ring-offset-2;
 }
 
-/* *** For Drag & Drop File Input */
 #file {
     width: 60%;
     height: 100%;
@@ -418,14 +408,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     border-width: thin;
 }
 
-/* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-/* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
 }

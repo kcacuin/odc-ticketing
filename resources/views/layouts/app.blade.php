@@ -5,9 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        {{-- <title>{{ config('app.name', 'Odecci Ticketing') }}</title> --}}
         <title>@yield('title') - {{ config('app.name', 'Odecci Ticketing') }}</title>
-        <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link rel="shortcut icon" href="{{ asset('storage/img/odc-favicon.svg') }}" type="image/x-icon">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -18,7 +16,6 @@
             rel="stylesheet"
         />
         @stack('styles')
-        <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/css/filepond.css', 'resources/js/app.js'])
         <x-rich-text::styles theme="richtextlaravel" data-turbo-track="false" />
     </head>
@@ -26,27 +23,14 @@
         <div class="flex min-h-screen bg-gray-100 dark:bg-gray-900 overflow-hidden">
             <livewire:layout.navigation />
 
-            <!-- Page Heading -->
             <div class="flex flex-col w-full">
                 @if (isset($header))
                     <header class="relative bg-gradient-to-br from-blue-primary to-blue-secondary dark:bg-gray-800 shadow">
                         <div class="relative odc-header-overlay z-10 flex items-center justify-between h-20 w-full mx-auto py-6 px-4 sm:px-6 lg:px-8">
                             {{ $header }}
                             <div>
-                                <!-- Settings Dropdown -->
                                 <div class="hidden space-x-2 sm:flex sm:items-center sm:ms-6">
-                                    {{-- <button type="button" class="relative">
-                                        <span class="sr-only">Notifications</span>
-                                        <div class="mt-2">
-                                            <x-svg-icon name="bell" class="text-white w-7 h-7" />
-                                            <span class="relative flex h-[10px] w-[10px]">
-                                                <span class="animate-ping absolute -top-7 -end-4 inline-flex h-full w-full rounded-full bg-odc-red-400 opacity-75"></span>
-                                                <span class="relative inline-flex -top-7 -end-4 rounded-full h-[10px] w-[10px] bg-odc-red-500"></span>
-                                            </span>
-                                        </div>
-
-                                    </button> --}}
-                                    {{-- * Notifications' Dropdown --}}
+                                    
                                     <div class="flex justify-center  mt-3">
                                         <div
                                             x-data="{
@@ -89,7 +73,6 @@
                                                     </span>
                                                 </div>
                                             </button>
-                                            <!-- Panel -->
                                             <div
                                                 x-ref="panel"
                                                 x-show="open"
@@ -151,77 +134,13 @@
                                                     </div>
                                                     @endforeach
                                                 </div>
-                                                {{-- TODO: Phase 2 - Ticket Updates Notification --}}
-                                                {{-- <div class="p-5 dark:bg-gray-800 dark:border-gray-700">
-                                                    <h3 class="mb-4 text-xl font-bold text-gray-900 dark:text-white">Notifications</h3>
-                                                    @php
-                                                        $ticketModel = new \App\Models\Ticket;
-                                                        $latestTickets = $ticketModel->getLatestWeeklyTickets();
-                                                    @endphp
-                                                    @foreach($latestTickets as $date => $tickets)
-                                                        <div>
-                                                            <div class="border-b border-slate-200">
-                                                                <time class="text-base font-semibold text-gray-900 dark:text-white">{{ Carbon\Carbon::parse($date)->format('F j, Y') }}</time>
-                                                            </div>
-                                                            <ol class="my-2">
-                                                                @foreach($tickets as $ticket)
-                                                                    <li>
-                                                                        <a href="{{ route('tickets.show', $ticket) }}" class="items-center block p-3 rounded-md sm:flex hover:bg-gray-100 dark:hover:bg-gray-700">
-                                                                            <div class="mr-3">
-                                                                                @if ($ticket->user->image)
-                                                                                    <div class="relative">
-                                                                                        <div class="w-10 h-10 rounded-full overflow-clip">
-                                                                                            <img src="{{ asset("storage/" . $ticket->user->image) }}" alt="User Image">
-                                                                                        </div>
-                                                                                    </div>
-                                                                                @else
-                                                                                    <div class="relative inline-flex items-center justify-center text-slate-600 bg-slate-200 w-10 h-10 rounded-full">
-                                                                                        {{ strtoupper(substr($ticket->user->first_name, 0, 1)) . strtoupper(substr($ticket->user->last_name, 0, 1)) }}
-                                                                                    </div>
-                                                                                @endif
-                                                                            </div>
-                                                                            <div class="text-gray-600 dark:text-gray-400">
-                                                                                <div class="text-sm font-normal">
-                                                                                    <span class="font-medium text-gray-900 dark:text-white">{{ Auth::user()->first_name . ' ' . Auth::user()->last_name }}</span> created an incident requested by 
-                                                                                    <span class="font-medium text-gray-900 dark:text-white">{{ $ticket->requested_by }}</span> -
-                                                                                    <span class="bg-slate-100 text-odc-blue-900 text-xs font-normal me-2 px-2.5 py-0.5 rounded dark:bg-gray-600 dark:text-gray-300">{{ $ticket->client }}</span>
-                                                                                </div>
-                                                                                <div class="text-sm font-normal">
-                                                                                    <span>"{{ $ticket->title }}"</span>
-                                                                                </div>
-                                                                                <div class="text-xs font-normal">
-                                                                                    <span>{{ $ticket->created_at->diffForHumans() }}</span> •
-                                                                                    <x-badge class="bg-{{ $ticket->status_color }}-100 text-{{ $ticket->status_color }}-800 dark:bg-{{ $ticket->status_color }}-900 dark:text-{{ $ticket->status_color }}-300">{{ $ticket->status->name }}</x-badge>
-                                                                                </div>
-                                                                            </div>
-                                                                        </a>
-                                                                        @if ($ticket->changes->isNotEmpty())
-                                                                            <ul class="pl-5">
-                                                                                @foreach($ticket->changes as $change)
-                                                                                    <li>
-                                                                                        <div class="text-xs font-normal">
-                                                                                            {{ $change->created_at->diffForHumans() }} •
-                                                                                            <span class="font-medium">{{ $change->user->name }}</span> made a change: "{{ $change->description }}"
-                                                                                        </div>
-                                                                                    </li>
-                                                                                @endforeach
-                                                                            </ul>
-                                                                        @endif
-                                                                    </li>
-                                                                @endforeach
-                                                            </ol>
-                                                        </div>
-                                                    @endforeach
-                                                </div> --}}
                                             </div>
                                         </div>
                                     </div>
 
                                     {{-- * Profile's Dropdown --}}
                                     <div class="flex justify-end">
-                                        <!-- Dropdown Container -->
                                         <div x-data="{ open: false }" class="relative inline-block">
-                                        <!-- Dropdown Toggle Button -->
                                         <button
                                             type="button"
                                             class="inline-flex items-center justify-center space-x-2 rounded-full p-1 text-sm font-semibold leading-5 text-white  focus:ring focus:ring-odc-blue-400 focus:ring-opacity-50 active:border-odc-blue-700 active:bg-odc-blue-700 dark:focus:ring-odc-blue-400 dark:focus:ring-opacity-90"
@@ -247,9 +166,7 @@
                                             </div>
                                         @endif
                                         </button>
-                                        <!-- END Dropdown Toggle Button -->
-                                    
-                                        <!-- Dropdown -->
+                                        
                                         <div
                                             x-cloak
                                             x-show="open"
@@ -267,28 +184,6 @@
                                             <div
                                             class="divide-y divide-gray-100 rounded-lg bg-white ring-1 ring-black ring-opacity-5 dark:divide-gray-700 dark:bg-gray-800 dark:ring-gray-700"
                                             >
-                                            {{-- <div class="space-y-1 p-2.5">
-                                                <a
-                                                role="menuitem"
-                                                href="javascript:void(0)"
-                                                class="group flex items-center justify-between space-x-2 rounded-lg border border-transparent px-2.5 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-800 active:border-blue-100 dark:text-gray-200 dark:hover:bg-gray-700/75 dark:hover:text-white dark:active:border-gray-600"
-                                                >
-                                                <svg
-                                                    class="hi-mini hi-inbox inline-block size-5 flex-none opacity-25 group-hover:opacity-50"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                    aria-hidden="true"
-                                                >
-                                                    <path
-                                                    fill-rule="evenodd"
-                                                    d="M1 11.27c0-.246.033-.492.099-.73l1.523-5.521A2.75 2.75 0 015.273 3h9.454a2.75 2.75 0 012.651 2.019l1.523 5.52c.066.239.099.485.099.732V15a2 2 0 01-2 2H3a2 2 0 01-2-2v-3.73zm3.068-5.852A1.25 1.25 0 015.273 4.5h9.454a1.25 1.25 0 011.205.918l1.523 5.52c.006.02.01.041.015.062H14a1 1 0 00-.86.49l-.606 1.02a1 1 0 01-.86.49H8.236a1 1 0 01-.894-.553l-.448-.894A1 1 0 006 11H2.53l.015-.062 1.523-5.52z"
-                                                    clip-rule="evenodd"
-                                                    />
-                                                </svg>
-                                                <span class="grow">Inbox</span>
-                                                </a>
-                                            </div> --}}
                                             <div class="space-y-1 p-2.5">
                                                 <a
                                                 role="menuitem"
@@ -310,26 +205,6 @@
                                                 </svg>
                                                 <span class="grow">Profile</span>
                                                 </a>
-                                                {{-- <a
-                                                role="menuitem"
-                                                href="javascript:void(0)"
-                                                class="group flex items-center justify-between space-x-2 rounded-lg border border-transparent px-2.5 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-800 active:border-blue-100 dark:text-gray-200 dark:hover:bg-gray-700/75 dark:hover:text-white dark:active:border-gray-600"
-                                                >
-                                                <svg
-                                                    class="hi-mini hi-cog-6-tooth inline-block size-5 flex-none opacity-25 group-hover:opacity-50"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                    aria-hidden="true"
-                                                >
-                                                    <path
-                                                    fill-rule="evenodd"
-                                                    d="M7.84 1.804A1 1 0 018.82 1h2.36a1 1 0 01.98.804l.331 1.652a6.993 6.993 0 011.929 1.115l1.598-.54a1 1 0 011.186.447l1.18 2.044a1 1 0 01-.205 1.251l-1.267 1.113a7.047 7.047 0 010 2.228l1.267 1.113a1 1 0 01.206 1.25l-1.18 2.045a1 1 0 01-1.187.447l-1.598-.54a6.993 6.993 0 01-1.929 1.115l-.33 1.652a1 1 0 01-.98.804H8.82a1 1 0 01-.98-.804l-.331-1.652a6.993 6.993 0 01-1.929-1.115l-1.598.54a1 1 0 01-1.186-.447l-1.18-2.044a1 1 0 01.205-1.251l1.267-1.114a7.05 7.05 0 010-2.227L1.821 7.773a1 1 0 01-.206-1.25l1.18-2.045a1 1 0 011.187-.447l1.598.54A6.993 6.993 0 017.51 3.456l.33-1.652zM10 13a3 3 0 100-6 3 3 0 000 6z"
-                                                    clip-rule="evenodd"
-                                                    />
-                                                </svg>
-                                                <span class="grow">Settings</span>
-                                                </a> --}}
                                             </div>
                                             <div class="space-y-1 p-2.5">
                                                 <form method="POST" action="{{ route('logout') }}">
@@ -355,22 +230,14 @@
                                                         </svg>
                                                         <span class="grow">Log out</span>
                                                     </button>
-                                                    {{-- <x-responsive-nav-link class="text-sm text-red-primary" :href="route('logout')"
-                                                            onclick="event.preventDefault();
-                                                                        this.closest('form').submit();">
-                                                        {{ __('Log Out') }}
-                                                    </x-responsive-nav-link> --}}
                                                 </form>
                                             </div>
                                             </div>
                                         </div>
-                                        <!-- END Dropdown -->
                                         </div>
-                                        <!-- Dropdown Container -->
                                     </div>
                                 </div>
 
-                                <!-- Hamburger -->
                                 <div class="-me-2 flex items-center sm:hidden">
                                     <button @click="open = ! open" class="inline-flex items-center text-white justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out">
                                         <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
@@ -384,7 +251,6 @@
                     </header>
                 @endif
 
-                <!-- Page Content -->
                 <main class="odc-main-con-height overflow-y-auto">
                     {{ $slot }}
                 </main>

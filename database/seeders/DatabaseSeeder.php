@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
         $adminRoleId = DB::table('roles')->where('name', 'Admin')->value('id');
         $userRoleId = DB::table('roles')->where('name', 'User')->value('id');
 
-        $admin = User::factory()->create([
+        User::factory()->create([
             'first_name' => 'KC',
             'last_name' => 'Acuin',
             'username' => 'kcacuin',
@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
             'role_id' => $adminRoleId,
         ]);
         
-        $user = User::factory()->create([
+        User::factory()->create([
             'first_name' => 'Regular',
             'last_name' => 'User',
             'username' => 'user',
@@ -53,9 +53,9 @@ class DatabaseSeeder extends Seeder
 
         Status::insert($statuses);
         
-        User::factory(20)->create();
+        // User::factory(20)->create();
         // Status::factory(5)->create();
-        Ticket::factory(20)->for($admin)->create();
-        Ticket::factory(20)->for($user)->create();
+        // Ticket::factory(20)->for($admin)->create();
+        // Ticket::factory(20)->for($user)->create();
     }
 }

@@ -7,12 +7,10 @@
 
         <title>{{ config('app.name', 'Odecci Support Application') }}</title>
 
-        <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link rel="shortcut icon" href="{{ asset('storage/img/odc-favicon.svg') }}" type="image/x-icon">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
         @livewireStyles
-        <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <x-rich-text::styles theme="richtextlaravel" data-turbo-track="false" />
     </head>

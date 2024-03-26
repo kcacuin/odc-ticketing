@@ -43,9 +43,7 @@
 
     <div class="mt-6 px-6 py-6 max-w-6xl mx-auto bg-white rounded-md border border-gray-300">
         <div class="flex justify-between">
-            {{-- * Left --}}
             <div class="mr-32">
-                {{-- * Top --}}
                 <div>
                     <div class="flex items-start justify-between">
                         <div>
@@ -63,7 +61,6 @@
                         </div>
                         <div>
                             <a class="group text-odc-blue-800 font-bold underline transition " href="{{ route('tickets.edit', $ticket) }}">
-                                {{-- <x-svg-icon class="scale-90 text-blue-secondary hover:opacity-80" name="edit" /> --}}
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
                                   </svg>
@@ -75,13 +72,11 @@
                         {!! clean($ticket->issue->toTrixHTML()) !!}
                     </div>
                 </div>
-                {{-- * Bottom --}}
                 <div>
                     @auth
                     <div class="mb-2">
                         <h3 class="text-lg font-bold">Notes</h3>
                     </div>
-                    {{-- ***** Ticket Timeline ***** --}}
                     <div class="ml-4">
                         <ol class="relative pl-2 border-s border-gray-200 dark:border-gray-700">
                             @php
@@ -371,7 +366,6 @@
                                         @else
                                         @endif
                                     @elseif ($item instanceof \App\Models\Note)
-                                        {{-- Display user note --}}
                                         <li class="mb-10 ms-6 flex">
                                             <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
                                                 @if ($item->user->image)
@@ -395,7 +389,6 @@
                                                 </div>
                                                 <div class="p-3 text-xs font-normal text-gray-500 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-gray-300">{!! clean($item->body) !!}</div>
                                             </div>
-                                            {{-- **** This only be visible to the user who made this note. If not other user cannot abuse this and delete other users notes. Only their notes --}}
                                             @if (Auth::user()->id === $item->user_id)
                                             <div
                                                 x-data="{
@@ -434,7 +427,6 @@
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
                                                     </svg>
                                                 </button>
-                                                <!-- Panel -->
                                                 <div
                                                     x-ref="panel"
                                                     x-show="open"
@@ -444,8 +436,6 @@
                                                     style="display: none;"
                                                     class="absolute z-10 left-6 bottom-2 rounded-md"
                                                 >
-                                                    {{-- * Add edit button here --}}
-                    
                                                     <form action="{{ route('tickets.notes.destroy', ['ticket' => $ticket, 'note' => $item])}}"
                                                         method="POST" class="mt-2">
                                                         @csrf
@@ -469,7 +459,6 @@
                     </div>
                     <form action="{{ route('tickets.notes.store', $ticket) }}" method="POST" class="mt-2">
                         @csrf
-                        {{-- * Add Notes --}}
                         <div class="relative">
                             <div class="mt-6">
                                 <x-form.trix-input value="{!! $ticket->notes->body->toTrixHTML() !!}" id="body" name="body" class="h-52 rounded-md overflow-y-auto" placeholder="Write your notes here..."/>
@@ -490,9 +479,7 @@
                     </div>
                 </div>
             </div>
-            {{-- * Right --}}
             <div class="flex flex-col gap-4 w-80 text-blue-primary text-xs">
-                {{-- * Top --}}
                 <div class="flex flex-col rounded border border-gray-200">
                     <div class="p-3 bg-gray-200">
                         <h3>Your request has been submitted</h3>
@@ -513,11 +500,6 @@
                                 <span x-on:mouseover="tooltip = true" x-on:mouseleave="tooltip = false">
                                     {{ $ticket->created_at->diffForHumans() }}
                                 </span>
-                                {{-- <div x-cloak x-show.transition.origin.top="tooltip">
-                                    <div class="info-tooltip absolute z-10 max-w-2xl ring-1 ring-gray-400 whitespace-nowrap -top-2 left-1/2 p-2 -mt-1 text-xs font-medium leading-tight text-white transform -trangray-x-1/2 -trangray-y-full bg-gray-dark rounded-lg shadow-lg">
-                                    {{ $ticket->created_at }}
-                                    </div>
-                                </div> --}}
                             </div>
                         </div>
                         <div class="flex justify-between py-3">
@@ -526,16 +508,10 @@
                                 <span x-on:mouseover="tooltip = true" x-on:mouseleave="tooltip = false">
                                     {{ $ticket->updated_at->diffForHumans() }}
                                 </span>
-                                {{-- <div x-cloak x-show.transition.origin.top="tooltip">
-                                    <div class="info-tooltip absolute z-10 max-w-2xl ring-1 ring-gray-400 whitespace-nowrap -top-2 left-1/2 p-2 -mt-1 text-xs font-medium leading-tight text-white transform -trangray-x-1/2 -trangray-y-full bg-gray-dark rounded-lg shadow-lg">
-                                    {{ $ticket->updated_at }}
-                                    </div>
-                                </div> --}}
                             </div>
                         </div>
                     </div>
                 </div>
-                {{-- * Bottom --}}
                 <div class="flex flex-col rounded border border-gray-300">
                     <div class="p-3 flex justify-between bg-gray-200">
                         <h3>Attachments</h3>
@@ -615,15 +591,6 @@
                 </div>
             </div>
         </div>
-        {{-- TODO: Phase 2 - Scroll to top --}}
-        {{-- <div>
-            <button x-show="isVisible" @click="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-4 right-9 bg-odc-blue-700 text-white p-2.5 rounded-full shadow">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 18.75 7.5-7.5 7.5 7.5" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 7.5-7.5 7.5 7.5" />
-                </svg>
-            </button>
-        </div> --}}
     </div>
 
     <x-flash-message key="update-ticket-success" icon="check-circle"/>

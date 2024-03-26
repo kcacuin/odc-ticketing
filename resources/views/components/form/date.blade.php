@@ -1,7 +1,6 @@
 @props([
     'disabled' => false,
     'readonly' => false,
-    // 'value' => null,
     'name',
     'wireModel' => '',
     'type' => '',

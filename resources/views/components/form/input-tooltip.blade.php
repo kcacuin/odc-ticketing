@@ -1,13 +1,11 @@
 @props([
     'disabled' => false,
     'readonly' => false,
-    // 'value' => null,
     'name',
     'wireModel' => '',
     'type' => '',
     'labelname',
     'tooltip',
-    // 'xModel'
 ])
 
 @php
