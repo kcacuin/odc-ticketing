@@ -1,6 +1,5 @@
-<div class="odc-main-con-height px-6 py-8">
-    <div class="h-full flex flex-col justify-between relative overflow-hidden sm:rounded">
-        {{-- ***** Search, Filter & Create User Button --}}
+<div x-cloak class="odc-main-con-height px-6 py-8">
+    <div class="px-1 h-full flex flex-col justify-between relative overflow-hidden sm:rounded">
         <div x-data="{ expanded: false }" class="mt-4">
             <div class="mb-4 flex justify-between ">
                 <div class="inline-flex space-x-4">
@@ -10,17 +9,12 @@
                             wire:model.live.debounce.150ms="filters.search"
                             class="py-2.5 w-[40rem] text-xs placeholder:text-slate-500 rounded-s-md bg-white text-slate-900 shadow border-s-slate-300 border-slate-300 border-e border-e-slate-light focus:ring-odc-blue-400 dark:bg-slate-700 dark:border-s-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:border-odc-blue-400"
                             placeholder="Find incident..."
-                            {{-- value="{{ request('search') }}" --}}
                         />
                         <button disabled x-on:click.prevent="expanded = ! expanded" class="flex items-center gap-2 bg-white py-2.5 px-5 text-xs font-bold whitespace-nowrap text-blue-secondary rounded-e-md border border-slate-300 rounded-l-none shadow hover:bg-slate-100">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
                                 <path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clip-rule="evenodd" />
                             </svg>
                             <p x-text="expanded ? 'Hide' : 'Advance Search...'" x-transition></p>
-                            {{-- @if ($showFilters)
-                                Hide
-                            @endif
-                            Advance Search... --}}
                         </button>
                     </div>
                     <div class="flex items-center space-x-2 ">
@@ -31,27 +25,6 @@
                                 <option value="50">50</option>
                             </x-input.select>
                         </x-input.group>
-    
-                        {{--
-                            TODO:
-                                Phase 2 - Bulk Actions: Export to CSV and Bulk Delete
-                            TODO
-                        --}}
-                        {{-- <x-dropdown.dropdown label="Bulk Actions">
-                            <x-dropdown.item type="button" wire:click="exportSelected" class="group flex items-center px-4 py-2 space-x-2 text-xs text-blue-secondary hover:text-white
-                            hover:bg-gradient-to-br hover:from-blue-primary hover:to-blue-secondary
-                            dark:hover:bg-slate-600 dark:hover:text-white">
-                                <x-svg-icon class="scale-90" name="download"/>
-                                <span>Export</span>
-                            </x-dropdown.item>
-    
-                            <x-dropdown.item type="button" wire:click="$toggle('showDeleteModal')" class="group flex items-center px-4 py-2 space-x-2 text-xs text-blue-secondary hover:text-white
-                            hover:bg-gradient-to-br hover:from-blue-primary hover:to-blue-secondary
-                            dark:hover:bg-slate-600 dark:hover:text-white">
-                                <x-svg-icon class="scale-90" name="trash"/>
-                                <span>Delete</span>
-                            </x-dropdown.item>
-                        </x-dropdown.dropdown> --}}
                     </div>
                 </div>
                 <div>
@@ -67,10 +40,7 @@
                 </div>
             </div>
 
-            {{-- * Filters --}}
-
-            <div x-show="expanded" x-collapse>
-                {{-- @if ($showFilters) --}}
+            <div x-cloak x-show="expanded" x-collapse>
                     <div class="bg-white p-4 rounded shadow flex relative mb-4">
                         <div class="w-1/2 pr-2 space-y-4">
                             <x-input.group inline for="filter-date-min" label="Start Date">
@@ -81,18 +51,9 @@
                             </x-input.group>
                         </div>
                         <div class="w-1/2 pr-2 space-y-4">
-                            {{-- <x-input.group inline for="filter-status" label="Status">
-                                <x-input.select wire:model.live='filters.status' id="filter-status">
-                                    <option value="" disabled>Select Status...</option>
-                                    @foreach ($statuses as $status)
-                                        <option value="{{ $status->id }}">{{ $status->name }}</option>
-                                    @endforeach
-                                </x-input.select>
-                            </x-input.group> --}}
                             <x-button.link wire:click='resetFilters' class="absolute right-0 bottom-0 p-4">Reset Filters</x-button.link>
                         </div>
                     </div>
-                {{-- @endif --}}
             </div>
         </div>
         {{-- ***** Table ***** --}}
@@ -125,21 +86,6 @@
                         </x-table.heading>
                     </x-slot>
                     <x-slot name="body">
-                        {{-- TODO: Phase 2 --}}
-                        {{-- @if ($selectPage)
-                        <x-table.row class="bg-white" wire:key="row-message">
-                            <x-table.cell colspan="8">
-                                @unless ($selectAll)
-                                <div>
-                                    <span>You have selected <strong>{{ $users->count() }}</strong> transactions, do you want to select all <strong>{{ $users->total() }}</strong>?</span>
-                                    <x-button.link wire:click="selectAll" class="ml-1 text-blue-600">Select All</x-button.link>
-                                </div>
-                                @else
-                                <span>You are currently selecting all <strong>{{ $users->total() }}</strong> transactions.</span>
-                                @endif
-                            </x-table.cell>
-                        </x-table.row>
-                        @endif --}}
                         @forelse ($users as $user)
                         <x-table.row wire:key="{{ $user->id }}" wire:loading.class.delay='opacity-35 animate-pulse'>
                             <x-table.cell class="w-4 px-4 py-1">
@@ -265,140 +211,6 @@
                             </x-table.cell>
                         </x-table.row>
                         @endforelse
-                        {{-- @isset($users)
-                            @forelse ($users as $user)
-                                <x-table.row wire:key="{{ $user->id }}" wire:loading.class.delay='opacity-35 animate-pulse'>
-                                    <x-table.cell class="w-4 px-4 py-1">
-                                        <div class="flex items-center">
-                                            <x-input.checkbox wire:model="selected" value="{{ $user->id }}" />
-                                        </div>
-                                    </x-table.cell>
-                                    <x-table.cell>
-                                        <div class="flex items-center space-x-2">
-                                            <div>
-                                                @if ($user->image)
-                                                    <div class="relative">
-                                                        <div class="w-10 h-10 rounded-full overflow-clip">
-                                                            <img src="{{ asset("storage/" . $user->image) }}" alt="User Image">
-                                                        </div>
-                                                    </div>
-                                                @else
-                                                    <div class="relative inline-flex items-center justify-center text-slate-600 bg-slate-100 w-10 h-10 rounded-full">
-                                                        {{ strtoupper(substr($user->first_name, 0, 1)) . strtoupper(substr($user->last_name, 0, 1)) }}
-                                                    </div>
-                                                @endif
-                                            </div>
-                                            <div class="flex flex-col">
-                                                <span class="font-bold text-odc-blue-800">
-                                                    {{ $user->first_name . ' ' . $user->last_name }}
-                                                </span>
-                                                <span class="text-slate-500">
-                                                    {{ '@' . $user->username }}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </x-table.cell>
-                                    <x-table.cell>
-                                        {{ $user->email }}
-                                    </x-table.cell>
-                                    <x-table.cell>
-                                        @if ($user->email_verified_at)
-                                        <span class="inline-flex items-center space-x-2 text-green-500">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
-                                                <path fill-rule="evenodd" d="M8.603 3.799A4.49 4.49 0 0 1 12 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 0 1 3.498 1.307 4.491 4.491 0 0 1 1.307 3.497A4.49 4.49 0 0 1 21.75 12a4.49 4.49 0 0 1-1.549 3.397 4.491 4.491 0 0 1-1.307 3.497 4.491 4.491 0 0 1-3.497 1.307A4.49 4.49 0 0 1 12 21.75a4.49 4.49 0 0 1-3.397-1.549 4.49 4.49 0 0 1-3.498-1.306 4.491 4.491 0 0 1-1.307-3.498A4.49 4.49 0 0 1 2.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 0 1 1.307-3.497 4.49 4.49 0 0 1 3.497-1.307Zm7.007 6.387a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
-                                            </svg>
-                                            <span>
-                                                {{ $user->email_verified_at }}
-                                            </span>
-                                        </span>
-                                        @else
-                                        <span class="inline-flex items-center space-x-2 text-yellow-500">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
-                                                <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd" />
-                                            </svg>
-                                            <span>
-                                                Waiting for verification
-                                            </span>
-                                        </span>
-                                        @endif
-                                    </x-table.cell>
-                                    <x-table.cell>
-                                        {{ $user->role->name }}
-                                    </x-table.cell>
-                                    <x-table.cell>
-                                        @if ($user->last_login)
-                                        {{ $user->last_login }}
-                                        @else
-                                        {{ $user->role->name }} haven't logged in yet
-                                        @endif
-                                    </x-table.cell>
-                                    <x-table.cell class="px-4 py-1 text-center align-middle">
-                                        <div class="hidden sm:flex sm:items-center sm:justify-center sm:ms-auto">
-                                            <x-dropdown align="right" width="w-40">
-                                                <x-slot name="trigger" class="flex items-center justify-center text-center">
-                                                    <span class="text-blue-secondary text-2xl tracking-tighter cursor-pointer select-none">
-                                                        {{ '••' }}
-                                                    </span>
-                                                </x-slot>
-                    
-                                                <x-slot name="content">
-                                                    <ul class="py-2 text-xs text-slate-700 dark:text-slate-200" aria-labelledby="dropdownDefault">
-                                                        <li>
-                                                            <button wire:click="edit({{ $user->id }})" type="button"
-                                                                class="w-full text-start text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out group flex items-center px-4 py-2 hover:text-white
-                                                                hover:bg-gradient-to-br hover:from-blue-primary hover:to-blue-secondary
-                                                                dark:hover:bg-slate-600 dark:hover:text-white">
-                                                                <x-svg-icon
-                                                                    class="scale-90 text-blue-secondary group-hover:text-white"
-                                                                    name="edit"
-                                                                    />
-                                                                <span class="ml-3 text-xs text-blue-secondary group-hover:text-white">
-                                                                    Edit
-                                                                </span>
-                                                            </button>
-                                                        </li>
-                                                        <li>
-                                                            <button 
-                                                                wire:click="delete({{ $user->id }})"
-                                                                type="button"
-                                                                class="w-full text-start text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out group flex items-center px-4 py-2 hover:text-white
-                                                                hover:bg-gradient-to-br hover:from-odc-red-600 hover:to-odc-red-500
-                                                                dark:hover:bg-slate-600 dark:hover:text-white">
-                                                                <x-svg-icon
-                                                                    class="scale-90 text-blue-secondary group-hover:text-white"
-                                                                    name="trash"
-                                                                    />
-                                                                <span class="ml-3 text-xs text-blue-secondary group-hover:text-white">
-                                                                    Delete
-                                                                </span>
-                                                            </button>
-                                                        </li>
-                                                    </ul>
-                                                </x-slot>
-                                            </x-dropdown>
-                                        </div>
-                                    </x-table.cell>
-                                </x-table.row>
-                            @empty
-                                <x-table.row wire:loading.class.delay='opacity-35 animate-pulse'>
-                                    <x-table.cell class="w-4 px-4 py-4 opacity-75 animate-pulse" colspan="7">
-                                        <div class="flex items-center justify-center gap-1">
-                                            <x-svg-icon name="user" class="scale-75"/>
-                                            <span class="font-base font-bold">No users found...</span>
-                                        </div>
-                                    </x-table.cell>
-                                </x-table.row>
-                            @endforelse
-                        @else
-                            <x-table.row wire:loading.class.delay='opacity-35 animate-pulse'>
-                                <x-table.cell class="w-4 px-4 py-4 opacity-75 animate-pulse" colspan="7">
-                                    <div class="flex items-center justify-center gap-1">
-                                        <x-svg-icon name="user" class="scale-75"/>
-                                        <span class="font-base font-bold">No users found...</span>
-                                    </div>
-                                </x-table.cell>
-                            </x-table.row>
-                        @endisset --}}
                     </x-slot>
                 </x-table.table>
             </div>
@@ -414,8 +226,7 @@
             </div>
         </div>
     </div>
-    {{-- ***** Create Modal ***** --}}
-    <div x-data="{ open: @entangle('showCreateModal') }">
+    <div x-cloak x-data="{ open: @entangle('showCreateModal') }">
         <div x-show="open" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
             <div class="flex items-end justify-center min-h-screen px-4 text-center md:items-center sm:block sm:p-0">
                 <div x-cloak @click.prevent="open = false" x-show="open"
@@ -448,7 +259,6 @@
                     <div class="mt-5">
                         <form wire:submit.prevent="register" enctype="multipart/form-data">
                             
-                            {{-- * User Image, First Name, Last Nama & Username --}}
                             <div 
                                 x-data="{ uploading: false, progress: 10 }"
                                 x-on:livewire-upload-start="uploading = true"
@@ -480,7 +290,7 @@
                                                 <span>Change</span>
                                             </label>
                                             <input type="file" id="file" wire:model="newImage" class="hidden">
-                                            <button type="button" class="cursor-pointer flex items-center px-4 py-2 space-x-2 rounded-md border border-slate-300 text-blue-primary text-xs tracking-widest uppercase hover:bg-slate-100">
+                                            <button wire:click='removeFile' type="button" class="cursor-pointer flex items-center px-4 py-2 space-x-2 rounded-md border border-slate-300 text-blue-primary text-xs tracking-widest uppercase hover:bg-slate-100">
                                                 <x-svg-icon name="trash" class="w-[16px] h-[16px]"/>
                                                 <span>Remove</span>
                                             </button>
@@ -489,7 +299,7 @@
                                 </div>
                                 
                                 <div class="relative w-full">
-                                    <div class="w-full h-4 pb-8">
+                                    <div class="absolute w-full top-0">
                                         <div x-show.transition="uploading" class="rounded-xl bg-gray-dark">
                                             <div
                                                 class="pl-2 text-center text-xs text-white bg-odc-blue-700 rounded-xl"
@@ -502,13 +312,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                    {{-- * First Name --}}
-                                    <x-form.input name="first_name" labelname="First Name" type="text" wire:model.lazy='first_name' class="-mt-[2rem]"/>
-                                    {{-- * Last Name --}}
-                                    <x-form.input name="last_name" labelname="Last Name" type="text" wire:model.lazy='last_name' class="-mt-2"/>
-                                    {{-- * Username --}}
-                                    <x-form.input name="username" labelname="Username" type="text" wire:model.lazy='username' class="-mt-2"/>
-                                    {{-- * Role --}}
+                                    <x-form.input name="first_name" labelname="First Name" type="text" wire:model.lazy='first_name'/>
+                                    <x-form.input name="last_name" labelname="Last Name" type="text" wire:model.lazy='last_name'/>
+                                    <x-form.input name="username" labelname="Username" type="text" wire:model.lazy='username'/>
                                     <x-form.field>
                                         <select name="role_id" wire:model="role_id" id="role_id"
                                         class="appearance-none block mt-1 w-full peer h-[3rem] px-6 text-sm text-white bg-gray-dark rounded-lg border-opacity-75 border-2 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 placeholder-transparent placeholder:pointer-events-none
@@ -526,10 +332,8 @@
                                 </div>
                             </div>
                     
-                            {{-- * Email --}}
                             <x-form.input name="email" labelname="Email" type="email" wire:model.blur='email'/>
                     
-                            {{-- * Password --}}
                             <x-form.field>
                                 <x-form.input-password name="password" labelname="Password" type="password" wire:model.live.debounce.150ms='password'/>
                                 <div class="mt-4 relative w-full flex items-center text-sm text">
@@ -542,7 +346,6 @@
                                 </div>
                             </x-form.field>
                     
-                            {{-- * Confirm Password --}}
                             <x-form.input name="password_confirmation" labelname="Confirm Password" type="password" wire:model='password_confirmation'/>
                     
                             <div class="flex items-center justify-end mt-10 space-x-2">
@@ -565,8 +368,7 @@
             </div>
         </div>
     </div>
-    {{-- ***** Edit Modal ***** --}}
-    <div x-data="{ open: @entangle('showEditModal') }"> 
+    <div x-cloak x-data="{ open: @entangle('showEditModal') }"> 
         <div x-show="open" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
             <div class="flex items-end justify-center min-h-screen px-4 text-center md:items-center sm:block sm:p-0">
                 <div x-cloak @click.prevent="modelOpen = false" x-show="open"
@@ -599,7 +401,6 @@
                     <div class="mt-5">
                         <form wire:submit.prevent="update" enctype="multipart/form-data">
 
-                            {{-- * User Image, First Name, Last Nama & Username --}}
                             <div
                                 x-data="{ uploading: false, progress: 10 }"
                                 x-on:livewire-upload-start="uploading = true"
@@ -641,8 +442,7 @@
                                 </div>
                                 
                                 <div class="relative w-full">
-                                    {{-- * Loading --}}
-                                    <div class="w-full h-4 pb-8">
+                                    <div class="absolute w-full top-0">
                                         <div x-show.transition="uploading" class="rounded-xl bg-gray-dark">
                                             <div
                                                 class="pl-2 text-center text-xs text-white bg-odc-blue-700 rounded-xl"
@@ -655,13 +455,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                    {{-- * First Name --}}
-                                    <x-form.input name="first_name" labelname="First Name" type="text" wire:model.lazy='first_name' class="-mt-[2rem]"/>
-                                    {{-- * Last Name --}}
-                                    <x-form.input name="last_name" labelname="Last Name" type="text" wire:model.lazy='last_name' class="-mt-2"/>
-                                    {{-- * Username --}}
-                                    <x-form.input name="username" labelname="Username" type="text" wire:model='username' class="-mt-2"/>
-                                    {{-- * Role --}}
+                                    <x-form.input name="first_name" labelname="First Name" type="text" wire:model.lazy='first_name'/>
+                                    <x-form.input name="last_name" labelname="Last Name" type="text" wire:model.lazy='last_name'/>
+                                    <x-form.input name="username" labelname="Username" type="text" wire:model='username'/>
                                     <x-form.field>
                                         <select name="role_id" wire:model="role_id"
                                         class="appearance-none block mt-1 w-full peer h-[3rem] px-6 text-sm text-white bg-gray-dark rounded-lg border-opacity-75 border-2 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 placeholder-transparent placeholder:pointer-events-none
@@ -673,25 +469,13 @@
                                                 @endif
                                             @endforeach
                                         </select>
-                                        {{-- <select name="role_id" wire:model="role_id"
-                                        class="appearance-none block mt-1 w-full peer h-[3rem] px-6 text-sm text-white bg-gray-dark rounded-lg border-opacity-75 border-2 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 placeholder-transparent placeholder:pointer-events-none
-                                        ring-0 placeholder:select-none focus:shadow-md focus:shadow-odc-blue-700 focus:border-blue-secondary focus:ring-0">
-                                            <option value="">Select Role</option>
-                                            @foreach($roles as $role)
-                                                <option value="{{ $role->id }}">{{ $role->name }}</option>
-                                            @endforeach
-                                        </select> --}}
                                         <x-form.label class="-translate-y-[6px] peer-focus:-translate-y-[6px]" name="role" labelname="Role"/>
                                         <x-form.error name="role"/>
                                     </x-form.field>
                                 </div>
                             </div>
-                           
                             
-                            {{-- * Email --}}
                             <x-form.input name="email" labelname="Email" type="email" wire:model.blur='email'/>
-
-                            
                     
                             <div class="flex items-center justify-end mt-10 space-x-2">
                                 <x-primary-button wire:loading.remove @click="open = false" type="button" class="border border-slate-300">Cancel</x-primary-button>
@@ -713,8 +497,7 @@
             </div>
         </div>
     </div>
-    {{-- ***** Delete Modal ***** --}}
-    <div x-data="{ open: @entangle('showDeleteModal') }"> 
+    <div x-cloak x-data="{ open: @entangle('showDeleteModal') }"> 
         <div x-show="open" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
             <div class="flex items-end justify-center min-h-screen px-4 text-center md:items-center sm:block sm:p-0">
                 <div x-cloak @click.prevent="modelOpen = false" x-show="open"
@@ -786,7 +569,6 @@
         </div>
     </div>
 
-    {{-- ***** Toast ***** --}}
     <x-action-message-toast on="create-user-success" icon="check-circle" key="User Creation Successful!">
         {{ __("You've created a new user!") }}
     </x-action-message-toast>

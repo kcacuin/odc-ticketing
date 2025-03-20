@@ -12,7 +12,6 @@ class TicketEdit extends Component
 
     public function rules() { return [
         'editing.number' => 'required',
-        // 'editing.date_for_editing' => 'required',
         'editing.date_received' => 'required',
         'editing.title' => 'required',
         'editing.issue' => 'required',

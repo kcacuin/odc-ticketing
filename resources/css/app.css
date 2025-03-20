@@ -1,133 +1,214 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@layer base {
-    :root {
-      --text-50: #eae9fc;
-      --text-100: #d4d2f9;
-      --text-200: #a9a5f3;
-      --text-300: #7e78ed;
-      --text-400: #534be7;
-      --text-500: #281fe0;
-      --text-600: #2018b4;
-      --text-700: #181287;
-      --text-800: #100c5a;
-      --text-900: #08062d;
-      --text-950: #040316;
-      
-      --background-50: #ebebfa;
-      --background-100: #d6d6f5;
-      --background-200: #adadeb;
-      --background-300: #8585e0;
-      --background-400: #5c5cd6;
-      --background-500: #3333cc;
-      --background-600: #2929a3;
-      --background-700: #1f1f7a;
-      --background-800: #141452;
-      --background-900: #0a0a29;
-      --background-950: #050514;
-      
-      --primary-50: #ebf4fa;
-      --primary-100: #d7e9f4;
-      --primary-200: #aed3ea;
-      --primary-300: #86bddf;
-      --primary-400: #5ea7d4;
-      --primary-500: #3691c9;
-      --primary-600: #2b74a1;
-      --primary-700: #205779;
-      --primary-800: #153a51;
-      --primary-900: #0b1d28;
-      --primary-950: #050e14;
-      
-      --secondary-50: #ebf4fa;
-      --secondary-100: #d7e8f4;
-      --secondary-200: #afd2e9;
-      --secondary-300: #87bbde;
-      --secondary-400: #5fa5d3;
-      --secondary-500: #378ec8;
-      --secondary-600: #2c72a0;
-      --secondary-700: #215578;
-      --secondary-800: #163950;
-      --secondary-900: #0b1c28;
-      --secondary-950: #050e14;
-      
-      --accent-50: #fde7e8;
-      --accent-100: #fbd0d1;
-      --accent-200: #f7a1a4;
-      --accent-300: #f47176;
-      --accent-400: #f04248;
-      --accent-500: #ec131a;
-      --accent-600: #bd0f15;
-      --accent-700: #8e0b10;
-      --accent-800: #5e080b;
-      --accent-900: #2f0405;
-      --accent-950: #180203;
-      
-    }
-    .dark {
-      --text-50: #040316;
-      --text-100: #08062d;
-      --text-200: #100c5a;
-      --text-300: #181287;
-      --text-400: #2018b4;
-      --text-500: #281fe0;
-      --text-600: #534be7;
-      --text-700: #7e78ed;
-      --text-800: #a9a5f3;
-      --text-900: #d4d2f9;
-      --text-950: #eae9fc;
-      
-      --background-50: #050514;
-      --background-100: #0a0a29;
-      --background-200: #141452;
-      --background-300: #1f1f7a;
-      --background-400: #2929a3;
-      --background-500: #3333cc;
-      --background-600: #5c5cd6;
-      --background-700: #8585e0;
-      --background-800: #adadeb;
-      --background-900: #d6d6f5;
-      --background-950: #ebebfa;
-      
-      --primary-50: #050e14;
-      --primary-100: #0b1d28;
-      --primary-200: #153a51;
-      --primary-300: #205779;
-      --primary-400: #2b74a1;
-      --primary-500: #3691c9;
-      --primary-600: #5ea7d4;
-      --primary-700: #86bddf;
-      --primary-800: #aed3ea;
-      --primary-900: #d7e9f4;
-      --primary-950: #ebf4fa;
-      
-      --secondary-50: #050e14;
-      --secondary-100: #0b1c28;
-      --secondary-200: #163950;
-      --secondary-300: #215578;
-      --secondary-400: #2c72a0;
-      --secondary-500: #378ec8;
-      --secondary-600: #5fa5d3;
-      --secondary-700: #87bbde;
-      --secondary-800: #afd2e9;
-      --secondary-900: #d7e8f4;
-      --secondary-950: #ebf4fa;
-      
-      --accent-50: #180203;
-      --accent-100: #2f0405;
-      --accent-200: #5e080b;
-      --accent-300: #8e0b10;
-      --accent-400: #bd0f15;
-      --accent-500: #ec131a;
-      --accent-600: #f04248;
-      --accent-700: #f47176;
-      --accent-800: #f7a1a4;
-      --accent-900: #fbd0d1;
-      --accent-950: #fde7e8;
-      
-    }
-  }
+
+.--light {
+    --background: 245, 245, 245;
+    --primary-background: 255, 255, 255;
+    --secondary-background: 255, 255, 255;
+
+    --primary: 15, 43, 60;
+    --secondary: 32, 83, 117;
+
+    --cta: 9, 26, 36;
+    --cta-hover: var(--primary);
+    --cta-active: 9, 26, 36;
+    --cta-text: 255, 255, 255;
+    
+    --border: 203, 213, 225; 
+    --nav-border: 21, 57, 79;
+
+    --testing-color: rgb(8, 23, 32);
+
+    --stat-bg-red: 254, 226, 226;
+    --stat-bg-blue: 219, 234, 254;
+    --stat-bg-yellow: 254, 249, 195;
+    --stat-bg-purple: 243, 232, 255;
+    --stat-bg-green: 220, 252, 231;
+
+    --stat-text-red: 153, 27, 27;
+    --stat-text-blue: 3, 64, 175;
+    --stat-text-yellow: 133, 77, 14;
+    --stat-text-purple: 107, 33, 168;
+    --stat-text-green: 22, 101, 52;
+
+    /* $colors = [
+        'Open' => 'red',
+        'Pending' => 'blue',
+        'In-progress' => 'yellow',
+        'In-review' => 'purple',
+        'Closed' => 'green',
+    ]; */
+
+    --text-50: #eae9fc;
+    --text-100: #d4d2f9;
+    --text-200: #a9a5f3;
+    --text-300: #7e78ed;
+    --text-400: #534be7;
+    --text-500: #281fe0;
+    --text-600: #2018b4;
+    --text-700: #181287;
+    --text-800: #100c5a;
+    --text-900: #08062d;
+    --text-950: #040316;
+
+    /* --background-50: #ebebfa;
+    --background-100: #d6d6f5;
+    --background-200: #adadeb;
+    --background-300: #8585e0;
+    --background-400: #5c5cd6;
+    --background-500: #3333cc;
+    --background-600: #2929a3;
+    --background-700: #1f1f7a;
+    --background-800: #141452;
+    --background-900: #0a0a29;
+    --background-950: #050514; */
+
+    --primary-50: #ebf4fa;
+    --primary-100: #d7e9f4;
+    --primary-200: #aed3ea;
+    --primary-300: #86bddf;
+    --primary-400: #5ea7d4;
+    --primary-500: #3691c9;
+    --primary-600: #2b74a1;
+    --primary-700: #205779;
+    --primary-800: #153a51;
+    --primary-900: #0b1d28;
+    --primary-950: #050e14;
+
+    --secondary-50: #ebf4fa;
+    --secondary-100: #d7e8f4;
+    --secondary-200: #afd2e9;
+    --secondary-300: #87bbde;
+    --secondary-400: #5fa5d3;
+    --secondary-500: #378ec8;
+    --secondary-600: #2c72a0;
+    --secondary-700: #215578;
+    --secondary-800: #163950;
+    --secondary-900: #0b1c28;
+    --secondary-950: #050e14;
+
+    --accent-50: #fde7e8;
+    --accent-100: #fbd0d1;
+    --accent-200: #f7a1a4;
+    --accent-300: #f47176;
+    --accent-400: #f04248;
+    --accent-500: #ec131a;
+    --accent-600: #bd0f15;
+    --accent-700: #8e0b10;
+    --accent-800: #5e080b;
+    --accent-900: #2f0405;
+    --accent-950: #180203;
+
+    background: rgba(var(--background));
+}
+
+.--dark {
+    --background: 6, 16, 22;
+    --primary-background: 7, 18, 26;
+    --secondary-background: 237, 28, 36;
+    
+    --primary: 5, 15, 20;
+    --secondary: var(--background);
+
+    --cta: 28, 73, 104;
+    --cta-active: 21, 56, 78;
+    --cta-border: var(--cta);
+    --cta-text: var(--text);
+    --cta-accent: var(--secondary-background);
+
+    --border: 51, 65, 85;
+    --nav-border: var(--border);
+
+    /* --text: 226, 237, 245; */
+    --text: 227, 227, 227;
+    --text-placeholder: 100, 116, 139;
+
+    --row: var(--primary-background);
+    --row-active: 12, 30, 43;
+
+    --testing-color: rgb(12, 30, 43);
+
+    --stat-bg-red: 127, 29, 29;
+    --stat-bg-blue: 30, 58, 138;
+    --stat-bg-yellow: 113, 63, 18;
+    --stat-bg-purple: 88, 28, 135;
+    --stat-bg-green: 20, 83, 45;
+
+    --stat-text-red: 252, 165, 165;
+    --stat-text-blue: 147, 197, 253;
+    --stat-text-yellow: 253, 224, 71;
+    --stat-text-purple: 216, 180, 254;
+    --stat-text-green: 134, 239, 172;
+
+    /* background: rgb(5, 14, 20); */
+    --text-50: #040316;
+    --text-100: #08062d;
+    --text-200: #100c5a;
+    --text-300: #181287;
+    --text-400: #2018b4;
+    --text-500: #281fe0;
+    --text-600: #534be7;
+    --text-700: #7e78ed;
+    --text-800: #a9a5f3;
+    --text-900: #d4d2f9;
+    --text-950: #eae9fc;
+
+    /* --background-50: #050514;
+    --background-100: #0a0a29;
+    --background-200: #141452;
+    --background-300: #1f1f7a;
+    --background-400: #2929a3;
+    --background-500: #3333cc;
+    --background-600: #5c5cd6;
+    --background-700: #8585e0;
+    --background-800: #adadeb;
+    --background-900: #d6d6f5;
+    --background-950: #ebebfa; */
+
+    --primary-50: #050e14;
+    --primary-100: #0b1d28;
+    --primary-200: #153a51;
+    --primary-300: #205779;
+    --primary-400: #2b74a1;
+    --primary-500: #3691c9;
+    --primary-600: #5ea7d4;
+    --primary-700: #86bddf;
+    --primary-800: #aed3ea;
+    --primary-900: #d7e9f4;
+    --primary-950: #ebf4fa;
+
+    --secondary-50: #050e14;
+    --secondary-100: #0b1c28;
+    --secondary-200: #163950;
+    --secondary-300: #215578;
+    --secondary-400: #2c72a0;
+    --secondary-500: #378ec8;
+    --secondary-600: #5fa5d3;
+    --secondary-700: #87bbde;
+    --secondary-800: #afd2e9;
+    --secondary-900: #d7e8f4;
+    --secondary-950: #ebf4fa;
+
+    --accent-50: #180203;
+    --accent-100: #2f0405;
+    --accent-200: #5e080b;
+    --accent-300: #8e0b10;
+    --accent-400: #bd0f15;
+    --accent-500: #ec131a;
+    --accent-600: #f04248;
+    --accent-700: #f47176;
+    --accent-800: #f7a1a4;
+    --accent-900: #fbd0d1;
+    --accent-950: #fde7e8;
+
+    background: rgba(var(--background));
+}
+
   
+[x-cloak] {
+    display: none;
+}
 
 html,
 body,
@@ -135,7 +216,6 @@ body,
     height: 100%;
 }
 
-/* Firefox */
 * {
 scrollbar-width: auto;
 scrollbar-color: #0F2B3C;
@@ -146,14 +226,13 @@ scrollbar-color: #0F2B3C;
     background: #205375;
 }
 
-/* Chrome, Edge, and Safari */
 *::-webkit-scrollbar {
 width: 8px;
 height: 8px;
 }
 
 *::-webkit-scrollbar-track {
-background: #ffffff;
+background: rgb(var(--primary-background));
 }
 
 *::-webkit-scrollbar-thumb {
@@ -163,16 +242,6 @@ border: 0px none transparent;
 
 table {
     border-collapse: collapse;
-}
-
-/* Set header to stick to the top of the container. */
-thead {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    overflow: hidden;
-    border-bottom: 1px solid rgb(203 213 225);
-    width: calc( 100% - 1em )/* scrollbar is average 1em/16px width, remove it from thead width */
 }
 
 .odc-bg {
@@ -206,6 +275,15 @@ thead {
     pointer-events: none;
 }
 
+@media (max-width: 640px) {
+    .odc-bg-overlay::after {
+        width: 100%;
+    }
+    .odc-bg-logo {
+        z-index: -1;
+    }
+}
+
 .odc-nav-bg-overlay::after {
     content: '';
     position: absolute;
@@ -213,7 +291,7 @@ thead {
     width: 7rem;
     height: 100%;
     top: 0;
-    mix-blend-mode: color-burn;
+    /* mix-blend-mode: color-burn; */
     background: url('../../public/storage/img/bg-2.png') center center/cover no-repeat content-box;
     pointer-events: none;
     transition: 300ms cubic-bezier(0, 0, 0.2, 1);
@@ -265,25 +343,19 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endCo
 
 
 .odc-logo-clip {
-    transform: translateX(5.6rem);
-    clip-path: polygon(0% 0%, 26% 0%, 22% 100%, 0% 100%);
+    transform: translateX(4px);
+    clip-path: polygon(0% 0%, 26% 0%, 21% 100%, 0% 100%);
     transition: all 300ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .odc-nav:hover .odc-logo-clip {
-    transform: translateX(0rem);
     clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
 }
 
-/** FOR CALC STYLES **/
 .odc-main-con-height {
     height: calc(100vh - 5rem);
 }
 
-
-/* **** ODC COLORS **** */
-
-/* * ODC BG */
 .odc-bg-clr-red {
     background: #ED1C24 !important;
 }
@@ -300,7 +372,6 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endCo
     background: #22c55e !important;
 }
 
-/* * ODC BORDERS */
 .odc-brdr-clr-red:focus,
 .odc-brdr-clr-red {
     outline-color: #ED1C24 !important;
@@ -341,7 +412,6 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endCo
     @apply ring-2 ring-offset-2;
 }
 
-/* *** For Drag & Drop File Input */
 #file {
     width: 60%;
     height: 100%;
@@ -418,19 +488,35 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     border-width: thin;
 }
 
-/* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-/* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+input::-ms-reveal,
+input::-ms-clear {
+display: none;
 }
 
 .pointer-events-all {
     pointer-events: all;
     z-index: 99999;
 }
+
+/* .stat-bg-red { background-color: var(--stat-bg-red);} */
+.stat-bg-red { @apply bg-stat-bg-red }
+.stat-bg-blue { @apply bg-stat-bg-blue }
+.stat-bg-yellow { @apply bg-stat-bg-yellow }
+.stat-bg-purple { @apply bg-stat-bg-purple }
+.stat-bg-green { @apply bg-stat-bg-green }
+
+.stat-text-red { @apply text-stat-text-red }
+.stat-text-blue { @apply text-stat-text-blue }
+.stat-text-yellow { @apply text-stat-text-yellow }
+.stat-text-purple { @apply text-stat-text-purple }
+.stat-text-green { @apply text-stat-text-green }

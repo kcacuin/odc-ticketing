@@ -24,7 +24,6 @@ class VerificationEmail extends Mailable
         $mail = new PHPMailer(true);
 
         try {
-            // Server settings
             $mail->isSMTP();
             $mail->Host = env('MAIL_HOST');
             $mail->SMTPAuth = true;
@@ -33,12 +32,10 @@ class VerificationEmail extends Mailable
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = env('MAIL_PORT');
 
-            // Recipients
             $mail->setFrom('from@example.com', 'Mailer');
             $mail->addAddress(env('MAIL_USERNAME'), 'Odecci Support');
             $mail->addReplyTo('info@example.com', 'Information');
 
-            // Content
             $mail->isHTML(true);
             $mail->Subject = 'Here is the subject';
             $mail->Body = view('emails.verification')->render();

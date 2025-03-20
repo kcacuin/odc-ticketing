@@ -30,7 +30,6 @@ class Authenticate extends Middleware
     {
         $this->authenticate($request, $guards);
 
-        // Update last login time
         if ($request->user()) {
             $request->user()->update(['last_login' => now()]);
         }

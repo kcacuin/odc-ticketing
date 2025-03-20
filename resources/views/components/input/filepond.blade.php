@@ -15,8 +15,6 @@
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
-                {{-- * START HERE --}}
-                {{-- load: '{{ route("tmp-load", ["folder", "file_name"]) }}', --}}
             },
         });
         FilePond.create($refs.input);

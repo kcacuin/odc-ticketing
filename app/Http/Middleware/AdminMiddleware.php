@@ -18,7 +18,6 @@ class AdminMiddleware
         if (auth()->check() && auth()->user()->role->name === 'Admin') {
             return $next($request);
         }
-        return abort(403); // Redirect or show an error page
-        // return redirect('/'); // Redirect to home if not an admin
+        return abort(403);
     }
 }

@@ -94,11 +94,7 @@ new class extends Component
     <form wire:submit="updatePassword" class="mt-6 space-y-6">
         
         <x-form.input name="current_password" labelname="Current Password" type="password" wire:model.blur='current_password'/>
-        {{-- <div>
-            <x-input-label for="update_password_current_password" :value="__('Current Password')" />
-            <x-text-input wire:model="current_password" id="update_password_current_password" name="current_password" type="password" class="mt-1 block w-full" autocomplete="current-password" />
-            <x-input-error :messages="$errors->get('current_password')" class="mt-2" />
-        </div> --}}
+       
         <x-form.field>
             <x-form.input-password name="password" labelname="New Password" type="password" wire:model.live.debounce.150ms='password'/>
             <div class="mt-4 relative w-full flex items-center text-sm text">
@@ -110,18 +106,8 @@ new class extends Component
                 </div>
             </div>
         </x-form.field>
-        {{-- <div>
-            <x-input-label for="update_password_password" :value="__('New Password')" />
-            <x-text-input wire:model="password" id="update_password_password" name="password" type="password" class="mt-1 block w-full" autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div> --}}
 
         <x-form.input name="password_confirmation" labelname="Confirm Password" type="password" wire:model.blur='password_confirmation'/>
-        {{-- <div>
-            <x-input-label for="update_password_password_confirmation" :value="__('Confirm Password')" />
-            <x-text-input wire:model="password_confirmation" id="update_password_password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" autocomplete="new-password" />
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div> --}}
 
         <div class="flex items-center gap-4">
             <button wire:click="updatePassword" wire:loading.attr="disabled" class="px-3 py-2 text-xs tracking-widest text-white uppercase transition-colors duration-200 transform bg-odc-blue-800 rounded-md dark:bg-odc-blue-700 dark:hover:bg-odc-blue-800 dark:focus:bg-odc-blue-800 

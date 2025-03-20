@@ -5,6 +5,9 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Validation\ValidationException;
+use App\Auth\ApiGuard;
 
 new #[Layout('layouts.guest')] class extends Component
 {
@@ -13,25 +16,104 @@ new #[Layout('layouts.guest')] class extends Component
     /**
      * Handle an incoming authentication request.
      */
+    // public function login(): void
+    // {
+    //     $this->validate();
+
+    //     // $data = [
+    //     //     "username" => $this->form->username,
+    //     //     "password" => $this->form->password,
+    //     //     "ipaddress" => request()->ip(),
+    //     //     "location" => "string",
+    //     //     "rememberToken" => $this->form->remember ? Str::random(60) : null
+    //     // ];
+
+    //     // // dd($data);
+
+    //     // $resp =  Http::withToken(getenv('APP_API_TOKEN'))->post(getenv('APP_API_URL').'/User/isLoggedIn', $data); 
+        
+    //     // $userData = $resp->json();
+
+    //     // Session::regenerate();
+
+    //     // Session::flash('login-success', "Welcome, " . Auth::user()->first_name ."!");
+
+    //     // $this->redirect(
+    //     //     session('url.intended', RouteServiceProvider::HOME),
+    //     //     navigate: true
+    //     // );
+
+    //     if (Auth::attempt([
+    //         'username' => $this->form->username,
+    //         'password' => $this->form->password,
+    //         'remember' => $this->form->remember,
+    //     ])) {
+    //         // User is authenticated
+    //         Session::regenerate();
+            
+    //         // Get the user data from session
+    //         $user = session('api_user');
+    //         Session::flash('login-success', "Welcome, " . $user['fname'] . "!");
+            
+    //         $this->redirect(
+    //             session('url.intended', RouteServiceProvider::HOME),
+    //             navigate: true
+    //         );
+    //     } else {
+    //         // Authentication failed
+    //         throw ValidationException::withMessages([
+    //             'username' => 'These credentials do not match our records.',
+    //         ]);
+    //     }
+    // }
+
     public function login(): void
     {
         $this->validate();
+        
+        $data = [
+            "username" => $this->form->username,
+            "password" => $this->form->password,
+            "ipaddress" => request()->ip(),
+            "location" => "web",
+            "rememberToken" => $this->form->remember ? \Illuminate\Support\Str::random(60) : null
+        ];
+        
+        try {
+            $response = Http::withToken(getenv('APP_API_TOKEN'))
+                ->post(getenv('APP_API_URL').'/User/isLoggedIn', $data);
+            
+            $userData = $response->json();
+            
+            if (isset($userData[0]) && $userData[0]['isLoggedIn'] === true) {
+                session(['api_user' => $userData[0]]);
+                session(['auth.api_logged_in' => true]);
+                
+                Session::regenerate();
 
-        $this->form->authenticate();
-
-        Session::regenerate();
-
-        Session::flash('login-success', "Welcome, " . Auth::user()->first_name ."!");
-
-        $this->redirect(
-            session('url.intended', RouteServiceProvider::HOME),
-            navigate: true
-        );
+                Session::flash('login-success', "Welcome, " . $userData[0]['fname'] . "!");
+                
+                $this->redirect(
+                    session('url.intended', RouteServiceProvider::HOME),
+                    navigate: true
+                );
+            } else {
+                throw ValidationException::withMessages([
+                    'username' => 'These credentials do not match our records.',
+                ]);
+            }
+        } catch (\Exception $e) {
+            throw ValidationException::withMessages([
+                'username' => 'An error occurred while attempting to log in.',
+            ]);
+        }
     }
 }; ?>
 
+
+
+
 <div>
-    <!-- Session Status -->
     <x-auth-session-status class="mb-4" icon="check-circle" key="New Password Has Been Created!" :status="session('status')" />
 
     <div class="flex flex-col items-center">
@@ -41,15 +123,12 @@ new #[Layout('layouts.guest')] class extends Component
 
     <form wire:submit="login" class="w-full">
         <div class="relative">
-            {{-- * Email --}}
-            <x-form.input name="email" labelname="Email" type="email" wire:model='form.email' />
+            <x-form.input name="username" labelname="Username" type="text" wire:model='form.username' />
 
-            {{-- * Password --}}
             <x-form.input name="form.password" labelname="Password" type="password" wire:model='form.password'/>
         </div>
 
         <div class="mt-5 flex gap-8 justify-between">
-            <!-- Remember Me -->
             <div class="flex">
                 <label for="remember" class="inline-flex items-center">
                     <input wire:model="form.remember" id="remember" type="checkbox" class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-odc-blue-600 shadow-sm focus:ring-odc-blue-500 dark:focus:ring-odc-blue-600 dark:focus:ring-offset-gray-800" name="remember">
@@ -76,11 +155,6 @@ new #[Layout('layouts.guest')] class extends Component
                     <span>Log<span wire:loading.delay>ging</span> In<span wire:loading.delay>...</span></span>
                 </span>
             </x-primary-button>
-            {{-- <x-primary-button-tr class="flex justify-center pointer-events-none" >
-                <a class="underline font-light pointer-events-auto text-white dark:text-white hover:text-slate-300 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-odc-blue-500 dark:focus:ring-offset-white" href="{{ route('register')}}" wire:navigate>
-                    {{ __('Register') }}
-                </a>
-            </x-primary-button-tr> --}}
         </div>
     </form>
 

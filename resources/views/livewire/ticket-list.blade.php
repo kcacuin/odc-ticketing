@@ -1,28 +1,9 @@
-<div class="odc-main-con-height px-6 py-8">
-    <div class="h-full flex flex-col justify-between relative rounded-b-md overflow-hidden sm:rounded-lg">
-        {{-- ***** Search, Filter & Create Incident Button --}}
+<div x-cloak class="odc-main-con-height px-6 py-8">
+    <div class="px-1 h-full flex flex-col justify-between relative rounded-b-md overflow-hidden sm:rounded-lg">
         <div x-data="{ expanded: false }" class="mt-4">
             <div class="mb-4 flex justify-between ">
-                <div class="  inline-flex space-x-4">
-                    <div class="flex w-3/4">
-                        <input
-                            type="text"
-                            wire:model.live.debounce.150ms="filters.search"
-                            class="py-2.5 w-[40rem] text-xs placeholder:text-slate-500 rounded-s-md bg-white text-slate-900 shadow border-s-slate-300 border-slate-300 border-e border-e-slate-light focus:ring-odc-blue-400 dark:bg-slate-700 dark:border-s-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:border-odc-blue-400"
-                            placeholder="Find incident..."
-                            {{-- value="{{ request('search') }}" --}}
-                        />
-                        <button x-on:click.prevent="expanded = ! expanded" class="flex items-center gap-2 bg-white py-2.5 px-5 text-xs font-bold whitespace-nowrap text-blue-secondary rounded-e-md border border-slate-300 rounded-l-none shadow hover:bg-slate-100">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
-                                <path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clip-rule="evenodd" />
-                            </svg>
-                            <p x-text="expanded ? 'Hide' : 'Advance Search...'" x-transition></p>
-                            {{-- @if ($showFilters)
-                                Hide
-                            @endif
-                            Advance Search... --}}
-                        </button>
-                    </div>
+                <div class="inline-flex space-x-4">
+                    <x-search-bar placeholder="Search incident..." wireModel="filters.search" xInitVar="expanded" />
                     <div class="flex items-center space-x-2 ">
                         <x-input.group borderless paddingless for="perPage" label="Per Page">
                             <x-input.select wire:model.lazy="perPage" id="perPage" class="shadow">
@@ -31,37 +12,15 @@
                                 <option value="50">50</option>
                             </x-input.select>
                         </x-input.group>
-    
-                        {{--
-                            TODO:
-                                Phase 2 - Bulk Actions: Export to CSV and Bulk Delete
-                            TODO
-                        --}}
-                        {{-- <x-dropdown.dropdown label="Bulk Actions">
-                            <x-dropdown.item type="button" wire:click="exportSelected" class="group flex items-center px-4 py-2 space-x-2 text-xs text-blue-secondary hover:text-white
-                            hover:bg-gradient-to-br hover:from-blue-primary hover:to-blue-secondary
-                            dark:hover:bg-slate-600 dark:hover:text-white">
-                                <x-svg-icon class="scale-90" name="download"/>
-                                <span>Export</span>
-                            </x-dropdown.item>
-    
-                            <x-dropdown.item type="button" wire:click="$toggle('showDeleteModal')" class="group flex items-center px-4 py-2 space-x-2 text-xs text-blue-secondary hover:text-white
-                            hover:bg-gradient-to-br hover:from-blue-primary hover:to-blue-secondary
-                            dark:hover:bg-slate-600 dark:hover:text-white">
-                                <x-svg-icon class="scale-90" name="trash"/>
-                                <span>Delete</span>
-                            </x-dropdown.item>
-                        </x-dropdown.dropdown> --}}
-    
-                        {{-- <livewire:import-transactions /> --}}
                     </div>
                 </div>
                 <div class="flex space-x-2">
                     <a
                         wire:navigate
                         href="{{ route('tickets.create') }}"
-                        class="w-full flex items-center justify-center px-4 whitespace-nowrap text-xs font-medium text-white focus:outline-none bg-odc-blue-800 
-                        rounded-md border border-gray-200 hover:bg-odc-blue-900 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        class="w-full flex items-center justify-center px-4 whitespace-nowrap text-xs font-medium text-cta-text bg-cta 
+                        rounded-md border border-cta-border outline-none hover:bg-cta-active
+                        hover:border-cta-active focus:z-10 focus:ring-border/70 ">
                         <x-svg-icon
                             class="-scale-75  group-hover:text-opacity-5"
                             name="add"
@@ -73,11 +32,8 @@
                 </div>
             </div>
 
-            {{-- * Filters --}}
-
-            <div x-show="expanded" x-collapse>
-                {{-- @if ($showFilters) --}}
-                    <div class="p-4 bg-white border border-slate-300 rounded shadow flex relative mb-4">
+            <div x-cloak x-show="expanded" x-collapse>
+                    <div class="p-4 bg-primary-background border border-border rounded shadow flex relative mb-4">
                         <div class="w-1/2 pr-2 space-y-4">
                             <x-input.group inline for="filter-date-min" label="Start Date">
                                 <x-input.date name='filters.date-min' id="filter-date-min" placeholder="MM/DD/YYYY"/>
@@ -98,14 +54,12 @@
                             <x-button.link wire:click='resetFilters' class="absolute right-0 bottom-0 p-4">Reset Filters</x-button.link>
                         </div>
                     </div>
-                {{-- @endif --}}
             </div>
         </div>
         
-        {{-- ***** Table ***** --}}
-        <div class="border h-full bg-white border-slate-300 rounded-t-md overflow-clip">
-            <div class="__table relative overflow-auto h-full  snap-mandatory snap-y">
-                <x-table.table>
+        <div class="border h-full bg-primary-background border-border rounded-t-md overflow-clip">
+            <div class="__table h-full relative overflow-auto snap-mandatory snap-y">
+                <x-table.table class="h-[calc(100%-4rem)]">
                     <x-slot name="head">
                         <x-table.heading class="px-4 py-1.5 text-center">
                             <div class="flex items-center">
@@ -144,20 +98,6 @@
                         </x-table.heading>
                     </x-slot>
                     <x-slot name="body">
-                        {{-- @if ($selectPage)
-                        <x-table.row class="bg-white" wire:key="row-message">
-                            <x-table.cell colspan="8">
-                                @unless ($selectAll)
-                                <div>
-                                    <span>You have selected <strong>{{ $tickets->count() }}</strong> transactions, do you want to select all <strong>{{ $tickets->total() }}</strong>?</span>
-                                    <x-button.link wire:click="selectAll" class="ml-1 text-blue-600">Select All</x-button.link>
-                                </div>
-                                @else
-                                <span>You are currently selecting all <strong>{{ $tickets->total() }}</strong> transactions.</span>
-                                @endif
-                            </x-table.cell>
-                        </x-table.row>
-                        @endif --}}
                         @forelse ($tickets as $ticket)
                         
                         <x-table.row wire:key="{{ $ticket->id }}" wire:loading.class.delay='opacity-35 animate-pulse'>
@@ -166,69 +106,63 @@
                                     <x-input.checkbox wire:model="selected" value="{{ $ticket->id }}" />
                                 </div>
                             </x-table.cell>
-                            <x-table.cell class="px-4 py-1 whitespace-nowrap dark:text-white">
+                            <x-table.cell class="px-4 py-1 whitespace-nowrap">
                                 <div class="flex flex-col">
-                                    <a class="text-slate-600 font-bold underline" href="{{ route('tickets.show', $ticket) }}">
+                                    <a class="text-text/90 font-bold underline" href="{{ route('tickets.show', $ticket) }}">
                                         {{ $ticket->number }}
                                     </a>
-                                    <span class="text-slate-500">
+                                    <span class="text-text/75">
                                         {{ $ticket->date_received }}
                                     </span>
                                 </div>
                             </x-table.cell>
                             <x-table.cell>
                                 <div class="flex flex-col">
-                                    <span class="font-bold text-slate-600">{{ $ticket->title }}</span>
-                                    <div class="text-slate-500">{!! clean(Illuminate\Support\Str::words($ticket->issue->toPlainText(), 8, '...')) !!}</div>
+                                  <span class="font-bold text-text/90">{{ Str::limit($ticket->title, 30) }}</span>
+                                  <div class="text-text/75">{!! clean(Str::limit(Str::words($ticket->issue->toPlainText(), 8, '...'), 30)) !!}</div>
                                 </div>
-                            </x-table.cell>
-                            <x-table.cell>
+                              </x-table.cell>
+                              <x-table.cell>
                                 <div class="flex flex-col">
-                                    <span class="font-bold text-slate-600">
-                                        {{ $ticket->requested_by }}
-                                    </span>
-                                    <span class="text-slate-500">
-                                        {{ $ticket->client }}
-                                    </span>
+                                  <span class="font-bold text-text/90">
+                                    {{ Str::limit($ticket->requested_by, 30) }}
+                                  </span>
+                                  <span class="text-text/75">
+                                    {{ Str::limit($ticket->client, 30) }}
+                                  </span>
                                 </div>
-                            </x-table.cell>
-                            <x-table.cell class="px-4 py-1">
-                                {{ $ticket->product }}
+                              </x-table.cell>
+                            <x-table.cell class="px-4 py-1 text-text/75">
+                                {{ Str::limit($ticket->product, 30) }}
                             </x-table.cell>
                             <x-table.cell class="px-4 py-1 text-left">
-                                <x-badge class="bg-{{ $ticket->status_color }}-100 text-{{ $ticket->status_color }}-800 dark:bg-{{ $ticket->status_color }}-900 dark:text-{{ $ticket->status_color }}-300">{{ $ticket->status->name }}</x-badge>
+                                <x-badge class="{{ $ticket->status_color }} {{ $ticket->status_text_color }}">{{ $ticket->status->name }}</x-badge>
                             </x-table.cell>
-                            <x-table.cell class="px-4 py-1">
+                            <x-table.cell class="px-4 py-1 text-text/75">
                                 {{ $ticket->user->first_name . ' ' . $ticket->user->last_name }}
                             </x-table.cell>
                             <x-table.cell class="px-4 py-1 text-center align-middle">
                                 <div class="hidden sm:flex sm:items-center sm:justify-center sm:ms-auto">
-                                    {{-- @php
-                                        $reversedTickets = $tickets->reverse(); 
-                                        $slicedTickets = $reversedTickets->slice(0, 4); 
-                                        $isBottom = $reversedTickets->search($ticket) >= $reversedTickets->count() - 4;
-                                    @endphp --}}
                                     <x-dropdown
                                         width="w-40"
                                     >
                                         <x-slot name="trigger" class="flex items-center justify-center text-center">
-                                            <span class="text-blue-secondary text-2xl tracking-tighter cursor-pointer select-none">
+                                            <span class="text-text text-2xl tracking-tighter cursor-pointer select-none">
                                                 {{ '••' }}
                                             </span>
                                         </x-slot>
     
                                         <x-slot name="content">
-                                            <ul class="py-2 text-xs text-slate-700 dark:text-slate-200" aria-labelledby="dropdownDefault">
+                                            <ul class="py-1 text-xs text-slate-700" aria-labelledby="dropdownDefault">
                                                 <li>
                                                     <x-dropdown-link href="{{ route('tickets.show', $ticket->number) }}"
                                                     class="group flex items-center px-4 py-2 hover:text-white
-                                                    hover:bg-gradient-to-br hover:from-blue-primary hover:to-blue-secondary
-                                                    dark:hover:bg-slate-600 dark:hover:text-white">
+                                                    hover:bg-gradient-to-br hover:from-blue-primary hover:to-blue-secondary">
                                                         <x-svg-icon
-                                                            class="scale-90 text-blue-secondary group-hover:text-white"
+                                                            class="scale-75 text-text group-hover:text-white"
                                                             name="view"
                                                             />
-                                                        <span class="ml-3 text-xs text-blue-secondary group-hover:text-white">
+                                                        <span class="ml-3 text-xs text-text group-hover:text-white">
                                                             View
                                                         </span>
                                                     </x-dropdown-link>
@@ -236,13 +170,12 @@
                                                 <li>
                                                     <x-dropdown-link href="{{ route('tickets.edit', $ticket->number) }}"
                                                     class="group flex items-center px-4 py-2 hover:text-white
-                                                    hover:bg-gradient-to-br hover:from-blue-primary hover:to-blue-secondary
-                                                    dark:hover:bg-slate-600 dark:hover:text-white">
+                                                    hover:bg-gradient-to-br hover:from-blue-primary hover:to-blue-secondary">
                                                         <x-svg-icon
-                                                            class="scale-90 text-blue-secondary group-hover:text-white"
+                                                            class="scale-75 text-text group-hover:text-white"
                                                             name="edit"
                                                             />
-                                                        <span class="ml-3 text-xs text-blue-secondary group-hover:text-white">
+                                                        <span class="ml-3 text-xs text-text group-hover:text-white">
                                                             Edit
                                                         </span>
                                                     </x-dropdown-link>
@@ -251,14 +184,13 @@
                                                     <button 
                                                         wire:click="delete({{ $ticket->id }})"
                                                         type="button"
-                                                        class="w-full text-start text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out group flex items-center px-4 py-2 hover:text-white
-                                                        hover:bg-gradient-to-br hover:from-odc-red-600 hover:to-odc-red-500
-                                                        dark:hover:bg-slate-600 dark:hover:text-white">
+                                                        class="w-full text-start text-sm leading-5 text-text focus:outline-none transition duration-150 ease-in-out group flex items-center px-4 py-2 hover:text-white
+                                                        hover:bg-gradient-to-br hover:from-odc-red-600 hover:to-odc-red-500">
                                                         <x-svg-icon
-                                                            class="scale-90 text-blue-secondary group-hover:text-white"
+                                                            class="scale-75 text-text group-hover:text-white"
                                                             name="trash"
                                                             />
-                                                        <span class="ml-3 text-xs text-blue-secondary group-hover:text-white">
+                                                        <span class="ml-3 text-xs text-text group-hover:text-white">
                                                             Delete
                                                         </span>
                                                     </button>
@@ -272,7 +204,7 @@
                         </x-table.row>
                         @empty
                         <x-table.row wire:loading.class.delay='opacity-35 animate-pulse'>
-                            <x-table.cell class="w-4 px-4 py-4 opacity-75 text-slate-700 animate-pulse" colspan="8">
+                            <x-table.cell class="w-4 px-4 py-4 opacity-75 text-text animate-pulse" colspan="8">
                                 <div class="flex items-center justify-center gap-1">
                                     <x-svg-icon name="ticket" class="scale-75"/>
                                     <span class="font-base font-bold">No tickets found...</span>
@@ -285,9 +217,7 @@
             </div>
         </div>
 
-        {{-- ***** Table Footer ***** --}}
-        {{-- <div class="h-16 w-full flex items-center justify-between  bg-gradient-to-br from-blue-primary to-blue-secondary"> --}}
-        <div class="h-16 w-full flex rounded-b-lg items-center justify-between bg-slate-50 border-t-0 border border-slate-300 ">
+        <div class="h-16 w-full flex rounded-b-lg items-center justify-between bg-primary-background border-t-0 border border-border">
             <span class="ml-5 inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
                 <span class="w-2 h-2 me-1 bg-green-500 rounded-full"></span>
                 <span class="me-1">{{ $tickets->count() }}</span>
@@ -299,11 +229,10 @@
         </div>
     </div>
 
-    {{-- ***** Delete Modal ***** --}}
-    <div x-data="{ open: @entangle('showDeleteModal') }"> 
+    <div x-cloak x-data="{ open: @entangle('showDeleteModal') }"> 
         <div x-show="open" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
             <div class="flex items-end justify-center min-h-screen px-4 text-center md:items-center sm:block sm:p-0">
-                <div x-cloak @click.prevent="modelOpen = false" x-show="open"
+                <div @click.prevent="modelOpen = false" x-show="open"
                     x-transition:enter="transition ease-out duration-300 transform"
                     x-transition:enter-start="opacity-0"
                     x-transition:enter-end="opacity-100"

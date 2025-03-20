@@ -5,7 +5,6 @@
         type="hidden"
         name="{{ $name }}"
         id="{{ $id }}_input"
-        {{-- value="{{ $value?->toTrixHtml() }}" --}}
         value="{{ $value }}"
     />
 
@@ -37,7 +36,8 @@
         id="{{ $id }}"
         toolbar="{{ $id }}_toolbar"
         input="{{ $id }}_input"
-        {{ $attributes->merge(['class' => 'trix-content px-3 py-2 border border-slate-200 ring-0 focus:border-0 focus:border-odc-blue-800 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:focus:border-odc-blue-600 dark:focus:ring-odc-blue-600 rounded-md shadow-sm dark:[&_pre]:!bg-slate-700 dark:[&_pre]:rounded dark:[&_pre]:!text-white']) }}
+        {{ $attributes->merge(['class' => 'trix-content px-3 py-2 border border-border ring-0 text-text bg-primary focus:border-border rounded-md shadow-sm focus:border-b-4 focus:border-b-secondary-background ']) }}
+        {{-- {{ $attributes->merge(['class' => 'trix-content px-3 py-2 border border-border ring-0 focus:border-0 focus:border-odc-blue-800 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:focus:border-odc-blue-600 dark:focus:ring-odc-blue-600 rounded-md shadow-sm dark:[&_pre]:!bg-slate-700 dark:[&_pre]:rounded dark:[&_pre]:!text-white']) }} --}}
     ></trix-editor>
     <x-form.error name="{{ $name }}"/>
 </x-form.field>

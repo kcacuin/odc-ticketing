@@ -32,19 +32,16 @@ class UserList extends Component
     public ?User $user;
     public $id;
 
-    // * Filters
     public $filters = [
         'search' => '',
     ];
 
     public $queryString = ['sorts'];
     
-    // * Modal
     public $showCreateModal;
     public $showEditModal;
     public $showDeleteModal;
     
-    // * Refs
     public $selectedUserId;
 
     #[Validate(['required', 'string', 'max:255'], onUpdate: true)]
@@ -62,7 +59,6 @@ class UserList extends Component
     #[Validate(['required', 'string', 'min:3', 'max:255', 'unique:users,username'], onUpdate: true)]
     public string $username = '';
     
-    // #[Validate(['required'], onUpdate: true)]
     public $role_id;
 
     #[Validate(['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email', new AllowedEmailDomain('odecci.com')], onUpdate: true)]
@@ -129,8 +125,6 @@ class UserList extends Component
             $this->image = null;
         } 
     }
-
-    // *** User Creation
 
     public function create(): void
     {
@@ -208,9 +202,6 @@ class UserList extends Component
         $this->password_confirmation = $value;
         $this->updatedPassword($value);
     }
-
-
-    // *** Edit and Update User
 
     public function edit($userId)
     {

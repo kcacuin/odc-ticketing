@@ -58,40 +58,51 @@ class Ticket extends Model
                     ->where('body', 'like', '%' . $search . '%')
             );
         });
-
-        // TODO: Phase 2
-        // $query->when($filters['issues'] ?? false, fn($query, $issue) =>
-        //     $query->whereHas('issues', fn ($query) =>
-        //         $query->where('issues', $issue)
-        //     )
-        // );
-
-        // $query->when($filters['client'] ?? false, fn($query, $client) =>
-        //     $query->whereHas('client', fn ($query) =>
-        //         $query->where('client', $client)
-        //     )
-        // );
     }
 
     public function getStatusColorAttribute()
     {
         return [
-            'Open'=> 'red',
-            'Pending'=> 'blue',
-            'In-progress'=> 'yellow',
-            'In-review'=> 'purple',
-            'Closed'=> 'green',
+            'Open' => 'stat-bg-red',
+            'Pending' => 'stat-bg-blue',
+            'In-progress' => 'stat-bg-yellow',
+            'In-review' => 'stat-bg-purple',
+            'Closed' => 'stat-bg-green',
+        ][$this->status->name] ?? 'slate';
+    }
+
+    public function getStatusTextColorAttribute()
+    {
+        return [
+            'Open' => 'stat-text-red',
+            'Pending' => 'stat-text-blue',
+            'In-progress' => 'stat-text-yellow',
+            'In-review' => 'stat-text-purple',
+            'Closed' => 'stat-text-green',
         ][$this->status->name] ?? 'slate';
     }
 
     public function getUpdatedStatusColor($statusName)
     {
         $colors = [
-            'Open' => 'red',
-            'Pending' => 'blue',
-            'In-progress' => 'yellow',
-            'In-review' => 'purple',
-            'Closed' => 'green',
+            'Open' => 'stat-bg-red',
+            'Pending' => 'stat-bg-blue',
+            'In-progress' => 'stat-bg-yellow',
+            'In-review' => 'stat-bg-purple',
+            'Closed' => 'stat-bg-green',
+        ];
+    
+        return $colors[$statusName] ?? 'slate';
+    }
+
+    public function getUpdatedStatusTextColor($statusName)
+    {
+        $colors = [
+            'Open' => 'stat-text-red',
+            'Pending' => 'stat-text-blue',
+            'In-progress' => 'stat-text-yellow',
+            'In-review' => 'stat-text-purple',
+            'Closed' => 'stat-text-green',
         ];
     
         return $colors[$statusName] ?? 'slate';
@@ -170,33 +181,4 @@ class Ticket extends Model
     
         return $ticketsByDate;
     }
-
-    // TODO: Phase 2 - Notify Ticket Updates
-    // public function getLatestWeeklyTickets()
-    // {
-    //     $startDate = Carbon::now()->startOfWeek();
-    //     $endDate = Carbon::now()->endOfWeek();
-    
-    //     $tickets = Ticket::with('changes')
-    //         ->whereBetween('created_at', [$startDate, $endDate])
-    //         ->orWhereHas('changes', function ($query) use ($startDate, $endDate) {
-    //             $query->whereBetween('created_at', [$startDate, $endDate]);
-    //         })
-    //         ->orderBy('created_at', 'desc')
-    //         ->get();
-    
-    //     $ticketsByDate = [];
-    
-    //     foreach ($tickets as $ticket) {
-    //         $date = $ticket->created_at->toDateString();
-    //         if (!isset($ticketsByDate[$date])) {
-    //             $ticketsByDate[$date] = [];
-    //         }
-    //         $ticketsByDate[$date][] = $ticket;
-    //     }
-    
-    //     return $ticketsByDate;
-    // }
-    
-    
 }

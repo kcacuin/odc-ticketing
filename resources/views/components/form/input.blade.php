@@ -1,7 +1,6 @@
 @props([
     'disabled' => false,
     'readonly' => false,
-    // 'value' => null,
     'name',
     'wireModel' => '',
     'type' => '',
@@ -19,10 +18,8 @@
     <div class="relative">
         <input {{ $disabled ? 'disabled' : '' }} {{ $readonly ? 'readonly' : '' }}
         {!! $attributes->merge(['class' => $classes . ($errors->has($name) ? $errorClasses : ''), 'value' => old($name)]) !!}
-            {{-- wire:model="{{ $wireModel }}" --}}
             type="{{ $type }}"
             name="{{ $name }}"
-            {{-- id="{{ $name }}" --}}
             placeholder="placeholder"
         >
         <x-form.label name="{{ $name }}" labelname="{{ $labelname }}" />

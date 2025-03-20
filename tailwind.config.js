@@ -1,6 +1,7 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
 import typography from '@tailwindcss/typography';
+// import nightwind from 'nightwind';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -9,13 +10,47 @@ export default {
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
     ],
-
     theme: {
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
             colors: {
+                'background': 'rgba(var(--background))',
+                'primary-background': 'rgba(var(--primary-background))',
+                'secondary-background': 'rgba(var(--secondary-background))',
+
+                'primary': 'rgba(var(--primary))',
+                'secondary': 'rgba(var(--secondary))',
+                
+                'cta': 'rgba(var(--cta))',
+                'cta-hover': 'rgba(var(--cta-hover))',
+                'cta-active': 'rgba(var(--cta-active))',
+                'cta-border': 'rgba(var(--cta-border))',
+                'cta-text': 'rgba(var(--cta-text))',
+                'cta-accent': 'rgba(var(--cta-accent))',
+                
+                'border': 'rgba(var(--border))',
+                'nav-border': 'rgba(var(--nav-border))',
+                
+                'text': 'rgba(var(--text))',
+                'text-placeholder': 'rgba(var(--text-placeholder))',
+                
+                'row': 'rgba(var(--row))',
+                'row-active': 'rgba(var(--row-active))',
+
+                'stat-bg-red': 'rgba(var(--stat-bg-red))',
+                'stat-bg-blue': 'rgba(var(--stat-bg-blue))',
+                'stat-bg-yellow': 'rgba(var(--stat-bg-yellow))',
+                'stat-bg-purple': 'rgba(var(--stat-bg-purple))',
+                'stat-bg-green': 'rgba(var(--stat-bg-green))',
+
+                'stat-text-red': 'rgba(var(--stat-text-red))',
+                'stat-text-blue': 'rgba(var(--stat-text-blue))',
+                'stat-text-yellow': 'rgba(var(--stat-text-yellow))',
+                'stat-text-purple': 'rgba(var(--stat-text-purple))',
+                'stat-text-green': 'rgba(var(--stat-text-green))',
+   
                 'blue-primary': '#0F2B3C',
                 'blue-secondary': '#205375',
                 'red-primary': '#ED1C24',
@@ -51,74 +86,6 @@ export default {
                 },
 
             },
-            // TODO: Phase 2
-            // colors: {
-            //     'text': {
-            //         50: 'var(--text-50)',
-            //         100: 'var(--text-100)',
-            //         200: 'var(--text-200)',
-            //         300: 'var(--text-300)',
-            //         400: 'var(--text-400)',
-            //         500: 'var(--text-500)',
-            //         600: 'var(--text-600)',
-            //         700: 'var(--text-700)',
-            //         800: 'var(--text-800)',
-            //         900: 'var(--text-900)',
-            //         950: 'var(--text-950)',
-            //     },
-            //     'odc': {
-            //         50: 'var(--background-50)',
-            //         100: 'var(--background-100)',
-            //         200: 'var(--background-200)',
-            //         300: 'var(--background-300)',
-            //         400: 'var(--background-400)',
-            //         500: 'var(--background-500)',
-            //         600: 'var(--background-600)',
-            //         700: 'var(--background-700)',
-            //         800: 'var(--background-800)',
-            //         900: 'var(--background-900)',
-            //         950: 'var(--background-950)',
-            //     },
-            //     'odc-primary': {
-            //         50: 'var(--primary-50)',
-            //         100: 'var(--primary-100)',
-            //         200: 'var(--primary-200)',
-            //         300: 'var(--primary-300)',
-            //         400: 'var(--primary-400)',
-            //         500: 'var(--primary-500)',
-            //         600: 'var(--primary-600)',
-            //         700: 'var(--primary-700)',
-            //         800: 'var(--primary-800)',
-            //         900: 'var(--primary-900)',
-            //         950: 'var(--primary-950)',
-            //     },
-            //     'odc-secondary': {
-            //         50: 'var(--secondary-50)',
-            //         100: 'var(--secondary-100)',
-            //         200: 'var(--secondary-200)',
-            //         300: 'var(--secondary-300)',
-            //         400: 'var(--secondary-400)',
-            //         500: 'var(--secondary-500)',
-            //         600: 'var(--secondary-600)',
-            //         700: 'var(--secondary-700)',
-            //         800: 'var(--secondary-800)',
-            //         900: 'var(--secondary-900)',
-            //         950: 'var(--secondary-950)',
-            //     },
-            //     'odc-accent': {
-            //         50: 'var(--accent-50)',
-            //         100: 'var(--accent-100)',
-            //         200: 'var(--accent-200)',
-            //         300: 'var(--accent-300)',
-            //         400: 'var(--accent-400)',
-            //         500: 'var(--accent-500)',
-            //         600: 'var(--accent-600)',
-            //         700: 'var(--accent-700)',
-            //         800: 'var(--accent-800)',
-            //         900: 'var(--accent-900)',
-            //         950: 'var(--accent-950)',
-            //     },
-            // },
             keyframes: {
                 wiggle: {
                   '0%, 100%': { transform: 'rotate(-3deg)' },
@@ -130,7 +97,23 @@ export default {
                 'wiggle': 'wiggle 1s ease-in-out infinite',
             }
         },
+        // nightwind: {
+        //     colorClasses: [
+        //       "gradient",
+        //       "ring",
+        //       "ring-offset",
+        //       "divide",
+        //       "placeholder",
+        //     ],
+        //     transitionClasses: "full",
+        // },
     },
 
+    // variants: {
+    //     nightwind: ["focus"],
+    // },
+
+    // darkMode: "class",
+    // plugins: [forms, typography, nightwind],
     plugins: [forms, typography],
 };

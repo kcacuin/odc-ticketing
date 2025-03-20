@@ -179,14 +179,10 @@ new class extends Component
                 </div>
             </div>
             <div class="w-96">
-                {{-- * First Name --}}
                 <x-form.input name="first_name" labelname="First Name" type="text" wire:model='first_name'/>
-                {{-- * Last Name --}}
                 <x-form.input name="last_name" labelname="Last Name" type="text" wire:model='last_name'/>
-                {{-- * Username --}}
                 <x-form.input name="username" labelname="Username" type="text" wire:model='username'/>
                 <div>
-                    {{-- * Email --}}
                     <x-form.input name="email" labelname="Email" type="email" wire:model='email'/>
         
                     @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! auth()->user()->hasVerifiedEmail())
@@ -226,9 +222,6 @@ new class extends Component
             <x-action-message class="me-3 text-odc-blue-600" on="profile-updated">
                 {{ __("You've successfully updated your profile information!🎉") }}
             </x-action-message>
-            {{-- <x-action-message class="me-3 text-slate-400" on="no-change">
-                {{ __("No changes we're made.") }}
-            </x-action-message> --}}
         </div>
     </form>
 </section>

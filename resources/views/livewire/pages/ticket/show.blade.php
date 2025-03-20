@@ -41,49 +41,46 @@
     </x-slot>
     @section('title', 'Incident ' . $ticket->number)
 
-    <div class="mt-6 px-6 py-6 max-w-6xl mx-auto bg-white rounded-md border border-gray-300">
+    <div class="mt-6 px-6 py-6 max-w-6xl mx-auto bg-primary-background rounded-md border border-border">
         <div class="flex justify-between">
-            {{-- * Left --}}
             <div class="mr-32">
-                {{-- * Top --}}
                 <div>
                     <div class="flex items-start justify-between">
                         <div>
-                            <h1 class="text-xl text-blue-primary font-semibold">
+                            <h1 class="text-xl text-text font-semibold">
                                 {!! clean($ticket->title) !!}
                             </h1>
                             <div class="flex space-x-1 text-xs">
-                                <span class="text-gray-600">
+                                <span class="text-text/35">
                                     {{ $ticket->created_at->diffForHumans() }} by
                                 </span>
-                                <span class="font-bold">
+                                <span class="font-bold text-text/45">
                                     {!! clean($ticket->user->first_name . ' ' . $ticket->user->last_name) !!}
                                 </span>
                             </div>
                         </div>
                         <div>
-                            <a class="group text-odc-blue-800 font-bold underline transition " href="{{ route('tickets.edit', $ticket) }}">
-                                {{-- <x-svg-icon class="scale-90 text-blue-secondary hover:opacity-80" name="edit" /> --}}
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
-                                  </svg>
-
+                            <a class="group font-bold transition rounded-full cursor-pointer" href="{{ route('tickets.edit', $ticket) }}">
+                                <div>
+                                    <x-svg-icon
+                                        class="scale-75 p-2 bg-white text-text group-hover:text-white"
+                                        name="edit"
+                                    />
+                                </div>
                             </a>
                         </div>
                     </div>
-                    <div class="prose my-6 py-6 border-t border-b border-gray-200">
+                    <div class="prose my-6 py-6 border-t text-text/75 border-b border-border">
                         {!! clean($ticket->issue->toTrixHTML()) !!}
                     </div>
                 </div>
-                {{-- * Bottom --}}
                 <div>
                     @auth
                     <div class="mb-2">
-                        <h3 class="text-lg font-bold">Notes</h3>
+                        <h3 class="text-lg font-bold text-text">Notes</h3>
                     </div>
-                    {{-- ***** Ticket Timeline ***** --}}
                     <div class="ml-4">
-                        <ol class="relative pl-2 border-s border-gray-200 dark:border-gray-700">
+                        <ol class="relative pl-2 border-s border-border">
                             @php
                                 $timeline = $ticket->changes->merge($notes);
                                 $timeline = $timeline->sortByDesc('created_at');
@@ -93,7 +90,7 @@
                                     @if ($item instanceof \App\Models\TicketChange)
                                         @if ($item->field == 'status') 
                                             <li class="mb-10 ms-6 flex">
-                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-primary-background rounded-full -start-5">
                                                     @if ($item->user->image)
                                                         <div class="relative">
                                                             <div class="w-10 h-10 rounded-full overflow-clip">
@@ -101,12 +98,12 @@
                                                             </div>
                                                         </div>
                                                     @else
-                                                        <div class="relative inline-flex items-center justify-center text-slate-600 bg-slate-100 w-10 h-10 rounded-full">
+                                                        <div class="relative inline-flex items-center justify-center text-slate-600 bg-slate-300 w-10 h-10 rounded-full">
                                                             {{ strtoupper(substr($item->user->first_name, 0, 1)) . strtoupper(substr($item->user->last_name, 0, 1)) }}
                                                         </div>
                                                     @endif
                                                 </span>
-                                                <div class="items-center justify-between w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
+                                                <div class="items-center justify-between w-full p-4 bg-primary-background border border-border rounded-lg shadow-sm sm:flex">
                                                     <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ $item->created_at->diffForHumans() }}</time>
                                                     <div class="flex space-x-1 items-center text-sm font-normal text-gray-500 dark:text-gray-300">
                                                         <span class="font-medium text-slate-500">{{ $item->user->first_name . ' ' . $item->user->last_name }}</span>
@@ -123,7 +120,7 @@
                                             </li>
                                         @elseif ($item->field == 'number')
                                             <li class="mb-10 ms-6 flex">
-                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-primary-background rounded-full -start-5">
                                                     @if ($item->user->image)
                                                         <div class="relative">
                                                             <div class="w-10 h-10 rounded-full overflow-clip">
@@ -136,7 +133,7 @@
                                                         </div>
                                                     @endif
                                                 </span>
-                                                <div class="items-center justify-between w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
+                                                <div class="items-center justify-between w-full p-4 bg-primary-background border border-border rounded-lg shadow-sm sm:flex">
                                                     <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ $item->created_at->diffForHumans() }}</time>
                                                     <div class="text-sm font-normal text-gray-500 dark:text-gray-300">
                                                         <span class="font-medium text-slate-500">{{ $item->user->first_name . ' ' . $item->user->last_name }}</span>
@@ -149,7 +146,7 @@
                                             </li>
                                         @elseif ($item->field == 'date_received')
                                             <li class="mb-10 ms-6 flex">
-                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-primary-background rounded-full -start-5">
                                                     @if ($item->user->image)
                                                         <div class="relative">
                                                             <div class="w-10 h-10 rounded-full overflow-clip">
@@ -162,7 +159,7 @@
                                                         </div>
                                                     @endif
                                                 </span>
-                                                <div class="items-center justify-between w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
+                                                <div class="items-center justify-between w-full p-4 bg-primary-background border border-border rounded-lg shadow-sm sm:flex">
                                                     <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ $item->created_at->diffForHumans() }}</time>
                                                     <div class="text-sm font-normal text-gray-500 dark:text-gray-300">
                                                         <span class="font-medium text-slate-500">{{ $item->user->first_name . ' ' . $item->user->last_name }}</span>
@@ -175,7 +172,7 @@
                                             </li>
                                         @elseif ($item->field == 'files' && $item->file_added)
                                             <li class="mb-10 ms-6 flex">
-                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-primary-background rounded-full -start-5">
                                                     @if ($item->user->image)
                                                         <div class="relative">
                                                             <div class="w-10 h-10 rounded-full overflow-clip">
@@ -188,7 +185,7 @@
                                                         </div>
                                                     @endif
                                                 </span>
-                                                <div class="items-center justify-between w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
+                                                <div class="items-center justify-between w-full p-4 bg-primary-background border border-border rounded-lg shadow-sm sm:flex">
                                                     <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ $item->created_at->diffForHumans() }}</time>
                                                     <div class="text-sm font-normal text-gray-500 dark:text-gray-300">
                                                         <span class="font-medium text-slate-500">{{ $item->user->first_name . ' ' . $item->user->last_name }}</span>
@@ -199,7 +196,7 @@
                                             </li>
                                         @elseif ($item->field == 'files' && $item->file_deleted)
                                             <li class="mb-10 ms-6 flex">
-                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-primary-background rounded-full -start-5">
                                                     @if ($item->user->image)
                                                         <div class="relative">
                                                             <div class="w-10 h-10 rounded-full overflow-clip">
@@ -212,7 +209,7 @@
                                                         </div>
                                                     @endif
                                                 </span>
-                                                <div class="items-center justify-between w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
+                                                <div class="items-center justify-between w-full p-4 bg-primary-background border border-border rounded-lg shadow-sm sm:flex">
                                                     <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ $item->created_at->diffForHumans() }}</time>
                                                     <div class="text-sm font-normal text-gray-500 dark:text-gray-300">
                                                         <span class="font-medium text-slate-500">{{ $item->user->first_name . ' ' . $item->user->last_name }}</span>
@@ -224,7 +221,7 @@
                                             </li>
                                         @elseif ($item->field == 'title')
                                             <li class="mb-10 ms-6 flex">
-                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-primary-background rounded-full -start-5">
                                                     @if ($item->user->image)
                                                         <div class="relative">
                                                             <div class="w-10 h-10 rounded-full overflow-clip">
@@ -237,7 +234,7 @@
                                                         </div>
                                                     @endif
                                                 </span>
-                                                <div class="items-center justify-between w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
+                                                <div class="items-center justify-between w-full p-4 bg-primary-background border border-border rounded-lg shadow-sm sm:flex">
                                                     <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ $item->created_at->diffForHumans() }}</time>
                                                     <div class="text-sm font-normal text-gray-500 dark:text-gray-300">
                                                         <span class="font-medium text-slate-500">{{ $item->user->first_name . ' ' . $item->user->last_name }}</span>
@@ -250,7 +247,7 @@
                                             </li>
                                         @elseif ($item->field == 'issue')
                                             <li class="mb-10 ms-6 flex">
-                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-primary-background rounded-full -start-5">
                                                     @if ($item->user->image)
                                                         <div class="relative">
                                                             <div class="w-10 h-10 rounded-full overflow-clip">
@@ -263,7 +260,7 @@
                                                         </div>
                                                     @endif
                                                 </span>
-                                                <div class="flex flex-col w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
+                                                <div class="flex flex-col w-full p-4 bg-primary-background border border-border rounded-lg shadow-sm sm:flex">
                                                     <div class="flex items-center justify-between text-sm font-normal text-gray-500 dark:text-gray-300">
                                                         <p class="flex space-x-1">
                                                             <span class="font-medium text-slate-500">{{ $item->user->first_name . ' ' . $item->user->last_name }}</span>
@@ -277,12 +274,12 @@
                                                         <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ $item->created_at->diffForHumans() }}</time>
                                                     </div>
                                                     <div class="pt-4 space-y-2 w-full text-sm font-normal text-gray-500 dark:text-gray-300">
-                                                        <div class="p-3 bg-slate-50 text-xs text-slate-400 border border-gray-200 rounded-lg dark:bg-gray-600 dark:border-gray-500 dark:text-gray-300">
+                                                        <div class="p-3 bg-slate-50 text-xs text-slate-400 border border-border rounded-lg">
                                                             <div class="trix-content">
                                                                 {!! clean($item->previous_value) !!}
                                                             </div>
                                                         </div>
-                                                        <div class="p-3 bg-slate-50 text-xs border border-gray-200 rounded-lg dark:bg-gray-600 dark:border-gray-500 dark:text-gray-300">
+                                                        <div class="p-3 bg-slate-50 text-xs border border-border rounded-lg">
                                                             <div class="trix-content">
                                                                 {!! clean($item->new_value) !!}
                                                             </div>
@@ -292,7 +289,7 @@
                                             </li>
                                         @elseif ($item->field == 'requested_by')
                                             <li class="mb-10 ms-6 flex">
-                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-primary-background rounded-full -start-5">
                                                     @if ($item->user->image)
                                                         <div class="relative">
                                                             <div class="w-10 h-10 rounded-full overflow-clip">
@@ -305,7 +302,7 @@
                                                         </div>
                                                     @endif
                                                 </span>
-                                                <div class="items-center justify-between w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
+                                                <div class="items-center justify-between w-full p-4 bg-primary-background border border-border rounded-lg shadow-sm sm:flex">
                                                     <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ $item->created_at->diffForHumans() }}</time>
                                                     <div class="text-sm font-normal text-gray-500 dark:text-gray-300">
                                                         <span class="font-medium text-slate-500">{{ $item->user->first_name . ' ' . $item->user->last_name }}</span>
@@ -318,7 +315,7 @@
                                             </li>
                                         @elseif ($item->field == 'client')
                                             <li class="mb-10 ms-6 flex">
-                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-primary-background rounded-full -start-5">
                                                     @if ($item->user->image)
                                                         <div class="relative">
                                                             <div class="w-10 h-10 rounded-full overflow-clip">
@@ -331,7 +328,7 @@
                                                         </div>
                                                     @endif
                                                 </span>
-                                                <div class="items-center justify-between w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
+                                                <div class="items-center justify-between w-full p-4 bg-primary-background border border-border rounded-lg shadow-sm sm:flex">
                                                     <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ $item->created_at->diffForHumans() }}</time>
                                                     <div class="text-sm font-normal text-gray-500 dark:text-gray-300">
                                                         <span class="font-medium text-slate-500">{{ $item->user->first_name . ' ' . $item->user->last_name }}</span>
@@ -344,7 +341,7 @@
                                             </li>
                                         @elseif ($item->field == 'product')
                                             <li class="mb-10 ms-6 flex">
-                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                                <span class="absolute flex items-center justify-center w-10 h-10 bg-primary-background rounded-full -start-5">
                                                     @if ($item->user->image)
                                                         <div class="relative">
                                                             <div class="w-10 h-10 rounded-full overflow-clip">
@@ -357,7 +354,7 @@
                                                         </div>
                                                     @endif
                                                 </span>
-                                                <div class="items-center justify-between w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:bg-gray-700 dark:border-gray-600">
+                                                <div class="items-center justify-between w-full p-4 bg-primary-background border border-border rounded-lg shadow-sm sm:flex">
                                                     <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ $item->created_at->diffForHumans() }}</time>
                                                     <div class="text-sm font-normal text-gray-500 dark:text-gray-300">
                                                         <span class="font-medium text-slate-500">{{ $item->user->first_name . ' ' . $item->user->last_name }}</span>
@@ -371,9 +368,8 @@
                                         @else
                                         @endif
                                     @elseif ($item instanceof \App\Models\Note)
-                                        {{-- Display user note --}}
                                         <li class="mb-10 ms-6 flex">
-                                            <span class="absolute flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full -start-5 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                                            <span class="absolute flex items-center justify-center w-10 h-10 bg-primary-background rounded-full -start-5">
                                                 @if ($item->user->image)
                                                     <div class="relative">
                                                         <div class="w-10 h-10 rounded-full overflow-clip">
@@ -386,16 +382,15 @@
                                                     </div>
                                                 @endif
                                             </span>
-                                            <div class="w-full p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-700 dark:border-gray-600">
+                                            <div class="w-full p-4 bg-primary-background border border-border rounded-lg shadow-sm">
                                                 <div class="items-center justify-between mb-3 sm:flex">
                                                     <time class="mb-1 text-xs font-normal text-gray-400 sm:order-last sm:mb-0">{{ $item->created_at->diffForHumans() }}</time>
                                                     <div class="text-sm font-normal text-gray-500 lex dark:text-gray-300">
                                                         <span class="font-medium text-slate-500">{{ $item->user->first_name . ' ' . $item->user->last_name }}</span>
                                                     </div>
                                                 </div>
-                                                <div class="p-3 text-xs font-normal text-gray-500 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-600 dark:border-gray-500 dark:text-gray-300">{!! clean($item->body) !!}</div>
+                                                <div class="p-3 text-xs font-normal text-gray-500 border border-border rounded-lg bg-background">{!! clean($item->body) !!}</div>
                                             </div>
-                                            {{-- **** This only be visible to the user who made this note. If not other user cannot abuse this and delete other users notes. Only their notes --}}
                                             @if (Auth::user()->id === $item->user_id)
                                             <div
                                                 x-data="{
@@ -434,7 +429,6 @@
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
                                                     </svg>
                                                 </button>
-                                                <!-- Panel -->
                                                 <div
                                                     x-ref="panel"
                                                     x-show="open"
@@ -444,8 +438,6 @@
                                                     style="display: none;"
                                                     class="absolute z-10 left-6 bottom-2 rounded-md"
                                                 >
-                                                    {{-- * Add edit button here --}}
-                    
                                                     <form action="{{ route('tickets.notes.destroy', ['ticket' => $ticket, 'note' => $item])}}"
                                                         method="POST" class="mt-2">
                                                         @csrf
@@ -463,13 +455,12 @@
                                     @endif
                                 @endforeach
                             @else
-                                <p class="px-6 py-2 text-xs text-slate-500  bg-slate-50 border border-gray-200 rounded-lg shadow-sm dark:bg-gray-700 dark:border-gray-600">No updates yet recorded for this ticket.</p>
+                                <p class="px-6 py-2 text-xs text-slate-500 bg-primary-background border border-border rounded-lg shadow-sm">No updates yet recorded for this ticket.</p>
                             @endif
                         </ol>
                     </div>
                     <form action="{{ route('tickets.notes.store', $ticket) }}" method="POST" class="mt-2">
                         @csrf
-                        {{-- * Add Notes --}}
                         <div class="relative">
                             <div class="mt-6">
                                 <x-form.trix-input value="{!! $ticket->notes->body->toTrixHTML() !!}" id="body" name="body" class="h-52 rounded-md overflow-y-auto" placeholder="Write your notes here..."/>
@@ -490,14 +481,12 @@
                     </div>
                 </div>
             </div>
-            {{-- * Right --}}
-            <div class="flex flex-col gap-4 w-80 text-blue-primary text-xs">
-                {{-- * Top --}}
-                <div class="flex flex-col rounded border border-gray-200">
-                    <div class="p-3 bg-gray-200">
+            <div class="flex flex-col gap-4 w-80 text-text text-xs">
+                <div class="flex flex-col rounded border border-border overflow-clip">
+                    <div class="p-3 bg-primary-background border-b border-border">
                         <h3>Your request has been submitted</h3>
                     </div>
-                    <div class="p-3">
+                    <div class="p-3 bg-primary">
                         <div class="flex justify-between py-3">
                             <p class="font-bold">Number</p>
                             {{ $ticket->number }}
@@ -513,11 +502,6 @@
                                 <span x-on:mouseover="tooltip = true" x-on:mouseleave="tooltip = false">
                                     {{ $ticket->created_at->diffForHumans() }}
                                 </span>
-                                {{-- <div x-cloak x-show.transition.origin.top="tooltip">
-                                    <div class="info-tooltip absolute z-10 max-w-2xl ring-1 ring-gray-400 whitespace-nowrap -top-2 left-1/2 p-2 -mt-1 text-xs font-medium leading-tight text-white transform -trangray-x-1/2 -trangray-y-full bg-gray-dark rounded-lg shadow-lg">
-                                    {{ $ticket->created_at }}
-                                    </div>
-                                </div> --}}
                             </div>
                         </div>
                         <div class="flex justify-between py-3">
@@ -526,22 +510,16 @@
                                 <span x-on:mouseover="tooltip = true" x-on:mouseleave="tooltip = false">
                                     {{ $ticket->updated_at->diffForHumans() }}
                                 </span>
-                                {{-- <div x-cloak x-show.transition.origin.top="tooltip">
-                                    <div class="info-tooltip absolute z-10 max-w-2xl ring-1 ring-gray-400 whitespace-nowrap -top-2 left-1/2 p-2 -mt-1 text-xs font-medium leading-tight text-white transform -trangray-x-1/2 -trangray-y-full bg-gray-dark rounded-lg shadow-lg">
-                                    {{ $ticket->updated_at }}
-                                    </div>
-                                </div> --}}
                             </div>
                         </div>
                     </div>
                 </div>
-                {{-- * Bottom --}}
-                <div class="flex flex-col rounded border border-gray-300">
-                    <div class="p-3 flex justify-between bg-gray-200">
+                <div class="flex flex-col rounded border border-border overflow-clip">
+                    <div class="p-3 flex justify-between border-b border-border bg-primary-background">
                         <h3>Attachments</h3>
                         <x-svg-icon class="scale-90" name="attachment" />
                     </div>
-                    <div class="p-3 flex flex-col">
+                    <div class="p-3 flex flex-col bg-primary">
                         @if ($files->isNotEmpty())
                             <ul class="flex flex-col gap-4">
                                 <div>
@@ -566,7 +544,7 @@
                                                             x-transition:leave="transition ease-in duration-200 transform"
                                                             x-transition:leave-start="opacity-100"
                                                             x-transition:leave-end="opacity-0"
-                                                            class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-55" aria-hidden="true"
+                                                            class="fixed inset-0 transition-opacity bg-background0 bg-opacity-55" aria-hidden="true"
                                                         ></div>
 
                                                         <div x-cloak x-show="modelOpen"
@@ -576,7 +554,7 @@
                                                             x-transition:leave="transition ease-in duration-200 transform"
                                                             x-transition:leave-start="opacity-100 trangray-y-0 sm:scale-100"
                                                             x-transition:leave-end="opacity-0 transate-y-4 sm:trangray-y-0 sm:scale-95"
-                                                            class="inline-block w-full max-w-sm p-4 my-20 overflow-hidden text-left transition-all transform bg-white rounded-lg shadow-xl 2xl:max-w-2xl"
+                                                            class="inline-block w-full max-w-sm p-4 my-20 overflow-hidden text-left transition-all transform bg-primary-background rounded-lg shadow-xl 2xl:max-w-2xl"
                                                         >
                                                             <div class="p-4 md:p-5 text-center">
                                                                 <svg class="mx-auto mb-4 w-12 h-12 text-red-primary dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
@@ -609,21 +587,12 @@
                                 </div>
                             </ul>
                         @else
-                            <p>No files attached to this ticket.</p>
+                            <p class="text-slate-100/25">No files attached to this ticket.</p>
                         @endif
                     </div>
                 </div>
             </div>
         </div>
-        {{-- TODO: Phase 2 - Scroll to top --}}
-        {{-- <div>
-            <button x-show="isVisible" @click="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-4 right-9 bg-odc-blue-700 text-white p-2.5 rounded-full shadow">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 18.75 7.5-7.5 7.5 7.5" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 7.5-7.5 7.5 7.5" />
-                </svg>
-            </button>
-        </div> --}}
     </div>
 
     <x-flash-message key="update-ticket-success" icon="check-circle"/>
