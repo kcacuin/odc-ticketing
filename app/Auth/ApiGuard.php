@@ -25,7 +25,8 @@ class ApiGuard implements Guard
     public function user()
     {
         if (!is_null($this->user)) {
-            return $this->user;
+            // return $this->user;
+            $this->user = $this->provider->retrieveById(session('api_user')['id']);
         }
 
         if (session()->has('api_user')) {

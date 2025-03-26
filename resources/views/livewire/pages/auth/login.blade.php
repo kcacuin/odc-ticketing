@@ -16,57 +16,6 @@ new #[Layout('layouts.guest')] class extends Component
     /**
      * Handle an incoming authentication request.
      */
-    // public function login(): void
-    // {
-    //     $this->validate();
-
-    //     // $data = [
-    //     //     "username" => $this->form->username,
-    //     //     "password" => $this->form->password,
-    //     //     "ipaddress" => request()->ip(),
-    //     //     "location" => "string",
-    //     //     "rememberToken" => $this->form->remember ? Str::random(60) : null
-    //     // ];
-
-    //     // // dd($data);
-
-    //     // $resp =  Http::withToken(getenv('APP_API_TOKEN'))->post(getenv('APP_API_URL').'/User/isLoggedIn', $data); 
-        
-    //     // $userData = $resp->json();
-
-    //     // Session::regenerate();
-
-    //     // Session::flash('login-success', "Welcome, " . Auth::user()->first_name ."!");
-
-    //     // $this->redirect(
-    //     //     session('url.intended', RouteServiceProvider::HOME),
-    //     //     navigate: true
-    //     // );
-
-    //     if (Auth::attempt([
-    //         'username' => $this->form->username,
-    //         'password' => $this->form->password,
-    //         'remember' => $this->form->remember,
-    //     ])) {
-    //         // User is authenticated
-    //         Session::regenerate();
-            
-    //         // Get the user data from session
-    //         $user = session('api_user');
-    //         Session::flash('login-success', "Welcome, " . $user['fname'] . "!");
-            
-    //         $this->redirect(
-    //             session('url.intended', RouteServiceProvider::HOME),
-    //             navigate: true
-    //         );
-    //     } else {
-    //         // Authentication failed
-    //         throw ValidationException::withMessages([
-    //             'username' => 'These credentials do not match our records.',
-    //         ]);
-    //     }
-    // }
-
     public function login(): void
     {
         $this->validate();

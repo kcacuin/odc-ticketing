@@ -63,7 +63,7 @@
                             <a class="group font-bold transition rounded-full cursor-pointer" href="{{ route('tickets.edit', $ticket) }}">
                                 <div>
                                     <x-svg-icon
-                                        class="scale-75 p-2 bg-white text-text group-hover:text-white"
+                                        class="scale-75 text-text/50 group-hover:text-white group-hover:scale-[.85] transition-all"
                                         name="edit"
                                     />
                                 </div>
@@ -108,12 +108,13 @@
                                                     <div class="flex space-x-1 items-center text-sm font-normal text-gray-500 dark:text-gray-300">
                                                         <span class="font-medium text-slate-500">{{ $item->user->first_name . ' ' . $item->user->last_name }}</span>
                                                         <span>has updated</span>
-                                                        <a href="#" class="font-semibold text-blue-600 dark:text-blue-500 hover:underline">Incident {{ $ticket->number }}</a> 
+                                                        <a href="#" class="font-semibold text-blue-600 hover:underline">Incident {{ $ticket->number }}</a> 
                                                         <span>status from</span>
                                                         <span>
-                                                            <x-badge class="mb-1 bg-{{ $ticket->getUpdatedStatusColor($item->previous_value) }}-100 text-{{ $ticket->getUpdatedStatusColor($item->previous_value) }}-800 dark:bg-{{ $ticket->getUpdatedStatusColor($item->previous_value) }}-900 dark:text-{{ $ticket->getUpdatedStatusColor($item->previous_value) }}-300">{{ $item->previous_value }}</x-badge>
+                                                            <x-badge class="mb-1 
+                                                            {{ $ticket->getUpdatedStatusColor($item->previous_value) . ' ' . $ticket->getUpdatedStatusTextColor($item->previous_value) }}">{{ $item->previous_value }}</x-badge>
                                                             <span class="pl-1">to</span>
-                                                            <x-badge class="mb-1 bg-{{ $ticket->getUpdatedStatusColor($item->new_value) }}-100 text-{{ $ticket->getUpdatedStatusColor($item->new_value) }}-800 dark:bg-{{ $ticket->getUpdatedStatusColor($item->new_value) }}-900 dark:text-{{ $ticket->getUpdatedStatusColor($item->new_value) }}-300">{{ $item->new_value }}</x-badge>
+                                                            <x-badge class="mb-1 {{ $ticket->getUpdatedStatusColor($item->new_value) . ' ' . $ticket->getUpdatedStatusTextColor($item->new_value) }}">{{ $item->new_value }}</x-badge>
                                                         </span>
                                                     </div>
                                                 </div>
@@ -486,14 +487,14 @@
                     <div class="p-3 bg-primary-background border-b border-border">
                         <h3>Your request has been submitted</h3>
                     </div>
-                    <div class="p-3 bg-primary">
+                    <div class="p-3 bg-primary-background">
                         <div class="flex justify-between py-3">
                             <p class="font-bold">Number</p>
                             {{ $ticket->number }}
                         </div>
                         <div class="flex justify-between py-3">
                             <p class="font-bold">Status</p>
-                            <x-badge class="bg-{{ $ticket->status_color }}-100 text-{{ $ticket->status_color }}-800 dark:bg-{{ $ticket->status_color }}-900 dark:text-{{ $ticket->status_color }}-200">{{ $ticket->status->name }}</x-badge>
+                            <x-badge class="{{ $ticket->status_color }} . ' ' . {{ $ticket->status_color }}">{{ $ticket->status->name }}</x-badge>
                         </div>
                         <div class="flex justify-between py-3">
                             <p class="font-bold">Created</p>

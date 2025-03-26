@@ -37,17 +37,21 @@
                 <div class="absolute inset-0 opacity-50 pointer-event-all"></div>
             </div>
 
-            <form @submit="submitting = true;" method="POST" action="{{ route('tickets.update', $ticket->number) }}" enctype="multipart/form-data" class="py-2 pb-6 px-8 bg-white rounded-md border border-slate-300 mx-8">
+            <form @submit="submitting = true;" method="POST" action="{{ route('tickets.update', $ticket->number) }}" enctype="multipart/form-data" class="py-2 pb-6 px-8 bg-primary-background rounded-md border border-border mx-8">
                 @csrf
                 @method('PATCH')
 
                 <div class="flex flex-row-reverse w-full gap-10">
                     <div class="flex flex-col w-[25%]">
                         <div class="mb-4">
-                            <x-form.input :value="old('number', $ticket->number)" name="number" labelname="Ticket Number" type="number"/>
+                            <div>
+                                <x-form.input-clipboard name="number" labelname="Ticket Number" type="number" readonly="true" :value="old('number', $ticket->number)" class="disabled:opacity-30 disabled:bg-slate-400/20"/>
+                                <input type="hidden" x-on:input="wire.emit('ticketIdUpdated', input)">
+                            </div>
+                            {{-- <x-form.input :value="old('number', $ticket->number)" name="number" labelname="Ticket Number" type="number"/> --}}
                             <x-form.field>
                                 <select xModel="ticketStatus" name="status_id" id="status_id"
-                                class="appearance-none block mt-1 w-full peer h-[3rem] px-6 text-sm text-white bg-gray-dark rounded-lg border-opacity-75 border-2 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 placeholder-transparent placeholder:pointer-events-none
+                                class="disabled:opacity-30 disabled:bg-slate-400/20 appearance-none block mt-1 w-full peer h-[3rem] px-6 text-sm text-text bg-primary-background rounded-lg border-border border-2 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 placeholder-transparent placeholder:pointer-events-none
                                 ring-0 placeholder:select-none focus:shadow-md focus:shadow-odc-blue-700 focus:border-blue-secondary focus:ring-0">
                                     @php
                                         $statuses = \App\Models\Status::all();
@@ -65,7 +69,7 @@
                             <x-form.date xModel="ticketDate" :value="old('date_received', $ticket->date_received)" name="date_received" labelname="Date Received" type="date" class="appearance-none"/>
                         </div>
                         <div class="flex flex-col h-52 overflow-y-auto">
-                            <div class="rounded-md border border-dashed border-blue-secondary bg-[#f1f0ef]">
+                            <div class="relative max-h-52 overflow-y-auto bg-primary-background rounded-md border border-dashed border-border">
                                 <x-input.filepond xModel="ticketFiles" name="files" multiple/>
                             </div>
                             @if ($files->isNotEmpty())
@@ -74,17 +78,17 @@
                                     <a href="{{ route('tickets.show', $ticket->number) }}" class="underline">Click here to view</a>
                                 </div>
                             @else
-                                <span class="mt-4 text-center text-xs text-blue-secondary">No files attached to this ticket.</span>
+                                <span class="mt-4 text-center text-xs text-text/65 italic">No files attached to this ticket.</span>
                             @endif
                         </div>
                     </div>
-                    <div class="flex flex-col w-[75%] pr-10 border-r border-r-slate-200">
+                    <div class="flex flex-col w-[75%] pr-10 border-r border-r-border">
                         <div class="grid grid-cols-3 grid-rows-1 gap-4 mb-6">
                             <x-form.input-tooltip xModel="ticketRequestedBy" :value="old('requested_by', $ticket->requested_by)" name="requested_by" labelname="Requested By" type="text" tooltip="Person who requested assistance."/>
                             <x-form.input-tooltip xModel="ticketClient" :value="old('client', $ticket->client)" name="client" labelname="Client" type="text" tooltip="Client or customer associated."/>
                             <x-form.input-tooltip xModel="ticketProduct" :value="old('product', $ticket->product)" name="product" labelname="Product" type="text" tooltip="Relevant product or service."/>
                         </div>
-                        <div class="flex flex-col space-y-4 border-t border-t-slate-200">
+                        <div class="flex flex-col border-t border-t-border">
                             <x-form.input-tooltip xModel="ticketTitle" :value="old('title', $ticket->title)" name="title" labelname="Title" type="text" tooltip="Brief description of the problem."/>
 
                             <div class="relative">
@@ -106,7 +110,7 @@
                                                 x-transition:leave="transition ease-in duration-200 transform"
                                                 x-transition:leave-start="opacity-100"
                                                 x-transition:leave-end="opacity-0"
-                                                class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-55" aria-hidden="true"
+                                                class="fixed inset-0 transition-opacity bg-primary-background/10 backdrop-blur-sm" aria-hidden="true"
                                             ></div>
 
                                             <div x-cloak x-show="modelOpen"
@@ -116,13 +120,13 @@
                                                 x-transition:leave="transition ease-in duration-200 transform"
                                                 x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
                                                 x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                                                class="inline-block w-full max-w-xl p-8 my-20 overflow-hidden text-left transition-all transform bg-white rounded-lg shadow-xl 2xl:max-w-2xl"
+                                                class="inline-block w-full max-w-xl p-8 my-20 overflow-hidden text-left transition-all transform bg-primary-background border border-border rounded-lg shadow-xl 2xl:max-w-2xl"
                                             >
                                                 <div class="flex items-center justify-between space-x-4">
-                                                    <h1 class="text-xl font-extrabold text-gray-800 ">Save Changes?</h1>
+                                                    <h1 class="text-xl font-extrabold text-text ">Save Changes?</h1>
                                                 </div>
 
-                                                <p class="mt-2 text-base text-slate-500">
+                                                <p class="mt-2 text-base text-text/75">
                                                     Kindly review the fields before saving the changes.
                                                 </p>
 

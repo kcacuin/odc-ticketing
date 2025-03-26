@@ -13,8 +13,8 @@ new class extends Component
 {
     use WithFileUploads;
 
-    public string $first_name = '';
-    public string $last_name = '';
+    public string $fname = '';
+    public string $lname = '';
     public string $username = '';
     public string $email = '';
     
@@ -26,8 +26,8 @@ new class extends Component
      */
     public function mount(): void
     {
-        $this->first_name = Auth::user()->first_name;
-        $this->last_name = Auth::user()->last_name;
+        $this->fname = Auth::user()->fname;
+        $this->lname = Auth::user()->lname;
         $this->username = Auth::user()->username;
         $this->email = Auth::user()->email;
         $this->image = Auth::user()->image;
@@ -41,8 +41,8 @@ new class extends Component
         $user = Auth::user();
 
         $validated = $this->validate([
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
+            'fname' => ['required', 'string', 'max:255'],
+            'lname' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'min:3', 'max:255', Rule::unique(User::class)->ignore($user->id)],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
             'newImage' => ['image', 'max:5120', 'nullable'],
@@ -59,8 +59,8 @@ new class extends Component
         }
 
         $user->update([
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
+            'fname' => $this->fname,
+            'lname' => $this->lname,
             'username' => $this->username,
             'email' => $this->email,
             'image' => $filename,
@@ -113,11 +113,11 @@ new class extends Component
 
 <section>
     <header>
-        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+        <h2 class="text-lg font-medium text-text">
             {{ __('Profile Information') }}
         </h2>
 
-        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+        <p class="mt-1 text-sm text-text">
             {{ __("Update your account's profile information and email address.") }}
         </p>
     </header>
@@ -136,7 +136,7 @@ new class extends Component
                     class="flex space-x-4"
                 >
                     <div class="flex flex-col space-y-2.5">
-                        <div class="min-w-64 min-h-64 w-64 h-64 border border-slate-200 rounded-full overflow-clip">
+                        <div class="min-w-64 min-h-64 w-64 h-64 border border-border rounded-full overflow-clip">
                             @if ($newImage)
                                 <img src="{{ $newImage->temporaryUrl() }}" alt="newimage" class="overflow-clip object-contain object-center h-full">
                             @elseif ($image)
@@ -144,7 +144,7 @@ new class extends Component
                             @else 
                                 <div class="relative inline-flex items-center justify-center text-8xl text-slate-600 bg-slate-100 
                                 w-64 h-64 rounded-full">
-                                    {{ strtoupper(substr($first_name, 0, 1)) . strtoupper(substr($last_name, 0, 1)) }}
+                                    {{ strtoupper(substr($fname, 0, 1)) . strtoupper(substr($lname, 0, 1)) }}
                                 </div>
                             @endif
                             <x-form.error name="newImage"/>
@@ -164,14 +164,14 @@ new class extends Component
                         </div>
                         <div class="flex flex-col w-full space-x-2">
                             <div class="grid grid-cols-2 grid-rows-1 gap-2">
-                                <label for="file" class="cursor-pointer flex items-center px-4 py-2 space-x-2 rounded-md border border-slate-300 text-blue-primary text-xs tracking-widest uppercase hover:bg-slate-100">
-                                    <x-svg-icon name="change" class="w-[16px] h-[16px]"/>
-                                    <span>Change</span>
+                                <label for="file" class="cursor-pointer flex items-center justify-center px-4 py-1 rounded-md bg-cta border border-cta-border text-cta-text text-xs tracking-widest uppercase hover:bg-cta-hover">
+                                    <x-svg-icon name="edit" class="size-3"/>
+                                    <span class="ml-2">Change</span>
                                 </label>
                                 <input type="file" id="file" wire:model="newImage" class="hidden">
-                                <button wire:click.prevent='removeFile' type="button" class="cursor-pointer flex items-center px-4 py-2 space-x-2 rounded-md border border-slate-300 text-blue-primary text-xs tracking-widest uppercase hover:bg-slate-100">
-                                    <x-svg-icon name="trash" class="w-[16px] h-[16px]"/>
-                                    <span>Remove</span>
+                                <button wire:click.prevent='removeFile' type="button" class="cursor-pointer flex flex-row items-center justify-center px-4 py-2 rounded-md bg-cta border border-cta-border text-cta-text text-xs tracking-widest uppercase hover:bg-cta-hover">
+                                    <x-svg-icon name="trash" class="mb-[1px] w-[15px] h-[15px]"/>
+                                    <span class="ml-2">Remove</span>
                                 </button>
                             </div>
                         </div>
@@ -179,8 +179,8 @@ new class extends Component
                 </div>
             </div>
             <div class="w-96">
-                <x-form.input name="first_name" labelname="First Name" type="text" wire:model='first_name'/>
-                <x-form.input name="last_name" labelname="Last Name" type="text" wire:model='last_name'/>
+                <x-form.input name="fname" labelname="First Name" type="text" wire:model='fname'/>
+                <x-form.input name="lname" labelname="Last Name" type="text" wire:model='lname'/>
                 <x-form.input name="username" labelname="Username" type="text" wire:model='username'/>
                 <div>
                     <x-form.input name="email" labelname="Email" type="email" wire:model='email'/>
@@ -208,8 +208,8 @@ new class extends Component
 
 
         <div class="flex items-center gap-4">
-            <button wire:click="updateProfileInformation" wire:loading.attr="disabled" class="px-3 py-2 text-xs tracking-widest text-white uppercase transition-colors duration-200 transform bg-odc-blue-800 rounded-md dark:bg-odc-blue-700 dark:hover:bg-odc-blue-800 dark:focus:bg-odc-blue-800 
-            hover:bg-odc-blue-900 focus:outline-none focus:bg-odc-blue-600 focus:ring focus:ring-odc-blue-400 focus:ring-opacity-50">
+            <button wire:click="updateProfileInformation" wire:loading.attr="disabled" class="px-3 py-2 text-xs tracking-widest text-cta-text uppercase transition-colors duration-200 transform bg-cta rounded-md 
+            hover:bg-odc-blue-900 focus:outline-none focus:bg-cta-active focus:ring focus:ring-odc-blue-400 focus:ring-opacity-50">
                 <span class="text-white">
                     <svg wire:loading wire:target="updateProfileInformation" aria-hidden="true" role="status" class="hidden w-4 h-4 me-1 text-gray-200 animate-spin dark:text-gray-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
@@ -219,7 +219,7 @@ new class extends Component
                 </span>
             </button>
 
-            <x-action-message class="me-3 text-odc-blue-600" on="profile-updated">
+            <x-action-message class="me-3 text-cta-text" on="profile-updated">
                 {{ __("You've successfully updated your profile information!🎉") }}
             </x-action-message>
         </div>

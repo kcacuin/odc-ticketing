@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\HttpFoundation\Response;
 
-class AdminMiddleware
+class DeveloperMiddleware
 {
     /**
      * Handle an incoming request.
@@ -17,11 +17,12 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         $response = Http::withToken(getenv('APP_API_TOKEN'))
-                ->get(getenv('APP_API_URL').'/UserType/UserTypeList');
+                ->get(getenv('APP_API_URL').'/Position/PositionList');
             
         $data = $response->json();
-        $adminId = $data[1]["id"];
-
+        
+        $adminId = $data[2]["id"];
+        
         if (auth()->check() && auth()->user()['userType'] === $adminId) {
             return $next($request);
         }

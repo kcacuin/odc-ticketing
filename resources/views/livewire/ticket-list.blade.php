@@ -33,27 +33,27 @@
             </div>
 
             <div x-cloak x-show="expanded" x-collapse>
-                    <div class="p-4 bg-primary-background border border-border rounded shadow flex relative mb-4">
-                        <div class="w-1/2 pr-2 space-y-4">
-                            <x-input.group inline for="filter-date-min" label="Start Date">
-                                <x-input.date name='filters.date-min' id="filter-date-min" placeholder="MM/DD/YYYY"/>
-                            </x-input.group>
-                            <x-input.group inline for="filter-date-max" label="End Date">
-                                <x-input.date name='filters.date-max' id="filter-date-max" placeholder="MM/DD/YYYY"/>
-                            </x-input.group>
-                        </div>
-                        <div class="w-1/2 pr-2 space-y-4">
-                            <x-input.group inline for="filter-status" label="Status">
-                                <x-input.select wire:model.live='filters.status' id="filter-status">
-                                    <option value="" disabled>Select Status...</option>
-                                    @foreach ($statuses as $status)
-                                        <option value="{{ $status->id }}">{{ $status->name }}</option>
-                                    @endforeach
-                                </x-input.select>
-                            </x-input.group>
-                            <x-button.link wire:click='resetFilters' class="absolute right-0 bottom-0 p-4">Reset Filters</x-button.link>
-                        </div>
+                <div class="p-4 bg-primary-background border border-border rounded shadow flex relative mb-4">
+                    <div class="w-1/2 pr-2 space-y-4">
+                        <x-input.group inline for="filter-date-min" label="Start Date">
+                            <x-input.date name='filters.date-min' id="filter-date-min" placeholder="MM/DD/YYYY"/>
+                        </x-input.group>
+                        <x-input.group inline for="filter-date-max" label="End Date">
+                            <x-input.date name='filters.date-max' id="filter-date-max" placeholder="MM/DD/YYYY"/>
+                        </x-input.group>
                     </div>
+                    <div class="w-1/2 pr-2 space-y-4">
+                        <x-input.group inline for="filter-status" label="Status">
+                            <x-input.select wire:model.live='filters.status' id="filter-status">
+                                <option value="" disabled>Select Status...</option>
+                                @foreach ($statuses as $status)
+                                    <option value="{{ $status->id }}">{{ $status->name }}</option>
+                                @endforeach
+                            </x-input.select>
+                        </x-input.group>
+                        <x-button.link wire:click='resetFilters' class="absolute right-0 bottom-0 p-4">Reset Filters</x-button.link>
+                    </div>
+                </div>
             </div>
         </div>
         

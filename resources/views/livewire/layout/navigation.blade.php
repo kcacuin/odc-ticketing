@@ -88,10 +88,10 @@ new class extends Component
                             Settings
                         </x-nav-link-icon>
                     </x-nav-link>
-                    {{-- @php
-                        $user = auth()->user();
+                    @php
+                        $user = auth()->user()['userType'];
                     @endphp
-                    @if ($user && $user->role->name === 'Admin') --}}
+                    @if ($user === 2)
                     <x-nav-link
                         :href="route('admin.index')"
                         :active="request()->routeIs('admin.index')" wire:navigate
@@ -107,7 +107,7 @@ new class extends Component
                             Admin
                         </x-nav-link-icon>
                     </x-nav-link>
-                    {{-- @endif --}}
+                    @endif
                 </div>
             </nav>
         </div>

@@ -426,6 +426,9 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff",endCo
     opacity: 0;
 }
 
+.filepond--drop-label { @apply bg-primary-background text-text }
+.filepond--drop-label label { @apply text-text }
+
 .tooltip {
     position: relative;
     display: inline-block;

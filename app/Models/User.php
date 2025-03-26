@@ -66,4 +66,45 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class);
     }
+
+    public function getPositionNameAttribute()
+    {
+        return [
+            '4'=> 'Developer',
+            '7'=> 'Finance',
+            '9'=> 'Maintenance',
+            '10'=> 'UI/UX',
+            '11'=> 'Marketing',
+            '12'=> 'HR',
+            '1013'=> 'test',
+            '1014'=> 'junior dev',
+            '1015'=> 'Graphic Designer',
+        ][$this['position']] ?? 'CSR';
+
+        // $positionName = [
+        //     '4'=> 'Developer',
+        //     '7'=> 'Finance',
+        //     '9'=> 'Maintenance',
+        //     '10'=> 'UI/UX',
+        //     '11'=> 'Marketing',
+        //     '12'=> 'HR',
+        //     '1013'=> 'test',
+        //     '1014'=> 'junior dev',
+        //     '1015'=> 'Graphic Designer',
+        // ];
+    
+        // return $positionName[$positionId] ?? 'CSR';
+    }
+
+    public function getPositionName($positionId)
+    {
+        $positionName = [
+            '1' => 'User',
+            '2' => 'Admin',
+            '3' => 'Employee',
+            '14' => 'CorporateAdmin',
+        ];
+    
+        return $positionName[$positionId] ?? 'CSR';
+    }
 }

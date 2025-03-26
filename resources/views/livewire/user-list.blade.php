@@ -1,30 +1,35 @@
 <div x-cloak class="odc-main-con-height px-6 py-8">
-    <div class="px-1 h-full flex flex-col justify-between relative overflow-hidden sm:rounded">
+    <div class="px-1 h-full flex flex-col justify-between relative rounded-b-md overflow-hidden sm:rounded-lg">
         <div x-data="{ expanded: false }" class="mt-4">
             <div class="mb-4 flex justify-between ">
                 <div class="inline-flex space-x-4">
-                    <div class="flex w-3/4">
-                        <input
-                            type="text"
-                            wire:model.live.debounce.150ms="filters.search"
-                            class="py-2.5 w-[40rem] text-xs placeholder:text-slate-500 rounded-s-md bg-white text-slate-900 shadow border-s-slate-300 border-slate-300 border-e border-e-slate-light focus:ring-odc-blue-400 dark:bg-slate-700 dark:border-s-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:border-odc-blue-400"
-                            placeholder="Find incident..."
-                        />
-                        <button disabled x-on:click.prevent="expanded = ! expanded" class="flex items-center gap-2 bg-white py-2.5 px-5 text-xs font-bold whitespace-nowrap text-blue-secondary rounded-e-md border border-slate-300 rounded-l-none shadow hover:bg-slate-100">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
-                                <path fill-rule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clip-rule="evenodd" />
-                            </svg>
-                            <p x-text="expanded ? 'Hide' : 'Advance Search...'" x-transition></p>
-                        </button>
-                    </div>
+                    <x-search-bar placeholder="Search incident..." wireModel="filters.search" xInitVar="expanded" />
                     <div class="flex items-center space-x-2 ">
                         <x-input.group borderless paddingless for="perPage" label="Per Page">
-                            <x-input.select wire:model.lazy="perPage" id="perPage">
+                            <x-input.select wire:model.lazy="perPage" id="perPage" class="shadow">
                                 <option value="15">15</option>
                                 <option value="25">25</option>
                                 <option value="50">50</option>
                             </x-input.select>
                         </x-input.group>
+                    </div>
+                </div>
+                {{-- <div class="mb-4 flex justify-between ">
+                    <div class="flex space-x-2">
+                        <a
+                            wire:navigate
+                            href="{{ route('tickets.create') }}"
+                            class="w-full flex items-center justify-center px-4 whitespace-nowrap text-xs font-medium text-cta-text bg-cta 
+                            rounded-md border border-cta-border outline-none hover:bg-cta-active
+                            hover:border-cta-active focus:z-10 focus:ring-border/70 ">
+                            <x-svg-icon
+                                class="-scale-75  group-hover:text-opacity-5"
+                                name="add"
+                                />
+                            <span class="ml-1.5">
+                                Create Incident
+                            </span>
+                        </a>
                     </div>
                 </div>
                 <div>
@@ -37,91 +42,95 @@
                             Create User
                         </span>
                     </button>
-                </div>
+                </div> --}}
             </div>
 
-            <div x-cloak x-show="expanded" x-collapse>
-                    <div class="bg-white p-4 rounded shadow flex relative mb-4">
-                        <div class="w-1/2 pr-2 space-y-4">
-                            <x-input.group inline for="filter-date-min" label="Start Date">
-                                <x-input.date name='filters.date-min' id="filter-date-min" placeholder="MM/DD/YYYY"/>
-                            </x-input.group>
-                            <x-input.group inline for="filter-date-max" label="End Date">
-                                <x-input.date name='filters.date-max' id="filter-date-max" placeholder="MM/DD/YYYY"/>
-                            </x-input.group>
-                        </div>
-                        <div class="w-1/2 pr-2 space-y-4">
-                            <x-button.link wire:click='resetFilters' class="absolute right-0 bottom-0 p-4">Reset Filters</x-button.link>
-                        </div>
+            {{-- <div x-cloak x-show="expanded" x-collapse>
+                <div class="p-4 bg-primary-background border border-border rounded shadow flex relative mb-4">
+                    <div class="w-1/2 pr-2 space-y-4">
+                        <x-input.group inline for="filter-date-min" label="Start Date">
+                            <x-input.date name='filters.date-min' id="filter-date-min" placeholder="MM/DD/YYYY"/>
+                        </x-input.group>
                     </div>
-            </div>
+                    <div class="w-1/2 pr-2 space-y-4">
+                        <x-input.group inline for="filter-date-max" label="End Date">
+                            <x-input.date name='filters.date-max' id="filter-date-max" placeholder="MM/DD/YYYY"/>
+                        </x-input.group>
+                        <x-button.link wire:click='resetFilters' class="absolute right-0 bottom-0 p-4">Reset Filters</x-button.link>
+                    </div>
+                </div>
+            </div> --}}
         </div>
         {{-- ***** Table ***** --}}
-        <div class="border h-full bg-white border-slate-300 rounded-t-md overflow-clip">
-            <div class="__table relative overflow-auto h-full snap-mandatory snap-y">
-                <x-table.table>
+        <div class="border h-full bg-primary-background border-border rounded-t-md overflow-clip">
+            <div class="__table h-full relative overflow-auto snap-mandatory snap-y">
+                <x-table.table class="h-[calc(100%-4rem)">
                     <x-slot name="head">
                         <x-table.heading class="px-4 py-1.5 text-center">
                             <div class="flex items-center">
                                 <x-input.checkbox wire:model="selectPage" />
                             </div>
                         </x-table.heading>
-                        <x-table.heading class="px-1.5 py-1.5" sortable multi-column wire:click="sortBy('first_name')" :direction="$sorts['first_name'] ?? null">
+                        <x-table.heading class="px-1.5 py-1.5" sortable multi-column wire:click="sortBy('fname')" :direction="$sorts['fname'] ?? null">
                             Name
                         </x-table.heading>
                         <x-table.heading class="py-1.5" sortable multi-column wire:click.prevent.live="sortBy('email')" :direction="$sorts['email'] ?? null">
                             Email
                         </x-table.heading>
                         <x-table.heading class="py-1.5" sortable multi-column wire:click.prevent.live="sortBy('email_verified_at')" :direction="$sorts['email_verified_at'] ?? null">
-                            Email Verified
+                            Position
                         </x-table.heading>
                         <x-table.heading class="py-1.5" sortable multi-column wire:click.prevent.live="sortBy('role_id')" :direction="$sorts['role_id'] ?? null">
-                            Role
+                            Position Level
                         </x-table.heading>
                         <x-table.heading class="py-1.5" sortable multi-column wire:click.prevent.live="sortBy('last_login')" :direction="$sorts['last_login'] ?? null">
+                            Teams
+                        </x-table.heading>
+                        {{-- <x-table.heading class="py-1.5" sortable multi-column wire:click.prevent.live="sortBy('last_login')" :direction="$sorts['last_login'] ?? null">
                             Last Active
-                        </x-table.heading>
-                        <x-table.heading class="px-4 py-1.5 text-center">
+                        </x-table.heading> --}}
+                        {{-- <x-table.heading class="px-4 py-1.5 text-center">
                             Action
-                        </x-table.heading>
+                        </x-table.heading> --}}
                     </x-slot>
                     <x-slot name="body">
                         @forelse ($users as $user)
-                        <x-table.row wire:key="{{ $user->id }}" wire:loading.class.delay='opacity-35 animate-pulse'>
+                        <x-table.row wire:key="{{ $user['id'] }}" wire:loading.class.delay='opacity-35 animate-pulse'>
                             <x-table.cell class="w-4 px-4 py-1">
                                 <div class="flex items-center">
-                                    <x-input.checkbox wire:model="selected" value="{{ $user->id }}" />
+                                    <x-input.checkbox wire:model="selected" value="{{ $user['id'] }}" />
                                 </div>
                             </x-table.cell>
                             <x-table.cell>
                                 <div class="flex items-center space-x-2">
                                     <div>
-                                        @if ($user->image)
+                                        {{-- @if ($user['filePath'])
                                             <div class="relative">
                                                 <div class="w-10 h-10 rounded-full border border-slate-100 overflow-clip">
-                                                    <img src="{{ asset("storage/" . $user->image) }}" alt="User Image" class="overflow-clip object-contain object-center h-full">
+                                                    <img src="{{ getenv('APP_HRIS_URL') . $user['filePath'] }}" alt="User Image" class="overflow-clip object-contain object-center h-full">
                                                 </div>
                                             </div>
-                                        @else
+                                        @else --}}
                                             <div class="relative inline-flex items-center justify-center text-slate-600 bg-slate-100 w-10 h-10 rounded-full">
-                                                {{ strtoupper(substr($user->first_name, 0, 1)) . strtoupper(substr($user->last_name, 0, 1)) }}
+                                                {{ strtoupper(substr($user['fname'], 0, 1)) . strtoupper(substr($user['lname'], 0, 1)) }}
                                             </div>
-                                        @endif
+                                        {{-- @endif --}}
                                     </div>
                                     <div class="flex flex-col">
-                                        <span class="font-bold text-odc-blue-800">
-                                            {{ $user->first_name . ' ' . $user->last_name }}
+                                        <span class="font-bold text-text">
+                                            {{ $user['fullname'] }}
+                                            {{-- {{ $user['fname'] . ' ' . $user['lname'] }} --}}
                                         </span>
                                         <span class="text-slate-500">
-                                            {{ '@' . $user->username }}
+                                            {{ '@' . $user['username'] }}
                                         </span>
                                     </div>
                                 </div>
                             </x-table.cell>
                             <x-table.cell>
-                                {{ $user->email }}
+                                {{ $user['email'] }}
                             </x-table.cell>
-                            <x-table.cell>
+                            {{-- <x-table.cell>
                                 @if ($user->email_verified_at)
                                 <span class="inline-flex items-center space-x-2 text-green-500">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
@@ -141,18 +150,55 @@
                                     </span>
                                 </span>
                                 @endif
+                            </x-table.cell> --}}
+                            <x-table.cell>
+                                @php
+                                    $positionId = [
+                                        '4' => 'Developer',
+                                        '7' => 'Finance',
+                                        '9' => 'Maintenance',
+                                        '10' => 'UI/UX',
+                                        '11' => 'Marketing',
+                                        '12' => 'HR',
+                                        '1013' => 'test',
+                                        '1014' => 'junior dev',
+                                        '1015' => 'Graphic Designer',
+                                        '1016' => 'Support',
+                                        '1017' => 'Tester',
+                                    ];
+                                
+                                    $posName = $positionId[$user['position']] ?? 'CSR';
+                                @endphp
+                                {{ $posName }}
+                                {{-- {{ $user['position'] $user}} --}}
+                                {{-- @entangle('getPositionName()') --}}
+                                {{-- {{ $user->position_name }} --}}
                             </x-table.cell>
                             <x-table.cell>
-                                {{ $user->role->name }}
-                            </x-table.cell>
-                            <x-table.cell>
-                                @if ($user->last_login)
+                                @php
+                                    $positionLevelId = [
+                                        '1' => 'Intern',
+                                        '2' => 'Junior',
+                                        '3' => 'Intermediate',
+                                        '4' => 'Senior',
+                                        '5' => 'Manager',
+                                        '6' => 'Department Head',
+                                    ];
+                                
+                                    $posNameLevel = $positionLevelId[$user['positionLevelId']] ?? 'N/A';
+                                @endphp
+                                {{ $posNameLevel }}
+                                {{-- @if ($user->last_login)
                                 {{ $user->last_login }}
                                 @else
                                 {{ $user->role->name }} haven't logged in yet
-                                @endif
+                                @endif --}}
                             </x-table.cell>
-                            <x-table.cell class="px-4 py-1 text-center align-middle">
+                            <x-table.cell>
+                                {{-- {{ $user[''] }} --}}
+                                ***Team Name***
+                            </x-table.cell>
+                            {{-- <x-table.cell class="px-4 py-1 text-center align-middle">
                                 <div class="hidden sm:flex sm:items-center sm:justify-center sm:ms-auto">
                                     <x-dropdown align="right" width="w-40">
                                         <x-slot name="trigger" class="flex items-center justify-center text-center">
@@ -164,7 +210,7 @@
                                         <x-slot name="content">
                                             <ul class="py-2 text-xs text-slate-700 dark:text-slate-200" aria-labelledby="dropdownDefault">
                                                 <li>
-                                                    <button wire:click="edit({{ $user->id }})" type="button"
+                                                    <button wire:click="edit({{ $user['id'] }})" type="button"
                                                         class="w-full text-start text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out group flex items-center px-4 py-2 hover:text-white
                                                         hover:bg-gradient-to-br hover:from-blue-primary hover:to-blue-secondary
                                                         dark:hover:bg-slate-600 dark:hover:text-white">
@@ -179,7 +225,7 @@
                                                 </li>
                                                 <li>
                                                     <button 
-                                                        wire:click="delete({{ $user->id }})"
+                                                        wire:click="delete({{ $user['id'] }})"
                                                         type="button"
                                                         class="w-full text-start text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out group flex items-center px-4 py-2 hover:text-white
                                                         hover:bg-gradient-to-br hover:from-odc-red-600 hover:to-odc-red-500
@@ -197,7 +243,7 @@
                                         </x-slot>
                                     </x-dropdown>
                                 </div>
-                            </x-table.cell>
+                            </x-table.cell> --}}
                         </x-table.row>
                         
                         
@@ -215,18 +261,18 @@
                 </x-table.table>
             </div>
         </div>
-        <div class="h-16 w-full flex rounded-b-lg items-center justify-between bg-slate-50 border-t-0 border border-slate-300 ">
+        <div class="h-16 w-full flex rounded-b-lg items-center justify-between bg-primary-background border-t-0 border border-border">
             <span class="ml-5 inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
                 <span class="w-2 h-2 me-1 bg-green-500 rounded-full"></span>
-                <span class="me-1">{{ $users->count() }}</span>
+                {{-- <span class="me-1">{{ $users->count() }}</span> --}}
                 <span>Total Users</span>
             </span>
             <div class="mr-5 flex flex-col items-center my-2">
-                {{ $users->links('livewire::tailwind') }}
+                {{-- {{ $users->links('livewire::tailwind') }} --}}
             </div>
         </div>
     </div>
-    <div x-cloak x-data="{ open: @entangle('showCreateModal') }">
+    {{-- <div x-cloak x-data="{ open: @entangle('showCreateModal') }">
         <div x-show="open" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
             <div class="flex items-end justify-center min-h-screen px-4 text-center md:items-center sm:block sm:p-0">
                 <div x-cloak @click.prevent="open = false" x-show="open"
@@ -246,7 +292,7 @@
                     x-transition:leave="transition ease-in duration-200 transform"
                     x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
                     x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                    class="inline-block w-full max-w-xl p-8 my-20 overflow-hidden text-left transition-all transform bg-white rounded-lg shadow-xl 2xl:max-w-2xl"
+                    class="inline-block w-full max-w-xl p-8 my-20 overflow-hidden text-left transition-all transform bg-primary-background rounded-lg shadow-xl 2xl:max-w-2xl"
                 >
                     <div class="flex items-center justify-between space-x-4">
                         <h1 class="text-xl font-medium text-gray-800 ">Create User</h1>
@@ -277,7 +323,7 @@
                                         @else 
                                             <div class="relative inline-flex items-center justify-center text-8xl text-slate-600 bg-slate-100 
                                             w-64 h-64 rounded-full">
-                                                {{ strtoupper(substr($first_name, 0, 1)) . strtoupper(substr($last_name, 0, 1)) }}
+                                                {{ strtoupper(substr($fname, 0, 1)) . strtoupper(substr($last_name, 0, 1)) }}
                                             </div>
                                         @endif
                                         <x-form.error name="newImage"/>
@@ -285,12 +331,12 @@
                                     <div class="flex flex-col w-full space-y-2">
                                         
                                         <div class="grid grid-cols-2 grid-rows-1 gap-2">
-                                            <label for="file" class="cursor-pointer flex items-center px-4 py-2 space-x-2 rounded-md border border-slate-300 text-blue-primary text-xs tracking-widest uppercase hover:bg-slate-100">
+                                            <label for="file" class="cursor-pointer flex items-center px-4 py-2 space-x-2 rounded-md border border-border text-blue-primary text-xs tracking-widest uppercase hover:bg-slate-100">
                                                 <x-svg-icon name="change" class="w-[16px] h-[16px]"/>
                                                 <span>Change</span>
                                             </label>
                                             <input type="file" id="file" wire:model="newImage" class="hidden">
-                                            <button wire:click='removeFile' type="button" class="cursor-pointer flex items-center px-4 py-2 space-x-2 rounded-md border border-slate-300 text-blue-primary text-xs tracking-widest uppercase hover:bg-slate-100">
+                                            <button wire:click='removeFile' type="button" class="cursor-pointer flex items-center px-4 py-2 space-x-2 rounded-md border border-border text-blue-primary text-xs tracking-widest uppercase hover:bg-slate-100">
                                                 <x-svg-icon name="trash" class="w-[16px] h-[16px]"/>
                                                 <span>Remove</span>
                                             </button>
@@ -312,7 +358,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <x-form.input name="first_name" labelname="First Name" type="text" wire:model.lazy='first_name'/>
+                                    <x-form.input name="fname" labelname="First Name" type="text" wire:model.lazy='fname'/>
                                     <x-form.input name="last_name" labelname="Last Name" type="text" wire:model.lazy='last_name'/>
                                     <x-form.input name="username" labelname="Username" type="text" wire:model.lazy='username'/>
                                     <x-form.field>
@@ -349,7 +395,7 @@
                             <x-form.input name="password_confirmation" labelname="Confirm Password" type="password" wire:model='password_confirmation'/>
                     
                             <div class="flex items-center justify-end mt-10 space-x-2">
-                                <x-primary-button wire:loading.remove @click.prevent="open = false" type="button" class="border border-slate-300">Cancel</x-primary-button>
+                                <x-primary-button wire:loading.remove @click.prevent="open = false" type="button" class="border border-border">Cancel</x-primary-button>
                                 <p wire:loading class="hidden animate-pulse text-sm text-slate-500">Creating new user...</p>
                                 <button wire:click="register" wire:loading.attr="disabled" class="px-3 py-2 text-xs tracking-widest text-white uppercase transition-colors duration-200 transform bg-odc-blue-800 rounded-md dark:bg-odc-blue-700 dark:hover:bg-odc-blue-800 dark:focus:bg-odc-blue-800 
                                 hover:bg-odc-blue-900 focus:outline-none focus:bg-odc-blue-600 focus:ring focus:ring-odc-blue-400 focus:ring-opacity-50">
@@ -367,8 +413,8 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div x-cloak x-data="{ open: @entangle('showEditModal') }"> 
+    </div> --}}
+    {{-- <div x-cloak x-data="{ open: @entangle('showEditModal') }"> 
         <div x-show="open" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
             <div class="flex items-end justify-center min-h-screen px-4 text-center md:items-center sm:block sm:p-0">
                 <div x-cloak @click.prevent="modelOpen = false" x-show="open"
@@ -388,7 +434,7 @@
                     x-transition:leave="transition ease-in duration-200 transform"
                     x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
                     x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                    class="inline-block w-full max-w-xl p-8 my-20 overflow-hidden text-left transition-all transform bg-white rounded-lg shadow-xl 2xl:max-w-2xl"
+                    class="inline-block w-full max-w-xl p-8 my-20 overflow-hidden text-left transition-all transform bg-primary-background rounded-lg shadow-xl 2xl:max-w-2xl"
                 >
                     <div class="flex items-center justify-between space-x-4">
                         <h1 class="text-xl font-medium text-gray-800 ">Edit User</h1>
@@ -419,7 +465,7 @@
                                         @else 
                                             <div class="relative inline-flex items-center justify-center text-8xl text-slate-600 bg-slate-100 
                                             w-64 h-64 rounded-full">
-                                                {{ strtoupper(substr($first_name, 0, 1)) . strtoupper(substr($last_name, 0, 1)) }}
+                                                {{ strtoupper(substr($fname, 0, 1)) . strtoupper(substr($last_name, 0, 1)) }}
                                             </div>
                                         @endif
                                         
@@ -428,12 +474,12 @@
                                         <x-form.error name="newImage"/>
                                         
                                         <div class="grid grid-cols-2 grid-rows-1 gap-2">
-                                            <label for="file2" class="cursor-pointer flex items-center px-4 py-2 space-x-2 rounded-md border border-slate-300 text-blue-primary text-xs tracking-widest uppercase hover:bg-slate-100">
+                                            <label for="file2" class="cursor-pointer flex items-center px-4 py-2 space-x-2 rounded-md border border-border text-blue-primary text-xs tracking-widest uppercase hover:bg-slate-100">
                                                 <x-svg-icon name="change" class="w-[16px] h-[16px]"/>
                                                 <span>Change</span>
                                             </label>
                                             <input type="file" id="file2" wire:model="newImage" class="hidden">
-                                            <button wire:click='removeFile' type="button" class="flex items-center px-4 py-2 space-x-2 rounded-md border border-slate-300 text-blue-primary text-xs tracking-widest uppercase hover:bg-slate-100">
+                                            <button wire:click='removeFile' type="button" class="flex items-center px-4 py-2 space-x-2 rounded-md border border-border text-blue-primary text-xs tracking-widest uppercase hover:bg-slate-100">
                                                 <x-svg-icon name="trash" class="w-[16px] h-[16px]"/>
                                                 <span>Remove</span>
                                             </button>
@@ -455,7 +501,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <x-form.input name="first_name" labelname="First Name" type="text" wire:model.lazy='first_name'/>
+                                    <x-form.input name="fname" labelname="First Name" type="text" wire:model.lazy='fname'/>
                                     <x-form.input name="last_name" labelname="Last Name" type="text" wire:model.lazy='last_name'/>
                                     <x-form.input name="username" labelname="Username" type="text" wire:model='username'/>
                                     <x-form.field>
@@ -478,7 +524,7 @@
                             <x-form.input name="email" labelname="Email" type="email" wire:model.blur='email'/>
                     
                             <div class="flex items-center justify-end mt-10 space-x-2">
-                                <x-primary-button wire:loading.remove @click="open = false" type="button" class="border border-slate-300">Cancel</x-primary-button>
+                                <x-primary-button wire:loading.remove @click="open = false" type="button" class="border border-border">Cancel</x-primary-button>
                                 <p wire:loading class="hidden animate-pulse text-sm text-slate-500">Updating user...</p>
                                 <button wire:loading.attr="disabled" type="submit" class="px-3 py-2 text-xs tracking-widest text-white uppercase transition-colors duration-200 transform bg-odc-blue-800 rounded-md dark:bg-odc-blue-700 dark:hover:bg-odc-blue-800 dark:focus:bg-odc-blue-800 
                                 hover:bg-odc-blue-900 focus:outline-none focus:bg-odc-blue-600 focus:ring focus:ring-odc-blue-400 focus:ring-opacity-50">
@@ -517,7 +563,7 @@
                     x-transition:leave="transition ease-in duration-200 transform"
                     x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
                     x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                    class="inline-block w-full max-w-xl p-8 my-20 overflow-hidden text-left transition-all transform bg-white rounded-lg shadow-xl 2xl:max-w-2xl"
+                    class="inline-block w-full max-w-xl p-8 my-20 overflow-hidden text-left transition-all transform bg-primary-background rounded-lg shadow-xl 2xl:max-w-2xl"
                 >
                     <div class="p-4 md:p-5 text-center">
                         <svg class="mx-auto mb-4 w-12 h-12 text-red-primary dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
@@ -537,13 +583,13 @@
                                             </div>
                                         @else
                                             <div class="relative inline-flex items-center justify-center text-slate-600 bg-slate-100 w-10 h-10 rounded-full">
-                                                {{ strtoupper(substr($first_name, 0, 1)) . strtoupper(substr($last_name, 0, 1)) }}
+                                                {{ strtoupper(substr($fname, 0, 1)) . strtoupper(substr($last_name, 0, 1)) }}
                                             </div>
                                         @endif
                                     </div>
                                     <div class="flex flex-col text-left ">
                                         <span class="font-bold text-odc-blue-800">
-                                            {{ $first_name . ' ' . $last_name }}
+                                            {{ $fname . ' ' . $last_name }}
                                         </span>
                                         <span class="text-slate-500">
                                             {{ '@' . $username }}
@@ -554,7 +600,7 @@
                         </div>
                         <h3 class="mb-4 text-sm font-normal text-gray-500 opacity-55 dark:text-gray-400">This action is irrevocable!</h3>
                         <div class="space-x-4">
-                            <x-primary-button @click="open = false" wire:loading.attr="disabled" type="button"  class="border border-slate-300">No, cancel</x-primary-button>
+                            <x-primary-button @click="open = false" wire:loading.attr="disabled" type="button"  class="border border-border">No, cancel</x-primary-button>
                             <button wire:click="confirmDelete" wire:loading.attr="disabled" type="submit" class="px-3 py-2 text-xs tracking-widest text-white uppercase transition-colors duration-200 transform bg-odc-red-600 rounded-md dark:bg-odc-red-700 dark:hover:bg-odc-red-800 dark:focus:bg-odc-red-800 hover:bg-odc-red-700 focus:outline-none focus:bg-odc-red-600 focus:ring focus:ring-odc-red-400 focus:ring-opacity-50">
                                 <svg wire:loading wire:target="confirmDelete" aria-hidden="true" role="status" class="hidden w-4 h-4 me-1 text-gray-200 animate-spin dark:text-gray-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
@@ -567,7 +613,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <x-action-message-toast on="create-user-success" icon="check-circle" key="User Creation Successful!">
         {{ __("You've created a new user!") }}

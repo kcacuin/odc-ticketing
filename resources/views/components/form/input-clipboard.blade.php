@@ -9,7 +9,7 @@
 ])
 
 @php
-    $classes = 'block mt-1 w-full peer h-[3rem] px-6 text-sm text-slate-300 bg-gray-dark rounded-lg border-opacity-75 border-2 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 placeholder-transparent placeholder:pointer-events-none
+    $classes = 'block mt-1 w-full peer h-[3rem] px-6 text-sm text-text bg-primary-background rounded-lg border-border border-2 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 placeholder-transparent placeholder:pointer-events-none
     ring-0 placeholder:select-none focus:shadow-md focus:shadow-odc-blue-700 focus:border-blue-secondary focus:ring-0';
 @endphp
 

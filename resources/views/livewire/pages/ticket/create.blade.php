@@ -30,13 +30,13 @@
                     <div class="flex flex-col w-[25%]">
                         <div class="mb-4">
                             {{-- * Ticket Number (Copy to Clipboard) --}}
-                            <div class="opacity-90">
-                                <x-form.input-clipboard name="number" labelname="Ticket Number" type="number" readonly="true" :value="$nextTicketNumber" class="disabled:opacity-90"/>
+                            <div>
+                                <x-form.input-clipboard name="number" labelname="Ticket Number" type="number" readonly="true" :value="$nextTicketNumber" disabled="disabled" class="disabled:opacity-30 disabled:bg-slate-400/20"/>
                                 <input type="hidden" x-on:input="wire.emit('ticketIdUpdated', input)">
                             </div>
                             <x-form.field>
                                 <select name="status_id" id="status_id" disabled
-                                class="disabled:opacity-90 disabled:text-slate-300 appearance-none block mt-1 w-full peer h-[3rem] px-6 text-sm text-white bg-gray-dark rounded-lg border-opacity-75 border-2 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 placeholder-transparent placeholder:pointer-events-none
+                                class="disabled:opacity-30 disabled:bg-slate-400/20 appearance-none block mt-1 w-full peer h-[3rem] px-6 text-sm text-text bg-primary-background rounded-lg border-border border-2 outline-none placeholder-gray-300 placeholder-opacity-0 transition duration-200 placeholder-transparent placeholder:pointer-events-none
                                 ring-0 placeholder:select-none focus:shadow-md focus:shadow-odc-blue-700 focus:border-blue-secondary focus:ring-0">
                                     @php
                                         $statuses = \App\Models\Status::all();
@@ -56,7 +56,7 @@
                                 <x-form.date x-model="ticketDate" name="date_received" labelname="Date Received" type="date" class="appearance-none"/>
                             </div>
                         </div>
-                        <div class="relative max-h-52 overflow-y-auto bg-[#f1f0ef] rounded-md border border-dashed border-blue-secondary">
+                        <div class="relative max-h-52 overflow-y-auto bg-primary-background rounded-md border border-dashed border-border">
                             <x-input.filepond name="files" multiple/>
                         </div>
                     </div>
@@ -86,7 +86,7 @@
                                                 x-transition:leave="transition ease-in duration-200 transform"
                                                 x-transition:leave-start="opacity-100"
                                                 x-transition:leave-end="opacity-0"
-                                                class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-40" aria-hidden="true"
+                                                class="fixed inset-0 transition-opacity bg-primary-background/10 backdrop-blur-sm" aria-hidden="true"
                                             ></div>
 
                                             <div x-cloak x-show="modelOpen"
@@ -154,7 +154,7 @@
 
                                                     <div class="flex justify-end mt-6 space-x-2">
                                                         <x-primary-button @click.prevent="modelOpen = false" type="button" class="border border-slate-300">Review issue and files</x-primary-button>
-                                                        <button :disabled="submitting" class="px-3 py-2 text-xs tracking-widest text-white uppercase transition-colors duration-200 transform bg-odc-blue-600 rounded-md dark:bg-odc-blue-700 dark:hover:bg-odc-blue-800 dark:focus:bg-odc-blue-800 hover:bg-odc-blue-700 focus:outline-none focus:bg-odc-blue-600 focus:ring focus:ring-odc-blue-400 focus:ring-opacity-50">
+                                                        <button :disabled="submitting" class="px-3 py-2 text-xs tracking-widest text-text uppercase transition-colors duration-200 transform bg-odc-blue-600 rounded-md dark:bg-odc-blue-700 dark:hover:bg-odc-blue-800 dark:focus:bg-odc-blue-800 hover:bg-odc-blue-700 focus:outline-none focus:bg-odc-blue-600 focus:ring focus:ring-odc-blue-400 focus:ring-opacity-50">
                                                             <span x-show="!submitting">Confirm and Submit</span>
                                                             <span x-show="submitting">
                                                                 <svg aria-hidden="true" role="status" class="inline w-4 h-4 me-1 text-gray-200 animate-spin dark:text-gray-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">

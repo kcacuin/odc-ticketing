@@ -25,7 +25,7 @@ Route::view('/', 'welcome');
 
 require __DIR__.'/auth.php';
 
-Route::get('/admin', [UserController::class, 'index'])->name('admin.index')->middleware('admin');
+// Route::get('/admin', [UserController::class, 'index'])->name('admin.index')->middleware('admin');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
@@ -37,7 +37,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/tickets/incident-{ticket}', [TicketController::class, 'show'])->name('tickets.show');
     Route::get('/tickets/incident-{ticket}/edit', [TicketController::class, 'edit'])->name('tickets.edit');
     Route::patch('/tickets/incident-{ticket}', [TicketController::class, 'update'])->name('tickets.update');
-    Route::delete('/tickets/incident-{ticket}', [TicketController::class, 'destroy'])->name('tickets.destroy');
+    
+    Route::middleware(['support', 'teamlead', 'manager', 'admin'])->group(function () {
+        Route::delete('/tickets/incident-{ticket}', [TicketController::class, 'destroy'])->name('tickets.destroy');
+    });
 
     Route::resource('tickets.files', FileController::class);
     Route::resource('tickets.notes', NoteController::class);
@@ -51,6 +54,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/attachments', [UploadController::class, 'trixAttachmentStore'])->name('attachments.store');
 
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+    
+    Route::middleware(['admin'])->group(function () {
+        Route::get('/admin', [UserController::class, 'index'])->name('admin.index')->middleware('admin');
+    });
 });
-
 

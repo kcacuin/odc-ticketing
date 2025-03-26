@@ -143,7 +143,7 @@
                                                                             </div>
                                                                         @else
                                                                             <div class="relative inline-flex items-center justify-center text-slate-600 bg-slate-300 w-10 h-10 rounded-full">
-                                                                                {{ strtoupper(substr($ticket->user->first_name, 0, 1)) . strtoupper(substr($ticket->user->last_name, 0, 1)) }}
+                                                                                {{ strtoupper(substr($ticket->user->fname, 0, 1)) . strtoupper(substr($ticket->user->lname, 0, 1)) }}
                                                                             </div>
                                                                         @endif
                                                                     </div>
@@ -197,7 +197,7 @@
                                         @else
                                             <div class="relative inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-300">
                                                 {{-- <div class="w-10 h-10  rounded-full overflow-clip"> --}}
-                                                    <span class="absolute z-10 font-medium text-slate-600">{{ strtoupper(substr(Auth::user()->first_name, 0, 1)) . strtoupper(substr(Auth::user()->last_name, 0, 1)) }}</span>
+                                                    <span class="absolute z-10 font-medium text-slate-600">{{ strtoupper(substr(Auth::user()->fname, 0, 1)) . strtoupper(substr(Auth::user()->lname, 0, 1)) }}</span>
                                                 {{-- </div> --}}
                                                 {{-- * DP-Container --}}
                                                 {{-- <span class="absolute w-[40px] h-[40px] overflow-hidden rounded-[50%] after:content-['']  --}}
@@ -220,16 +220,16 @@
                                             x-on:click.outside="open = false"
                                             role="menu"
                                             aria-labelledby="tk-dropdown"
-                                            class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-lg shadow-xl dark:shadow-gray-900"
+                                            class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-lg shadow-xl"
                                         >
                                             <div
-                                            class="divide-y divide-gray-100 rounded-lg bg-white ring-1 ring-black ring-opacity-5 dark:divide-gray-700 dark:bg-gray-800 dark:ring-gray-700"
+                                            class="divide-y divide-border rounded-lg bg-primary-background border border-border ring-1 ring-black ring-opacity-5"
                                             >
                                             <div class="space-y-1 p-2.5">
                                                 <a
                                                 role="menuitem"
                                                 href="{{ route('profile') }}"
-                                                class="group flex items-center justify-between space-x-2 rounded-lg border border-transparent px-2.5 py-2 text-sm font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-800 active:border-blue-100 dark:text-gray-200/75 dark:hover:text-white dark:active:border-gray-600"
+                                                class="group flex items-center justify-between space-x-2 rounded-lg border border-transparent px-2.5 py-2 text-sm font-medium text-text/75 bg-primary-background hover:bg-slate-200/50 hover:text-text active:border-blue-100 dark:hover:bg-white/10"
                                                 >
                                                 <svg
                                                     class="hi-mini hi-user-circle inline-block size-5 flex-none opacity-25 group-hover:opacity-50"
@@ -253,7 +253,7 @@
                                                     <button
                                                         type="submit"
                                                         role="menuitem"
-                                                        class="group flex w-full items-center justify-between space-x-2 rounded-lg border border-transparent px-2.5 py-2 text-left text-sm font-medium text-red-primary hover:bg-odc-red-50 hover:text-odc-red-800 active:border-odc-red-100 dark:text-gray-200/75 dark:hover:text-white dark:active:border-gray-600"
+                                                        class="group flex w-full items-center justify-between space-x-2 rounded-lg border border-transparent px-2.5 py-2 text-left text-sm font-medium text-red-primary/75 bg-primary-background hover:bg-slate-200/50 hover:text-red-primary active:border-odc-red-100 dark:hover:bg-white/10"
                                                     >
                                                         <svg
                                                         class="hi-mini hi-lock-closed inline-block size-5 flex-none opacity-25 group-hover:opacity-50"

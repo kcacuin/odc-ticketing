@@ -11,8 +11,6 @@ class ApiUserProvider implements UserProvider
 {
     public function retrieveById($identifier)
     {
-        // This could be used to fetch user data from API by ID
-        // For now, we'll return a user model with data from session
         if (session()->has('api_user')) {
             $userData = session('api_user');
             $user = new User();
@@ -20,9 +18,42 @@ class ApiUserProvider implements UserProvider
                 'id' => $userData['id'],
                 'username' => $userData['username'],
                 'email' => $userData['email'],
-                'first_name' => $userData['fname'],
-                'last_name' => $userData['lname'],
-                // Add other fields as needed
+                'fname' => $userData['fname'],
+                'lname' => $userData['lname'],
+                "mname" => $userData['mname'],
+                "suffix" => $userData['suffix'],
+                "email" => $userData['email'],
+                "gender" => $userData['gender'],
+                "employeeId" => $userData['employeeId'],
+                "jwtoken" => $userData['jwtoken'],
+                "filePath" => $userData['filePath'],
+                "active" => $userData['active'],
+                "cno" => $userData['cno'],
+                "address" => $userData['address'],
+                "status" => $userData['status'],
+                "dateCreated" => $userData['dateCreated'],
+                "dateUpdated" => $userData['dateUpdated'],
+                "deleteFlag" => $userData['deleteFlag'],
+                "createdBy" => $userData['createdBy'],
+                "updatedBy" => $userData['updatedBy'],
+                "dateDeleted" => $userData['dateDeleted'],
+                "deletedBy" => $userData['deletedBy'],
+                "dateRestored" => $userData['dateRestored'],
+                "restoredBy" => $userData['restoredBy'],
+                "department" => $userData['department'],
+                "agreementStatus" => $userData['agreementStatus'],
+                "rememberToken" => $userData['rememberToken'],
+                "userType" => $userData['userType'],
+                "employeeType" => $userData['employeeType'],
+                "salaryType" => $userData['salaryType'],
+                "rate" => $userData['rate'],
+                "daysInMonth" => $userData['daysInMonth'],
+                "payrollType" => $userData['payrollType'],
+                "dateStarted" => $userData['dateStarted'],
+                "position" => $userData['position'],
+                "positionLevelId" => $userData['positionLevelId'],
+                "managerId" => $userData['managerId'],
+                "isLoggedIn" => $userData['isLoggedIn'],
             ]);
             return $user;
         }

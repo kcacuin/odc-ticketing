@@ -16,6 +16,7 @@ use App\Rules\AllowedEmailDomain;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Session;
@@ -92,11 +93,33 @@ class UserList extends Component
         });
     }
 
+    // public function getPositionNameAttribute($positionId)
+    // {
+    //     dd($positionId);
+    //     // return [
+    //     //     '4'=> 'Developer',
+    //     //     '7'=> 'Finance',
+    //     //     '9'=> 'Maintenance',
+    //     //     '10'=> 'UI/UX',
+    //     //     '11'=> 'Marketing',
+    //     //     '12'=> 'HR',
+    //     //     '1013'=> 'test',
+    //     //     '1014'=> 'junior dev',
+    //     //     '1015'=> 'Graphic Designer',
+    //     // ][$positionId] ?? 'CSR';
+    // }
+
     public function render()
     {
         $roles = Role::all();
+        $response = Http::withToken(getenv('APP_API_TOKEN'))
+                ->get(getenv('APP_API_URL').'/Employee/view');
+            
+        $userList = $response->json();
+        // dd($userList);
         return view('livewire.user-list', [
-            'users' => $this->rows ?? [],
+            // 'users' => $this->rows ?? [],
+            'users' => $userList ?? [],
             'roles' => $roles,
             'defaultRoleId' => $roles->where('name', 'User')->first()->id,
         ]);
