@@ -521,6 +521,7 @@
                                 </div>
                             </div>
                             
+                            
                             <x-form.input name="email" labelname="Email" type="email" wire:model.blur='email'/>
                     
                             <div class="flex items-center justify-end mt-10 space-x-2">
